@@ -13,10 +13,11 @@
 
 void Print_Hello_World();
 void Print_Download();
-void Print_Home_Page();
-void Update_Home_Page();
+void Print_Home_Page_Out();
 void Print_Static_Home_Page();
+void Print_Home_Page_In();
 void Print_Boards_Main();
+void Print_Menu_Page_Static();
 void Print_Menu_Page();
 void Print_Page_Clock_Settings();
 void Print_Page_About();
@@ -31,6 +32,7 @@ void DrawSunWithClouds(uint8_t *Frame_buffer);
 void DrawClouds(uint8_t *Frame_buffer);
 void DrawCloudsWithRain(uint8_t *Frame_buffer);
 void DrawWeatherVane();
+void DrawWindDirect();
 void DrawBattery(uint8_t *Frame_buffer);
 void sprintf_Home_Weath_Param(void);
 

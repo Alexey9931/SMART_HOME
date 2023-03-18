@@ -19,21 +19,26 @@
 #include <math.h>
 #include <avr/wdt.h>
 
-#define LED PORTD6
-#define	SW_ENC PORTD3
-#define DT_ENC PORTD4
-#define CLK_ENC PORTD5
+#define LED PORTB2
+#define IK_RX PORTD3
+#define BUZZER PORTD7
+//#define	SW_ENC PORTD3
+//#define DT_ENC PORTD4
+//#define CLK_ENC PORTD5
 
 #include "NRF24.h"
 #include "TWI.h"
 #include "usart.h"
-//#include "LCD_12864.h"
 #include "WeatherStation.h"
 #include "RTC_DS3231.h"
 #include "DHT22.h"
 #include "BMP180.h"
 #include "ILI9486.h"
 #include "DS18B20.h"
+#include "SD.h"
+#include "pff.h"
+#include "diskio.h"
+#include "integer.h"
 
 uint8_t spi_send_recv(uint8_t data);
 

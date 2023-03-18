@@ -42,8 +42,11 @@ C_SRCS +=  \
 ../DS18B20.c \
 ../ILI9486.c \
 ../main.c \
+../mmc.c \
 ../NRF24.c \
+../pff.c \
 ../RTC_DS3231.c \
+../SD.c \
 ../TWI.c \
 ../usart.c \
 ../WeatherStation.c
@@ -61,8 +64,11 @@ DHT22.o \
 DS18B20.o \
 ILI9486.o \
 main.o \
+mmc.o \
 NRF24.o \
+pff.o \
 RTC_DS3231.o \
+SD.o \
 TWI.o \
 usart.o \
 WeatherStation.o
@@ -73,8 +79,11 @@ DHT22.o \
 DS18B20.o \
 ILI9486.o \
 main.o \
+mmc.o \
 NRF24.o \
+pff.o \
 RTC_DS3231.o \
+SD.o \
 TWI.o \
 usart.o \
 WeatherStation.o
@@ -85,8 +94,11 @@ DHT22.d \
 DS18B20.d \
 ILI9486.d \
 main.d \
+mmc.d \
 NRF24.d \
+pff.d \
 RTC_DS3231.d \
+SD.d \
 TWI.d \
 usart.d \
 WeatherStation.d
@@ -97,8 +109,11 @@ DHT22.d \
 DS18B20.d \
 ILI9486.d \
 main.d \
+mmc.d \
 NRF24.d \
+pff.d \
 RTC_DS3231.d \
+SD.d \
 TWI.d \
 usart.d \
 WeatherStation.d
@@ -152,6 +167,13 @@ LINKER_SCRIPT_DEP+=
 	@echo Finished building: $<
 	
 
+./mmc.o: .././mmc.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega32a -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega32a" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 ./NRF24.o: .././NRF24.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
@@ -159,7 +181,21 @@ LINKER_SCRIPT_DEP+=
 	@echo Finished building: $<
 	
 
+./pff.o: .././pff.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega32a -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega32a" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 ./RTC_DS3231.o: .././RTC_DS3231.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega32a -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega32a" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./SD.o: .././SD.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega32a -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega32a" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

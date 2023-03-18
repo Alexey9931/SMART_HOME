@@ -12,9 +12,15 @@ ILI9486.c
 
 main.c
 
+mmc.c
+
 NRF24.c
 
+pff.c
+
 RTC_DS3231.c
+
+SD.c
 
 TWI.c
 

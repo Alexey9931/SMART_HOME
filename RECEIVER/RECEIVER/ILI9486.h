@@ -18,11 +18,11 @@
 #define COMMAND_DDR DDRC
 #define COMMAND_PORT PORTC
 
-#define LCD_CS PC6//Chip Select
-#define LCD_CD PC5//Command/Data
-#define LCD_WR PC4//LCD Write
-#define LCD_RD PC3//LCD Read
-#define LCD_RESET PC7//LCD Reset
+#define LCD_CS PORTC6//Chip Select
+#define LCD_CD PORTC5//Command/Data
+#define LCD_WR PORTC4//LCD Write
+#define LCD_RD PORTC3//LCD Read
+#define LCD_RESET PORTC7//LCD Reset
 #define RESET_IDLE COMMAND_PORT|=(1<<LCD_RESET)
 #define CS_IDLE COMMAND_PORT|=(1<<LCD_CS)
 #define WR_IDLE COMMAND_PORT|=(1<<LCD_WR)
@@ -35,6 +35,7 @@
 #define CD_DATA COMMAND_PORT|=(1<<LCD_CD)
 #define BLACK 0x0000
 #define BLUE 0x001F
+#define LIGHTBLUE 0x3D9F
 #define RED 0xF800
 #define ORANGE 0xFBA2
 #define GREEN 0x1FE0
@@ -80,14 +81,14 @@ void ILI9486_SetTextColor(uint16_t c, uint16_t b);
 void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode);
 void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
 void ILI9486_Print_Char8x16(uint16_t x,uint16_t y,uint8_t num,uint8_t mode);
-void ILI9486_Print_Char32x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
+void ILI9486_Print_Char24x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
 void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
 void ILI9486_SetCursor(int16_t x, int16_t y);
 void ILI9486_SetTextSize(uint8_t s);
 void ILI9486_Print_String18x32(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String14x24(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String8x16(uint8_t *string,uint8_t TFT_STRING_MODE);
-void ILI9486_Print_String32x32(uint8_t *string,uint8_t TFT_STRING_MODE);
+void ILI9486_Print_String24x32(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String32x48(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String(uint8_t *string , uint8_t TFT_STRING_MODE);
 void ILI9486_Print_Number(long  Number, uint8_t TFT_STRING_MODE);

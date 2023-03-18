@@ -1,4 +1,4 @@
-ILI9486.d ILI9486.o: .././ILI9486.c .././ILI9486.h .././main.h \
+SD.d SD.o: .././SD.c .././SD.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -21,10 +21,10 @@ ILI9486.d ILI9486.o: .././ILI9486.c .././ILI9486.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h \
  .././NRF24.h .././TWI.h .././usart.h .././WeatherStation.h \
- .././RTC_DS3231.h .././DHT22.h .././BMP180.h .././DS18B20.h .././SD.h \
- .././pff.h .././integer.h .././diskio.h .././Fonts.h
+ .././RTC_DS3231.h .././DHT22.h .././BMP180.h .././ILI9486.h \
+ .././DS18B20.h .././pff.h .././integer.h .././diskio.h
 
-.././ILI9486.h:
+.././SD.h:
 
 .././main.h:
 
@@ -84,14 +84,12 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h:
 
 .././BMP180.h:
 
-.././DS18B20.h:
+.././ILI9486.h:
 
-.././SD.h:
+.././DS18B20.h:
 
 .././pff.h:
 
 .././integer.h:
 
 .././diskio.h:
-
-.././Fonts.h:

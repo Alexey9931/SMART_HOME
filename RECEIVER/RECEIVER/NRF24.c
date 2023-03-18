@@ -29,7 +29,7 @@ extern struct Time_Parameters {
 	char hours[4];
 	char minutes[4];
 	char seconds[4];
-	char weakday[4];
+	char weakday[10];
 	char mounthday[4];
 	char Mounth[4];
 	char Year[4];
@@ -47,6 +47,8 @@ extern uint8_t timer1_flag, timer2_flag;
 uint8_t street_temp_sign;//знак уличн темп
 uint8_t street_temp_integer;//целая часть уличн темп
 uint8_t street_temp_fraction;//дробная часть уличн темп
+uint8_t wind_speed_integer;//целая часть ск ветра
+uint8_t wind_speed_fraction;//дробная часть ск ветра
 
 //-------------------------------------------------------------
 void NRF24_ini(void)

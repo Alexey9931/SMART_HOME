@@ -21,7 +21,8 @@ usart.d usart.o: .././usart.c .././usart.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h \
  .././NRF24.h .././TWI.h .././WeatherStation.h .././RTC_DS3231.h \
- .././DHT22.h .././BMP180.h .././ILI9486.h .././DS18B20.h
+ .././DHT22.h .././BMP180.h .././ILI9486.h .././DS18B20.h .././SD.h \
+ .././pff.h .././integer.h .././diskio.h
 
 .././usart.h:
 
@@ -84,3 +85,11 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h:
 .././ILI9486.h:
 
 .././DS18B20.h:
+
+.././SD.h:
+
+.././pff.h:
+
+.././integer.h:
+
+.././diskio.h:

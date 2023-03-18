@@ -132,6 +132,9 @@
     <Compile Include="DHT22.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="diskio.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DS18B20.c">
       <SubType>compile</SubType>
     </Compile>
@@ -144,16 +147,28 @@
     <Compile Include="ILI9486.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="integer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="mmc.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="NRF24.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="NRF24.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pff.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="pff.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="RTC_DS3231.c">
@@ -163,6 +178,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Fonts.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SD.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="SD.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="TWI.c">

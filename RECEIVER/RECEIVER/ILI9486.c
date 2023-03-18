@@ -657,8 +657,44 @@ void ILI9486_SetTextColor(uint16_t c, uint16_t b)
 }
 void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode)
 {
+	//Начинаем работу с файловой системой для считывания массива шрифтов
+	FATFS fs;
+	asm("nop");
+	pf_mount(&fs); //Монтируем FAT
+	pf_open("/1424.txt");
+	
 	if((x>X_SIZE-14)||(y>Y_SIZE-24)) return;
 	uint8_t i,j,k,temp;
+	uint8_t tem[4*14*24/8+10] = {0};
+	uint8_t bytes[14*24/8+1] = {0};
+	char arr[10] = {0};
+	int l = 0;
+	int p = 0;
+	WORD s1;
+	uint8_t result;
+
+	pf_lseek(((uint32_t)data-65)*4*14*24/8); //Установим курсор чтения на 0
+	pf_read(tem,4*14*24/8-1,&s1);
+	for (int m = 0; m < 14*24/8; m++)
+	{
+		if (data != ' ')
+		{		
+			l = 0;
+			while (tem[p] != ',')
+			{
+				arr[l] = tem[p];
+				p++;
+				l++;
+			}
+			p += 2;
+			sscanf(arr, "%x", &bytes[m]);
+		}
+		else
+		{
+			bytes[m] = 0x00;
+		}
+	}
+	
 	ILI9486_SetAddrWindow(x,y,x+16-1,y+24-1);
 	for(i=0;i<24/8;i++)
 	{
@@ -666,24 +702,18 @@ void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode)
 		{
 			for(k=0;k<14;k++)
 			{
-				temp=Consolas14x24[(data-65)*(24/8)*14+k*(24/8)+i];   
+				//temp=Consolas14x24[(data-65)*(24/8)*14+k*(24/8)+i];
+				temp=bytes[k*(24/8)+i];   
+				wdt_reset();
 				if(mode==TFT_STRING_MODE_BACKGROUND)
 				{
 					if(temp&(0x01<<j))
 					{
-						CS_ACTIVE;
-						CD_DATA;
-						ILI9486_Write8(POINT_COLOR >> 8 );
-						ILI9486_Write8(POINT_COLOR & 0xff );
-						CS_IDLE;
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
 					}
 					else
 					{
-						CS_ACTIVE;
-						CD_DATA;
-						ILI9486_Write8(BACK_COLOR >> 8 );
-						ILI9486_Write8(BACK_COLOR & 0xff );
-						CS_IDLE;
+						ILI9486_drawPixel(x+k,y+(8*i+j),BACK_COLOR);
 					}
 				}
 				else
@@ -696,11 +726,49 @@ void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode)
 			}
 		}
 	}
+	// Завершаем работу с файлом
+	pf_mount(0x00);
 }
 void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 {
+	//Начинаем работу с файловой системой для считывания массива шрифтов
+	FATFS fs;
+	asm("nop");
+	pf_mount(&fs); //Монтируем FAT
+	pf_open("/1832.txt");
+	
 	if((x>X_SIZE-18)||(y>Y_SIZE-32)) return;
 	uint8_t i,j,k,temp;
+	uint8_t tem[4*18*32/8+10] = {0};
+	uint8_t bytes[18*32/8+1] = {0};
+	char arr[10] = {0};
+	int l = 0;
+	int p = 0;
+	WORD s1;
+	uint8_t result;
+
+	pf_lseek(((uint32_t)data-' ')*4*18*32/8); //Установим курсор чтения на 0
+	pf_read(tem,4*18*32/8-1,&s1);
+	for (int m = 0; m < 18*32/8; m++)
+	{
+		if (data != ' ')
+		{
+			l = 0;
+			while (tem[p] != ',')
+			{
+				arr[l] = tem[p];
+				p++;
+				l++;
+			}
+			p += 2;
+			sscanf(arr, "%x", &bytes[m]);
+		}
+		else
+		{
+			bytes[m] = 0x00;
+		}
+	}
+	
 	ILI9486_SetAddrWindow(x,y,x+18-1,y+32-1);
 	for(i=0;i<32/8;i++)
 	{
@@ -708,24 +776,19 @@ void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 		{
 			for(k=0;k<18;k++)
 			{
-				temp=Consolas18x32[(data-' ')*(32/8)*18+k*(32/8)+i];
+				//temp=Consolas18x32[(data-' ')*(32/8)*18+k*(32/8)+i];
+				//temp=read_symbol_from_SD((data-' ')*(32/8)*18+k*(32/8)+i);
+				temp=bytes[k*(32/8)+i];
+				wdt_reset();
 				if(mode==TFT_STRING_MODE_BACKGROUND)
 				{
 					if(temp&(0x01<<j))
 					{
-						CS_ACTIVE;
-						CD_DATA;
-						ILI9486_Write8(POINT_COLOR >> 8 );
-						ILI9486_Write8(POINT_COLOR & 0xff );
-						CS_IDLE;
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
 					}
 					else
 					{
-						CS_ACTIVE;
-						CD_DATA;
-						ILI9486_Write8(BACK_COLOR >> 8 );
-						ILI9486_Write8(BACK_COLOR & 0xff );
-						CS_IDLE;
+						ILI9486_drawPixel(x+k,y+(8*i+j),BACK_COLOR);
 					}
 				}
 				else
@@ -738,6 +801,9 @@ void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 			}
 		}
 	}
+	// Завершаем работу с файлом
+	pf_mount(0x00);
+
 }
 void ILI9486T_Print_Char8x16(uint16_t x,uint16_t y,uint8_t num,uint8_t mode)
 {
@@ -763,11 +829,7 @@ void ILI9486T_Print_Char8x16(uint16_t x,uint16_t y,uint8_t num,uint8_t mode)
 				{
 					POINT_COLOR=BACK_COLOR;
 				}
-				CS_ACTIVE;
-				CD_DATA;
-				ILI9486_Write8(POINT_COLOR >> 8 );
-				ILI9486_Write8(POINT_COLOR & 0xff );
-				CS_IDLE;
+				ILI9486_drawPixel(x+t,y+pos,POINT_COLOR);
 				temp>>=1;
 			}
 		}
@@ -786,35 +848,58 @@ void ILI9486T_Print_Char8x16(uint16_t x,uint16_t y,uint8_t num,uint8_t mode)
 	}
 	POINT_COLOR=colortemp;
 }
-void ILI9486_Print_Char32x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
+void ILI9486_Print_Char24x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 {
-	if((x>X_SIZE-32)||(y>Y_SIZE-32)) return;
+	//Начинаем работу с файловой системой для считывания массива шрифтов
+	FATFS fs;
+	asm("nop");
+	pf_mount(&fs); //Монтируем FAT
+	pf_open("/2432.txt");
+	
+	if((x>X_SIZE-24)||(y>Y_SIZE-32)) return;
 	uint8_t i,j,k,temp;
+	uint8_t tem[4*24*32/8+10] = {0};
+	uint8_t bytes[24*32/8+1] = {0};
+	char arr[10] = {0};
+	int l = 0;
+	int p = 0;
+	WORD s1;
+	uint8_t result;
+
+	pf_lseek(((uint32_t)data-48)*4*24*32/8); //Установим курсор чтения на 0
+	pf_read(tem,4*24*32/8-1,&s1);
+	for (int m = 0; m < 24*32/8; m++)
+	{
+		l = 0;
+		while (tem[p] != ',')
+		{
+			arr[l] = tem[p];
+			p++;
+			l++;
+		}
+		p += 2;
+		sscanf(arr, "%x", &bytes[m]);
+	}
+	
 	ILI9486_SetAddrWindow(x,y,x-1,y-1);
 	for(i=0;i<32/8;i++)
 	{
 		for(j=0;j<8;j++)
 		{
-			for(k=0;k<32;k++)
+			for(k=0;k<24;k++)
 			{
-				temp=Font32x32_Clock[(data-48)*(32/8)*32+k*(32/8)+i];
+				//temp=Font24x32_Clock[(data-48)*(32/8)*24+k*(32/8)+i];
+				temp=bytes[k*(32/8)+i];
+				wdt_reset();
 				if(mode==TFT_STRING_MODE_BACKGROUND)
 				{
 					if(temp&(0x01<<j))
 					{
-						CS_ACTIVE;
-						CD_DATA;
-						ILI9486_Write8(POINT_COLOR >> 8 );
-						ILI9486_Write8(POINT_COLOR & 0xff );
-						CS_IDLE;
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
 					}
 					else
 					{
-						CS_ACTIVE;
-						CD_DATA;
-						ILI9486_Write8(BACK_COLOR >> 8 );
-						ILI9486_Write8(BACK_COLOR & 0xff );
-						CS_IDLE;
+						ILI9486_drawPixel(x+k,y+(8*i+j),BACK_COLOR);
 					}
 				}
 				else
@@ -827,11 +912,49 @@ void ILI9486_Print_Char32x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 			}
 		}
 	}
+	// Завершаем работу с файлом
+	pf_mount(0x00);
 }
 void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 {
+	//Начинаем работу с файловой системой для считывания массива шрифтов
+	FATFS fs;
+	asm("nop");
+	pf_mount(&fs); //Монтируем FAT
+	pf_open("/3248.txt");
+	
 	if((x>X_SIZE-32)||(y>Y_SIZE-48)) return;
 	uint8_t i,j,k,temp;
+	uint8_t tem[778] = {0};//6*32*48/8+10
+	uint8_t bytes[193] = {0};//32*48/8+1
+	char arr[10] = {0};
+	int l = 0;
+	int p = 0;
+	WORD s1;
+	uint8_t result;
+
+	pf_lseek(((uint32_t)data-45)*4*32*48/8); //Установим курсор чтения на 0
+	pf_read(tem,767,&s1);//6*32*48/8-1
+	for (int m = 0; m < 32*48/8; m++)
+	{
+		if (data != ' ')
+		{
+			l = 0;
+			while (tem[p] != ',')
+			{
+				arr[l] = tem[p];
+				p++;
+				l++;
+			}
+			p += 2;
+			sscanf(arr, "%x", &bytes[m]);
+		}
+		else
+		{
+			bytes[m] = 0x00;
+		}
+	}
+	
 	ILI9486_SetAddrWindow(x,y,x-1,y-1);
 	for(i=0;i<48/8;i++)
 	{
@@ -839,24 +962,18 @@ void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 		{
 			for(k=0;k<32;k++)
 			{
-				temp=Font32x48_Num[(data-45)*(48/8)*32+k*(48/8)+i];
+				//temp=Font32x48_Num[(data-45)*(48/8)*32+k*(48/8)+i];
+				temp=bytes[k*(48/8)+i];
+				wdt_reset();
 				if(mode==TFT_STRING_MODE_BACKGROUND)
 				{
 					if(temp&(0x01<<j))
 					{
-						CS_ACTIVE;
-						CD_DATA;
-						ILI9486_Write8(POINT_COLOR >> 8 );
-						ILI9486_Write8(POINT_COLOR & 0xff );
-						CS_IDLE;
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
 					}
 					else
 					{
-						CS_ACTIVE;
-						CD_DATA;
-						ILI9486_Write8(BACK_COLOR >> 8 );
-						ILI9486_Write8(BACK_COLOR & 0xff );
-						CS_IDLE;
+						ILI9486_drawPixel(x+k,y+(8*i+j),BACK_COLOR);
 					}
 				}
 				else
@@ -869,6 +986,8 @@ void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 			}
 		}
 	}
+	// Завершаем работу с файлом
+	pf_mount(0x00);
 }
 void ILI9486_SetCursor(int16_t x, int16_t y)
 {
@@ -915,7 +1034,7 @@ void ILI9486_Print_String18x32(uint8_t *string,uint8_t TFT_STRING_MODE)
 		i++;
 	}
 }
-void ILI9486_Print_String32x32(uint8_t *string,uint8_t TFT_STRING_MODE)
+void ILI9486_Print_String24x32(uint8_t *string,uint8_t TFT_STRING_MODE)
 {
 	uint8_t i=0;
 	uint8_t font_w=25;
@@ -946,7 +1065,7 @@ void ILI9486_Print_String32x32(uint8_t *string,uint8_t TFT_STRING_MODE)
 			cursor_x=cursor_y=0;
 		}
 
-		ILI9486_Print_Char32x32(cursor_y,cursor_x,*(string+i),TFT_STRING_MODE);
+		ILI9486_Print_Char24x32(cursor_y,cursor_x,*(string+i),TFT_STRING_MODE);
 		cursor_y+=font_w;
 		i++;
 	}
