@@ -4,7 +4,7 @@ ILI9486.d ILI9486.o: .././ILI9486.c .././ILI9486.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdint.h \
- D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include/avr/iom32a.h \
+ D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include/avr/iom2560.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\portpins.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\common.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\version.h \
@@ -22,7 +22,7 @@ ILI9486.d ILI9486.o: .././ILI9486.c .././ILI9486.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h \
  .././NRF24.h .././TWI.h .././usart.h .././WeatherStation.h \
  .././RTC_DS3231.h .././DHT22.h .././BMP180.h .././DS18B20.h .././SD.h \
- .././pff.h .././integer.h .././diskio.h .././Fonts.h
+ .././pff.h .././integer.h .././diskio.h .././HTU21D.h .././Fonts.h
 
 .././ILI9486.h:
 
@@ -38,7 +38,7 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\s
 
 d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdint.h:
 
-D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include/avr/iom32a.h:
+D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include/avr/iom2560.h:
 
 d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\portpins.h:
 
@@ -93,5 +93,7 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h:
 .././integer.h:
 
 .././diskio.h:
+
+.././HTU21D.h:
 
 .././Fonts.h:

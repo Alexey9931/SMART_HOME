@@ -12,17 +12,17 @@
 #include "main.h"
 
 #define swap(a,b) {int16_t t=a;a=b;b=t;}
-#define DATA_DDR DDRA
-#define DATA_PORT PORTA
-#define DATA_PIN PINA
-#define COMMAND_DDR DDRC
-#define COMMAND_PORT PORTC
+#define DATA_DDR DDRC
+#define DATA_PORT PORTC
+#define DATA_PIN PINC
+#define COMMAND_DDR DDRH
+#define COMMAND_PORT PORTH
 
-#define LCD_CS PORTC6//Chip Select
-#define LCD_CD PORTC5//Command/Data
-#define LCD_WR PORTC4//LCD Write
-#define LCD_RD PORTC3//LCD Read
-#define LCD_RESET PORTC7//LCD Reset
+#define LCD_CS PORTH5//Chip Select
+#define LCD_CD PORTH4//Command/Data
+#define LCD_WR PORTH3//LCD Write
+#define LCD_RD PORTH2//LCD Read
+#define LCD_RESET PORTH6//LCD Reset
 #define RESET_IDLE COMMAND_PORT|=(1<<LCD_RESET)
 #define CS_IDLE COMMAND_PORT|=(1<<LCD_CS)
 #define WR_IDLE COMMAND_PORT|=(1<<LCD_WR)
@@ -74,7 +74,7 @@ void ILI9486_Draw_Circle(int16_t x0, int16_t y0, int16_t r,int16_t color);
 void ILI9486_fillCircle(int16_t x0, int16_t y0, int16_t r,uint16_t color);
 void ILI9486_fillCircleHelper(int16_t x0, int16_t y0, int16_t r,uint8_t cornername, int16_t delta, uint16_t color);
 void ILI9486_DrawRect(int16_t x, int16_t y,  int16_t w, int16_t h,  uint16_t color);
-void ILI9486_drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,int16_t w, int16_t h);
+void ILI9486_drawRGBBitmap(int x, int y, uint16_t *bitmap,int w, int h);
 void ILI9486_fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color);
 
 void ILI9486_SetTextColor(uint16_t c, uint16_t b);
@@ -83,13 +83,17 @@ void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
 void ILI9486_Print_Char8x16(uint16_t x,uint16_t y,uint8_t num,uint8_t mode);
 void ILI9486_Print_Char24x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
 void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
+void ILI9486_Print_Char32x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
+void ILI9486_Print_Char40x40(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
 void ILI9486_SetCursor(int16_t x, int16_t y);
 void ILI9486_SetTextSize(uint8_t s);
+void ILI9486_Print_String32x32(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String18x32(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String14x24(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String8x16(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String24x32(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String32x48(uint8_t *string,uint8_t TFT_STRING_MODE);
+void ILI9486_Print_String40x40(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String(uint8_t *string , uint8_t TFT_STRING_MODE);
 void ILI9486_Print_Number(long  Number, uint8_t TFT_STRING_MODE);
 

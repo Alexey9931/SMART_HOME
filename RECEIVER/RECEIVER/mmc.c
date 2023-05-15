@@ -8,10 +8,10 @@
 //#include "lcd.h"
 
 // Definitions for MMC/SDC connection
-#define SD_DO   4
+#define SD_DO   5
 #define SD_DI   6
-#define SD_CLK  5 
-#define SD_CS   2
+#define SD_CLK  4 
+#define SD_CS   7
 // #define SD_INS  4
 // #define SD_WP   5
 
@@ -36,26 +36,26 @@ void xmit_spi (BYTE data)		// Send a byte
 
  for (i=0;i<8;i++)
   {
-   if ((data&0x80)==0x00) PORTD&=~_BV(SD_DI);
-                     else PORTD|=_BV(SD_DI);
+   if ((data&0x80)==0x00) PORTK&=~_BV(SD_DI);
+                     else PORTK|=_BV(SD_DI);
    data=data<<1; 
-   PORTD|=_BV(SD_CLK);
+   PORTK|=_BV(SD_CLK);
    asm("nop"); 
-   PORTD&=~_BV(SD_CLK);
+   PORTK&=~_BV(SD_CLK);
   }
 }
 
 BYTE rcv_spi (void)				// Send 0xFF and receive a byte 
 { BYTE i, res=0;
 
- PORTD|=_BV(SD_DI);
+ PORTK|=_BV(SD_DI);
 
  for (i=0;i<8;i++)
   {
-   PORTD|=_BV(SD_CLK);
+   PORTK|=_BV(SD_CLK);
    res=res<<1;
-   if ((PIND&_BV(SD_DO))!=0x00) res=res|0x01;
-   PORTD&=~_BV(SD_CLK);
+   if ((PINK&_BV(SD_DO))!=0x00) res=res|0x01;
+   PORTK&=~_BV(SD_CLK);
    asm("nop");
   }
  return res;
@@ -63,10 +63,10 @@ BYTE rcv_spi (void)				// Send 0xFF and receive a byte
 //-----------------------------------------------------------------------
 
 // Port Controls (Platform dependent) 
-#define SELECT()	PORTC &= ~_BV(SD_CS)		// MMC CS = L 
-#define	DESELECT()	PORTC |=  _BV(SD_CS)		// MMC CS = H 
-#define	MMC_SEL		!(PORTC & _BV(SD_CS))	// MMC CS status (true:selected) 
-#define	INIT_SPI()	{  PORTC|=_BV(SD_CS);PORTD|=_BV(SD_DO)|_BV(SD_DI); DDRC|=_BV(SD_CS);DDRD|=_BV(SD_DI)|_BV(SD_CLK); }	
+#define SELECT()	PORTK &= ~_BV(SD_CS)		// MMC CS = L 
+#define	DESELECT()	PORTK |=  _BV(SD_CS)		// MMC CS = H 
+#define	MMC_SEL		!(PORTK & _BV(SD_CS))	// MMC CS status (true:selected) 
+#define	INIT_SPI()	{  PORTK|=_BV(SD_CS);PORTK|=_BV(SD_DO)|_BV(SD_DI); DDRK|=_BV(SD_CS);DDRK|=_BV(SD_DI)|_BV(SD_CLK); }	
 
 
 //-----------------------------------------------------------------------

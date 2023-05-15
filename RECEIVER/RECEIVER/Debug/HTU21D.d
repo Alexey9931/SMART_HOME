@@ -1,4 +1,4 @@
-SD.d SD.o: .././SD.c .././SD.h .././main.h \
+HTU21D.d HTU21D.o: .././HTU21D.c .././HTU21D.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -22,9 +22,9 @@ SD.d SD.o: .././SD.c .././SD.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h \
  .././NRF24.h .././TWI.h .././usart.h .././WeatherStation.h \
  .././RTC_DS3231.h .././DHT22.h .././BMP180.h .././ILI9486.h \
- .././DS18B20.h .././pff.h .././integer.h .././diskio.h .././HTU21D.h
+ .././DS18B20.h .././SD.h .././pff.h .././integer.h .././diskio.h
 
-.././SD.h:
+.././HTU21D.h:
 
 .././main.h:
 
@@ -88,10 +88,10 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h:
 
 .././DS18B20.h:
 
+.././SD.h:
+
 .././pff.h:
 
 .././integer.h:
 
 .././diskio.h:
-
-.././HTU21D.h:

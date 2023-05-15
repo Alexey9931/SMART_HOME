@@ -11,12 +11,12 @@
 
 #include "main.h"
 //-------------------------------------------------------------
-#define SCK PORTB7
-#define MISO PORTB6
-#define MOSI PORTB5
-#define SS PORTB4 // (CSN)
-#define CE PORTB3
-#define IRQ PORTD2
+#define SCK PORTB1
+#define MISO PORTB3
+#define MOSI PORTB2
+#define SS PORTB0 // (CSN)
+#define CE PORTB4
+#define IRQ PORTE4
 //-------------------------------------------------------------
 #define LOW_CE PORTB &= ~(1 << CE);// Установка низкого уровня на линии CE 
 #define HIGH_CE PORTB |= (1 << CE);// Установка высокого уровня на линии CE 

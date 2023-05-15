@@ -562,11 +562,11 @@ void ILI9486_DrawRect(int16_t x, int16_t y,  int16_t w, int16_t h,  uint16_t col
 	ILI9486_DrawFastVLine(x, y, h, color);
 	ILI9486_DrawFastVLine(x+w-1, y, h, color);
 }
-void ILI9486_drawRGBBitmap(int16_t x, int16_t y, uint16_t *bitmap,int16_t w, int16_t h) 
+void ILI9486_drawRGBBitmap(int x, int y, uint16_t *bitmap,int w, int h) 
 {
-	for (int16_t j = 0; j < h; j++, y++) {
-		for (int16_t i = 0; i < w; i++) {
-			ILI9486_drawPixel(x + i, y, bitmap[j * w + i]);
+	for (int j = 0; j < h; j++) {
+		for (int i = 0; i < w; i++) {
+			ILI9486_drawPixel(x + i, y+j, bitmap[j * w + i]);
 		}
 	}
 }
@@ -658,10 +658,10 @@ void ILI9486_SetTextColor(uint16_t c, uint16_t b)
 void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode)
 {
 	//Начинаем работу с файловой системой для считывания массива шрифтов
-	FATFS fs;
+	/*FATFS fs;
 	asm("nop");
 	pf_mount(&fs); //Монтируем FAT
-	pf_open("/1424.txt");
+	pf_open("/1424.txt");*/
 	
 	if((x>X_SIZE-14)||(y>Y_SIZE-24)) return;
 	uint8_t i,j,k,temp;
@@ -673,7 +673,7 @@ void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode)
 	WORD s1;
 	uint8_t result;
 
-	pf_lseek(((uint32_t)data-65)*4*14*24/8); //Установим курсор чтения на 0
+	/*pf_lseek(((uint32_t)data-65)*4*14*24/8); //Установим курсор чтения на 0
 	pf_read(tem,4*14*24/8-1,&s1);
 	for (int m = 0; m < 14*24/8; m++)
 	{
@@ -694,7 +694,7 @@ void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode)
 			bytes[m] = 0x00;
 		}
 	}
-	
+	*/
 	ILI9486_SetAddrWindow(x,y,x+16-1,y+24-1);
 	for(i=0;i<24/8;i++)
 	{
@@ -702,8 +702,15 @@ void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode)
 		{
 			for(k=0;k<14;k++)
 			{
-				//temp=Consolas14x24[(data-65)*(24/8)*14+k*(24/8)+i];
-				temp=bytes[k*(24/8)+i];   
+				if (data == ' ')
+				{
+					temp = 0x00;
+				}
+				else
+				{
+					temp=Consolas14x24[(data-65)*(24/8)*14+k*(24/8)+i];
+				}
+				//temp=bytes[k*(24/8)+i];   
 				wdt_reset();
 				if(mode==TFT_STRING_MODE_BACKGROUND)
 				{
@@ -727,15 +734,15 @@ void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode)
 		}
 	}
 	// Завершаем работу с файлом
-	pf_mount(0x00);
+	//pf_mount(0x00);
 }
 void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 {
 	//Начинаем работу с файловой системой для считывания массива шрифтов
-	FATFS fs;
+	/*FATFS fs;
 	asm("nop");
 	pf_mount(&fs); //Монтируем FAT
-	pf_open("/1832.txt");
+	pf_open("/1832.txt");*/
 	
 	if((x>X_SIZE-18)||(y>Y_SIZE-32)) return;
 	uint8_t i,j,k,temp;
@@ -746,7 +753,7 @@ void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 	int p = 0;
 	WORD s1;
 	uint8_t result;
-
+/*
 	pf_lseek(((uint32_t)data-' ')*4*18*32/8); //Установим курсор чтения на 0
 	pf_read(tem,4*18*32/8-1,&s1);
 	for (int m = 0; m < 18*32/8; m++)
@@ -768,7 +775,7 @@ void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 			bytes[m] = 0x00;
 		}
 	}
-	
+*/	
 	ILI9486_SetAddrWindow(x,y,x+18-1,y+32-1);
 	for(i=0;i<32/8;i++)
 	{
@@ -776,9 +783,9 @@ void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 		{
 			for(k=0;k<18;k++)
 			{
-				//temp=Consolas18x32[(data-' ')*(32/8)*18+k*(32/8)+i];
+				temp=Consolas18x32[(data-' ')*(32/8)*18+k*(32/8)+i];
 				//temp=read_symbol_from_SD((data-' ')*(32/8)*18+k*(32/8)+i);
-				temp=bytes[k*(32/8)+i];
+				//temp=bytes[k*(32/8)+i];
 				wdt_reset();
 				if(mode==TFT_STRING_MODE_BACKGROUND)
 				{
@@ -804,6 +811,50 @@ void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 	// Завершаем работу с файлом
 	pf_mount(0x00);
 
+}
+void ILI9486_Print_Char32x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
+{
+	if((x>X_SIZE-32)||(y>Y_SIZE-32)) return;
+	uint8_t i,j,k,temp;
+	uint8_t tem[4*32*32/8+10] = {0};
+	uint8_t bytes[32*32/8+1] = {0};
+	char arr[10] = {0};
+	int l = 0;
+	int p = 0;
+	
+
+	ILI9486_SetAddrWindow(x,y,x+32-1,y+32-1);
+	for(i=0;i<32/8;i++)
+	{
+		for(j=0;j<8;j++)
+		{
+			for(k=0;k<32;k++)
+			{
+				temp=Syffaen32x32[(data-32)*(32/8)*32+k*(32/8)+i];
+				//temp=read_symbol_from_SD((data-' ')*(32/8)*18+k*(32/8)+i);
+				//temp=bytes[k*(32/8)+i];
+				wdt_reset();
+				if(mode==TFT_STRING_MODE_BACKGROUND)
+				{
+					if(temp&(0x01<<j))
+					{
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
+					}
+					else
+					{
+						ILI9486_drawPixel(x+k,y+(8*i+j),BACK_COLOR);
+					}
+				}
+				else
+				{
+					if(temp&(0x01<<j))
+					{
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
+					}
+				}
+			}
+		}
+	}
 }
 void ILI9486T_Print_Char8x16(uint16_t x,uint16_t y,uint8_t num,uint8_t mode)
 {
@@ -851,10 +902,10 @@ void ILI9486T_Print_Char8x16(uint16_t x,uint16_t y,uint8_t num,uint8_t mode)
 void ILI9486_Print_Char24x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 {
 	//Начинаем работу с файловой системой для считывания массива шрифтов
-	FATFS fs;
+	/*FATFS fs;
 	asm("nop");
 	pf_mount(&fs); //Монтируем FAT
-	pf_open("/2432.txt");
+	pf_open("/2432.txt");*/
 	
 	if((x>X_SIZE-24)||(y>Y_SIZE-32)) return;
 	uint8_t i,j,k,temp;
@@ -865,7 +916,7 @@ void ILI9486_Print_Char24x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 	int p = 0;
 	WORD s1;
 	uint8_t result;
-
+/*
 	pf_lseek(((uint32_t)data-48)*4*24*32/8); //Установим курсор чтения на 0
 	pf_read(tem,4*24*32/8-1,&s1);
 	for (int m = 0; m < 24*32/8; m++)
@@ -880,7 +931,7 @@ void ILI9486_Print_Char24x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 		p += 2;
 		sscanf(arr, "%x", &bytes[m]);
 	}
-	
+	*/
 	ILI9486_SetAddrWindow(x,y,x-1,y-1);
 	for(i=0;i<32/8;i++)
 	{
@@ -888,8 +939,8 @@ void ILI9486_Print_Char24x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 		{
 			for(k=0;k<24;k++)
 			{
-				//temp=Font24x32_Clock[(data-48)*(32/8)*24+k*(32/8)+i];
-				temp=bytes[k*(32/8)+i];
+				temp=Font24x32_Clock[(data-48)*(32/8)*24+k*(32/8)+i];
+				//temp=bytes[k*(32/8)+i];
 				wdt_reset();
 				if(mode==TFT_STRING_MODE_BACKGROUND)
 				{
@@ -913,15 +964,15 @@ void ILI9486_Print_Char24x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 		}
 	}
 	// Завершаем работу с файлом
-	pf_mount(0x00);
+	//pf_mount(0x00);
 }
 void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 {
 	//Начинаем работу с файловой системой для считывания массива шрифтов
-	FATFS fs;
+	/*FATFS fs;
 	asm("nop");
 	pf_mount(&fs); //Монтируем FAT
-	pf_open("/3248.txt");
+	pf_open("/3248.txt");*/
 	
 	if((x>X_SIZE-32)||(y>Y_SIZE-48)) return;
 	uint8_t i,j,k,temp;
@@ -933,7 +984,7 @@ void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 	WORD s1;
 	uint8_t result;
 
-	pf_lseek(((uint32_t)data-45)*4*32*48/8); //Установим курсор чтения на 0
+	/*pf_lseek(((uint32_t)data-45)*4*32*48/8); //Установим курсор чтения на 0
 	pf_read(tem,767,&s1);//6*32*48/8-1
 	for (int m = 0; m < 32*48/8; m++)
 	{
@@ -954,7 +1005,7 @@ void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 			bytes[m] = 0x00;
 		}
 	}
-	
+	*/
 	ILI9486_SetAddrWindow(x,y,x-1,y-1);
 	for(i=0;i<48/8;i++)
 	{
@@ -962,8 +1013,15 @@ void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 		{
 			for(k=0;k<32;k++)
 			{
-				//temp=Font32x48_Num[(data-45)*(48/8)*32+k*(48/8)+i];
-				temp=bytes[k*(48/8)+i];
+				if (data == ' ')
+				{
+					temp = 0x00;
+				}
+				else
+				{
+					temp=Font32x48_Num[(data-45)*(48/8)*32+k*(48/8)+i];
+				}
+				//temp=bytes[k*(48/8)+i];
 				wdt_reset();
 				if(mode==TFT_STRING_MODE_BACKGROUND)
 				{
@@ -987,7 +1045,58 @@ void ILI9486_Print_Char32x48(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 		}
 	}
 	// Завершаем работу с файлом
-	pf_mount(0x00);
+	//pf_mount(0x00);
+}
+void ILI9486_Print_Char40x40(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
+{
+	if((x>X_SIZE-40)||(y>Y_SIZE-40)) return;
+	uint8_t i,j,k,temp;
+	uint8_t tem[778] = {0};//6*32*48/8+10
+	uint8_t bytes[193] = {0};//32*48/8+1
+	char arr[10] = {0};
+	int l = 0;
+	int p = 0;
+	WORD s1;
+	uint8_t result;
+
+	ILI9486_SetAddrWindow(x,y,x-1,y-1);
+	for(i=0;i<40/8;i++)
+	{
+		for(j=0;j<8;j++)
+		{
+			for(k=0;k<40;k++)
+			{
+				if (data == ' ')
+				{
+					temp = 0x00;
+				}
+				else
+				{
+					temp=Syffaen40x40[(data-192)*(40/8)*40+k*(40/8)+i];
+				}
+				//temp=bytes[k*(48/8)+i];
+				wdt_reset();
+				if(mode==TFT_STRING_MODE_BACKGROUND)
+				{
+					if(temp&(0x01<<j))
+					{
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
+					}
+					else
+					{
+						ILI9486_drawPixel(x+k,y+(8*i+j),BACK_COLOR);
+					}
+				}
+				else
+				{
+					if(temp&(0x01<<j))
+					{
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
+					}
+				}
+			}
+		}
+	}
 }
 void ILI9486_SetCursor(int16_t x, int16_t y)
 {
@@ -997,6 +1106,42 @@ void ILI9486_SetCursor(int16_t x, int16_t y)
 void ILI9486_SetTextSize(uint8_t s)
 {
 	textsize = s ;
+}
+void ILI9486_Print_String40x40(uint8_t *string,uint8_t TFT_STRING_MODE)
+{
+	uint8_t i=0;
+	uint8_t font_w=33;
+	uint8_t font_h=40;
+
+	while(*(string+i)!='\0')
+	{
+
+		if(*(string+i)==0)
+		{
+			return;
+		}
+
+		if(*(string+i)=='\n')
+		{
+			cursor_x+=font_h;
+			cursor_y=0;
+			string++;
+		}
+
+		if(cursor_y>X_SIZE-font_w)
+		{
+			cursor_y=0;cursor_x+=font_h;
+		}
+
+		if(cursor_x>Y_SIZE-font_h)
+		{
+			cursor_x=cursor_y=0;
+		}
+
+		ILI9486_Print_Char40x40(cursor_y,cursor_x,*(string+i),TFT_STRING_MODE);
+		cursor_y+=font_w;
+		i++;
+	}
 }
 void ILI9486_Print_String18x32(uint8_t *string,uint8_t TFT_STRING_MODE)
 {
@@ -1030,6 +1175,42 @@ void ILI9486_Print_String18x32(uint8_t *string,uint8_t TFT_STRING_MODE)
 		}
 
 		ILI9486_Print_Char18x32(cursor_y,cursor_x,*(string+i),TFT_STRING_MODE);
+		cursor_y+=font_w;
+		i++;
+	}
+}
+void ILI9486_Print_String32x32(uint8_t *string,uint8_t TFT_STRING_MODE)
+{
+	uint8_t i=0;
+	uint8_t font_w=25;
+	uint8_t font_h=32;
+
+	while(*(string+i)!='\0')
+	{
+
+		if(*(string+i)==0)
+		{
+			return;
+		}
+
+		if(*(string+i)=='\n')
+		{
+			cursor_x+=font_h;
+			cursor_y=0;
+			string++;
+		}
+
+		if(cursor_y>X_SIZE-font_w)
+		{
+			cursor_y=0;cursor_x+=font_h;
+		}
+
+		if(cursor_x>Y_SIZE-font_h)
+		{
+			cursor_x=cursor_y=0;
+		}
+
+		ILI9486_Print_Char32x32(cursor_y,cursor_x,*(string+i),TFT_STRING_MODE);
 		cursor_y+=font_w;
 		i++;
 	}

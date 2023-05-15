@@ -10,10 +10,10 @@
 #define DS18B20_H_
 
 #include "main.h"
-#define PORTTEMP PORTB
-#define DDRTEMP DDRB
-#define PINTEMP PINB
-#define BITTEMP 1
+#define PORTTEMP PORTK
+#define DDRTEMP DDRK
+#define PINTEMP PINK
+#define BITTEMP 0
 #define NOID 0xCC //Пропустить идентификацию
 #define T_CONVERT 0x44 //Код измерения температуры
 #define READ_DATA 0xBE //Передача байтов ведущему

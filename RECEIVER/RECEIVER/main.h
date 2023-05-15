@@ -19,9 +19,13 @@
 #include <math.h>
 #include <avr/wdt.h>
 
-#define LED PORTB2
-#define IK_RX PORTD3
-#define BUZZER PORTD7
+#define ButtonOK PORTE4
+#define ButtonHome PORTE5
+#define ButtonUp PORTE6
+#define ButtonDown PORTE7
+#define LED PORTL7
+//#define IK_RX PORTD3
+#define BUZZER PORTL6
 //#define	SW_ENC PORTD3
 //#define DT_ENC PORTD4
 //#define CLK_ENC PORTD5
@@ -39,6 +43,7 @@
 #include "pff.h"
 #include "diskio.h"
 #include "integer.h"
+#include "HTU21D.h"
 
 uint8_t spi_send_recv(uint8_t data);
 

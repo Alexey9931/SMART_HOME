@@ -5,6 +5,7 @@
  *  Author: Alex2
  */ 
 #include "WeatherStation.h"
+#include "Images.h"
 
 #define RADIUS 0.139
 
@@ -34,7 +35,7 @@ struct Time_Parameters {
 	char Mounth[4];
 	char Year[4];
 } T_Param;
-//uint8_t Frame_buffer[1024] = { 0 }; //Буфер кадра
+
 extern unsigned char sec,min,hour,day,date,month,year,alarmhour,alarmmin;
 extern char receive_time[20];
 extern char send_time[20];
@@ -53,6 +54,7 @@ extern uint8_t WiFi_Flag;
 uint8_t home_temp_sign;//знак домаш темп
 uint8_t home_temp_integer;//целая часть домаш темп
 uint8_t home_temp_fraction;//дробная часть домаш темп
+int home_hum_integer;//целая часть домаш влажн
 
 extern uint8_t street_temp_sign;//знак уличн темп
 extern uint8_t street_temp_integer;//целая часть уличн темп
@@ -68,14 +70,14 @@ void Print_Hello_World()
 	ILI9486_SetRotation(1);
 	
 	ILI9486_SetTextColor(WHITE,BLACK);
-	ILI9486_SetCursor(110,80);
-	ILI9486_Print_String18x32("You are welcome!",TFT_STRING_MODE_NO_BACKGROUND);
+	ILI9486_SetCursor(40,80);
+	ILI9486_Print_String32x32("Вас приветствует",TFT_STRING_MODE_NO_BACKGROUND);
 	wdt_reset();
-	ILI9486_SetCursor(50,150);
-	ILI9486_Print_String18x32("The Smart Home System",TFT_STRING_MODE_NO_BACKGROUND);
+	ILI9486_SetCursor(20,150);
+	ILI9486_Print_String32x32("система Умный Дом!",TFT_STRING_MODE_NO_BACKGROUND);
 	wdt_reset();
-	ILI9486_SetCursor(100,220);
-	ILI9486_Print_String18x32("is with you now!",TFT_STRING_MODE_NO_BACKGROUND);
+	//ILI9486_SetCursor(100,220);
+	//ILI9486_Print_String32x24("is with you now!",TFT_STRING_MODE_NO_BACKGROUND);
 	wdt_reset();
 }
 //Окно загрузки
@@ -83,11 +85,14 @@ void Print_Download()
 {
 	ILI9486_FillScreen(BLACK);
 	ILI9486_SetRotation(1);
-	ILI9486_SetCursor(110,80);
-	ILI9486_Print_String18x32("Please wait, the",TFT_STRING_MODE_NO_BACKGROUND);
+	ILI9486_SetCursor(120,50);
+	ILI9486_Print_String32x32("Пожалуйста",TFT_STRING_MODE_NO_BACKGROUND);
 	wdt_reset();
-	ILI9486_SetCursor(10,120);
-	ILI9486_Print_String18x32("download is in progress...",TFT_STRING_MODE_NO_BACKGROUND);
+	ILI9486_SetCursor(120,90);
+	ILI9486_Print_String32x32("подождите,",TFT_STRING_MODE_NO_BACKGROUND);
+	wdt_reset();
+	ILI9486_SetCursor(80,130);
+	ILI9486_Print_String32x32("идёт загрузка...",TFT_STRING_MODE_NO_BACKGROUND);
 	wdt_reset();
 	ILI9486_DrawRect(50, 200,  383, 50,  WHITE);
 	for(uint16_t i = 54; i < 429 ; i++)
@@ -131,8 +136,44 @@ void Print_Static_Home_Page()
 void Print_Home_Page_Out()
 {
 	char data[10];
-	//вывод флюгера
-	DrawWindDirect();
+	//вывод скорости ветра
+	ILI9486_SetTextColor(LIGHTBLUE,BLACK);
+	wind_speed_integer = 9;
+	wind_speed_fraction = 44;
+	if(wind_speed_integer < 10)
+	{
+		sprintf(data," %d",wind_speed_integer);
+		ILI9486_SetCursor(171,280);
+		ILI9486_Print_String18x32(data,TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetCursor(205,280);
+		ILI9486_Print_String18x32(".",TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetCursor(222,280);
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
+		sprintf(data,"%d",wind_speed_fraction);
+		ILI9486_Print_String18x32(data,TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetCursor(258,280);
+		ILI9486_Print_String18x32("m/",TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetCursor(292,280);
+		ILI9486_Print_String18x32("s",TFT_STRING_MODE_BACKGROUND);
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
+	}
+	else
+	{
+		sprintf(data,"%d",wind_speed_integer);
+		ILI9486_SetCursor(171,280);
+		ILI9486_Print_String18x32(data,TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetCursor(205,280);
+		ILI9486_Print_String18x32(".",TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetCursor(222,280);
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
+		sprintf(data,"%d",wind_speed_fraction);
+		ILI9486_Print_String18x32(data,TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetCursor(258,280);
+		ILI9486_Print_String18x32("m/",TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetCursor(292,280);
+		ILI9486_Print_String18x32("s",TFT_STRING_MODE_BACKGROUND);
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
+	}
 	//вывод уличных показаний
 	ILI9486_SetTextColor(YELLOW,BLACK);
 	if (street_temp_sign != 0x00)
@@ -155,9 +196,11 @@ void Print_Home_Page_Out()
 			ILI9486_SetCursor(334,250);
 			ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//целая часть
 		}
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",street_temp_fraction);
 		ILI9486_SetCursor(424,250);
 		ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//дробная часть
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
 	else
 	{
@@ -175,9 +218,11 @@ void Print_Home_Page_Out()
 			ILI9486_SetCursor(334,250);
 			ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//целая часть
 		}
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",street_temp_fraction);
 		ILI9486_SetCursor(424,250);
 		ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//целая часть
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
 	ILI9486_SetCursor(457,268);
 	ILI9486_Print_String18x32("C",TFT_STRING_MODE_BACKGROUND);//ед измерения
@@ -186,41 +231,10 @@ void Print_Home_Page_Out()
 	ILI9486_Print_String32x48("30",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(429,165);
 	ILI9486_Print_String18x32("%",TFT_STRING_MODE_BACKGROUND);//ед измерения
-	
-	//вывод скорости ветра
-	ILI9486_SetTextColor(LIGHTBLUE,BLACK);
-wind_speed_integer = 9;
-wind_speed_fraction = 44;
-	if(wind_speed_integer < 10)
-	{
-		sprintf(data," %d",wind_speed_integer);
-		ILI9486_SetCursor(171,280);
-		ILI9486_Print_String18x32(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(205,280);
-		ILI9486_Print_String18x32(".",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(222,280);
-		sprintf(data,"%d",wind_speed_fraction);
-		ILI9486_Print_String18x32(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(258,280);
-		ILI9486_Print_String18x32("m/",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(292,280);
-		ILI9486_Print_String18x32("s",TFT_STRING_MODE_BACKGROUND);
-	}
-	else
-	{
-		sprintf(data,"%d",wind_speed_integer);
-		ILI9486_SetCursor(171,280);
-		ILI9486_Print_String18x32(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(205,280);
-		ILI9486_Print_String18x32(".",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(222,280);
-		sprintf(data,"%d",wind_speed_fraction);
-		ILI9486_Print_String18x32(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(258,280);
-		ILI9486_Print_String18x32("m/",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(292,280);
-		ILI9486_Print_String18x32("s",TFT_STRING_MODE_BACKGROUND);
-	}
+	//вывод флюгера
+	DrawWindDirect();
+	//вывод прогноза погоды
+	DrawSun();
 
 	/*uint8_t Frame_buffer[1024] = { 0 }; //Буфер кадра
 	char TIME[10] = {0};
@@ -370,9 +384,11 @@ void Print_Home_Page_In()
 			ILI9486_SetCursor(19,250);
 			ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//целая часть
 		}
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",home_temp_fraction);
 		ILI9486_SetCursor(110,250);
 		ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//дробная часть
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
 	else
 	{
@@ -390,16 +406,20 @@ void Print_Home_Page_In()
 			ILI9486_SetCursor(19,250);
 			ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//целая часть
 		}
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",home_temp_fraction);
 		ILI9486_SetCursor(110,250);
 		ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//целая часть
+		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
 	ILI9486_SetCursor(143,268);
 	ILI9486_Print_String18x32("C",TFT_STRING_MODE_BACKGROUND);//ед измерения
 	//влажность
 	ILI9486_SetCursor(47,150);
-	ILI9486_Print_String32x48("40",TFT_STRING_MODE_BACKGROUND);
+	sprintf(data,"%d",home_hum_integer);
+	ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(115,165);
+	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	ILI9486_Print_String18x32("%",TFT_STRING_MODE_BACKGROUND);//ед измерения
 }
 //Основная разметка для главного окна
@@ -699,18 +719,18 @@ void Print_Menu_Page_Static()
 {
 	ILI9486_FillScreen(BLACK);
 	ILI9486_SetRotation(1);
-	ILI9486_SetCursor(150,30);
+	ILI9486_SetCursor(40,20);
 	ILI9486_SetTextColor(BLACK,WHITE);
-	ILI9486_Print_String18x32("MAIN MENU",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(102,70);
+	ILI9486_Print_String40x40("ГЛАВНОЕ МЕНЮ",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(40,70);
 	ILI9486_SetTextColor(WHITE,BLACK);
-	ILI9486_Print_String18x32("MAIN INFO-PAGE",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(102,110);
-	ILI9486_Print_String18x32("TIME SETTINGS",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(102,150);
-	ILI9486_Print_String18x32("ABOUT PROJECT",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(102,190);
-	ILI9486_Print_String18x32("ADDITIONAL INFO",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String40x40("Главное окно",TFT_STRING_MODE_BACKGROUND);							   
+	ILI9486_SetCursor(40,110);
+	ILI9486_Print_String40x40("Дата и время",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(40,150);
+	ILI9486_Print_String40x40(" О проекте",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(40,190);
+	ILI9486_Print_String40x40("Доп сведения",TFT_STRING_MODE_BACKGROUND);
 }
 //Окно меню динамич
 void Print_Menu_Page()
@@ -718,97 +738,321 @@ void Print_Menu_Page()
 	switch (up_down_count%4)
 	{
 		case 0: 
-				ILI9486_fillTriangle(72,67,87,83,72,99,WHITE);
-				ILI9486_fillTriangle(72,107,87,123,72,139,BLACK);
-				ILI9486_fillTriangle(72,147,87,163,72,179,BLACK);
-				ILI9486_fillTriangle(72,187,87,203,72,219,BLACK);
+				ILI9486_fillTriangle(22,72,37,88,22,104,WHITE);
+				ILI9486_fillTriangle(22,112,37,128,22,144,BLACK);
+				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
+				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
 				
-				ILI9486_fillTriangle(397,67,382,83,397,99,WHITE);
-				ILI9486_fillTriangle(397,107,382,123,397,139,BLACK);
-				ILI9486_fillTriangle(397,147,382,163,397,179,BLACK);
-				ILI9486_fillTriangle(397,187,382,203,397,219,BLACK);
-				/*ILI9486_SetTextColor(BLACK,WHITE);
-				ILI9486_SetCursor(120,70);
-				ILI9486_Print_String18x32("MAIN INFO-PAGE",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetTextColor(WHITE,BLACK);
-				ILI9486_SetCursor(120,110);
-				ILI9486_Print_String18x32("TIME SETTINGS",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetCursor(120,150);
-				ILI9486_Print_String18x32("ABOUT PROJECT",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetCursor(120,190);
-				ILI9486_Print_String18x32("ADDITIONAL INFO",TFT_STRING_MODE_BACKGROUND);*/
+				ILI9486_fillTriangle(456,72,441,88,456,104,WHITE);
+				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
+				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
+				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
 				break;
 		case 1: 
-				ILI9486_fillTriangle(72,67,87,83,72,99,BLACK);
-				ILI9486_fillTriangle(72,107,87,123,72,139,WHITE);
-				ILI9486_fillTriangle(72,147,87,163,72,179,BLACK);
-				ILI9486_fillTriangle(72,187,87,203,72,219,BLACK);
+				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
+				ILI9486_fillTriangle(22,112,37,128,22,144,WHITE);
+				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
+				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
 				
-				ILI9486_fillTriangle(397,67,382,83,397,99,BLACK);
-				ILI9486_fillTriangle(397,107,382,123,397,139,WHITE);
-				ILI9486_fillTriangle(397,147,382,163,397,179,BLACK);
-				ILI9486_fillTriangle(397,187,382,203,397,219,BLACK);
-				/*ILI9486_SetTextColor(WHITE,BLACK);
-				ILI9486_SetCursor(120,70);
-				ILI9486_Print_String18x32("MAIN INFO-PAGE",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetTextColor(BLACK,WHITE);
-				ILI9486_SetCursor(120,110);
-				ILI9486_Print_String18x32("TIME SETTINGS",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetTextColor(WHITE,BLACK);
-				ILI9486_SetCursor(120,150);
-				ILI9486_Print_String18x32("ABOUT PROJECT",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetCursor(120,190);
-				ILI9486_Print_String18x32("ADDITIONAL INFO",TFT_STRING_MODE_BACKGROUND);*/
+				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
+				ILI9486_fillTriangle(456,112,441,128,456,144,WHITE);
+				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
+				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
 				break;
 		case 2: 
-				ILI9486_fillTriangle(72,67,87,83,72,99,BLACK);
-				ILI9486_fillTriangle(72,107,87,123,72,139,BLACK);
-				ILI9486_fillTriangle(72,147,87,163,72,179,WHITE);
-				ILI9486_fillTriangle(72,187,87,203,72,219,BLACK);
+				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
+				ILI9486_fillTriangle(22,112,37,128,22,144,BLACK);
+				ILI9486_fillTriangle(22,152,37,168,22,184,WHITE);
+				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
 				
-				ILI9486_fillTriangle(397,67,382,83,397,99,BLACK);
-				ILI9486_fillTriangle(397,107,382,123,397,139,BLACK);
-				ILI9486_fillTriangle(397,147,382,163,397,179,WHITE);
-				ILI9486_fillTriangle(397,187,382,203,397,219,BLACK);
-				/*ILI9486_SetTextColor(WHITE,BLACK);
-				ILI9486_SetCursor(120,70);
-				ILI9486_Print_String18x32("MAIN INFO-PAGE",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetCursor(120,110);
-				ILI9486_Print_String18x32("TIME SETTINGS",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetCursor(120,150);
-				ILI9486_SetTextColor(BLACK,WHITE);
-				ILI9486_Print_String18x32("ABOUT PROJECT",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetTextColor(WHITE,BLACK);
-				ILI9486_SetCursor(120,190);
-				ILI9486_Print_String18x32("ADDITIONAL INFO",TFT_STRING_MODE_BACKGROUND);*/
+				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
+				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
+				ILI9486_fillTriangle(456,152,441,168,456,184,WHITE);
+				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
 				break;
 		case 3: 
-				ILI9486_fillTriangle(72,67,87,83,72,99,BLACK);
-				ILI9486_fillTriangle(72,107,87,123,72,139,BLACK);
-				ILI9486_fillTriangle(72,147,87,163,72,179,BLACK);
-				ILI9486_fillTriangle(72,187,87,203,72,219,WHITE);
+				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
+				ILI9486_fillTriangle(22,112,37,128,22,144,BLACK);
+				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
+				ILI9486_fillTriangle(22,192,37,208,22,224,WHITE);
 				
-				ILI9486_fillTriangle(397,67,382,83,397,99,BLACK);
-				ILI9486_fillTriangle(397,107,382,123,397,139,BLACK);
-				ILI9486_fillTriangle(397,147,382,163,397,179,BLACK);
-				ILI9486_fillTriangle(397,187,382,203,397,219,WHITE);
-				/*ILI9486_SetTextColor(WHITE,BLACK);
-				ILI9486_SetCursor(120,70);
-				ILI9486_Print_String18x32("MAIN INFO-PAGE",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetCursor(120,110);
-				ILI9486_Print_String18x32("TIME SETTINGS",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetCursor(120,150);
-				ILI9486_Print_String18x32("ABOUT PROJECT",TFT_STRING_MODE_BACKGROUND);
-				ILI9486_SetCursor(120,190);
-				ILI9486_SetTextColor(BLACK,WHITE);
-				ILI9486_Print_String18x32("ADDITIONAL INFO",TFT_STRING_MODE_BACKGROUND);*/
+				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
+				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
+				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
+				ILI9486_fillTriangle(456,192,441,208,456,224,WHITE);
 		break;
 	}
 }
 //Окно настроек времени
+void Print_Page_Clock_Settings_Static()
+{
+	ILI9486_FillScreen(BLACK);
+	ILI9486_SetRotation(1);
+	ILI9486_SetCursor(40,20);
+	ILI9486_SetTextColor(BLACK,WHITE);
+	ILI9486_Print_String40x40("ДАТА и ВРЕМЯ",TFT_STRING_MODE_BACKGROUND);
+	Clock();
+	ILI9486_SetTextColor(WHITE,BLACK);
+	ILI9486_SetCursor(112,120);
+	ILI9486_Print_String32x32("ч",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(232,120);
+	ILI9486_Print_String32x32("мин",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(377,120);
+	ILI9486_Print_String32x32("сек",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(50,100);
+	ILI9486_Print_String32x48(T_Param.hours,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(170,100);
+	ILI9486_Print_String32x48(T_Param.minutes,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(315,100);
+	ILI9486_Print_String32x48(T_Param.seconds,TFT_STRING_MODE_BACKGROUND);
+	
+	ILI9486_SetCursor(100,170);
+	ILI9486_Print_String32x48(T_Param.mounthday,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(165,170);
+	ILI9486_Print_String32x48("/",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(205,170);
+	ILI9486_Print_String32x48(T_Param.Mounth,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(275,170);
+	ILI9486_Print_String32x48("/",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(315,170);
+	ILI9486_Print_String32x48(T_Param.Year,TFT_STRING_MODE_BACKGROUND);
+	
+	ILI9486_SetCursor(190,230);
+	ILI9486_Print_String18x32(T_Param.weakday,TFT_STRING_MODE_BACKGROUND);
+	
+	ILI9486_SetCursor(40,270);
+	ILI9486_Print_String40x40("НАЗАД В МЕНЮ",TFT_STRING_MODE_BACKGROUND);
+}
 void Print_Page_Clock_Settings()
 {
-	uint8_t cnt;
+	switch (up_down_count%8)
+	{
+		case 0:	
+			/*if(change_flag)
+			{
+				hour = add_cnt;
+			}*/
+			ILI9486_DrawRect(47,97,67,54,WHITE);
+			ILI9486_DrawRect(48,98,65,52,WHITE);
+		
+			ILI9486_DrawRect(167,97,67,54,BLACK);
+			ILI9486_DrawRect(168,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,97,67,54,BLACK);
+			ILI9486_DrawRect(313,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(97,167,67,54,BLACK);
+			ILI9486_DrawRect(98,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(202,167,67,54,BLACK);
+			ILI9486_DrawRect(203,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,167,67,54,BLACK);
+			ILI9486_DrawRect(313,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(75,227,352,37,BLACK);
+			ILI9486_DrawRect(76,228,350,35,BLACK);
+		
+			ILI9486_DrawRect(37,273,414,42,BLACK);
+			ILI9486_DrawRect(38,274,412,40,BLACK);
+			break;
+		case 1: 
+			/*if(change_flag)
+			{
+				min = add_cnt;
+			}*/
+			ILI9486_DrawRect(47,97,67,54,BLACK);
+			ILI9486_DrawRect(48,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(167,97,67,54,WHITE);
+			ILI9486_DrawRect(168,98,65,52,WHITE);
+		
+			ILI9486_DrawRect(312,97,67,54,BLACK);
+			ILI9486_DrawRect(313,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(97,167,67,54,BLACK);
+			ILI9486_DrawRect(98,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(202,167,67,54,BLACK);
+			ILI9486_DrawRect(203,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,167,67,54,BLACK);
+			ILI9486_DrawRect(313,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(75,227,352,37,BLACK);
+			ILI9486_DrawRect(76,228,350,35,BLACK);
+		
+			ILI9486_DrawRect(37,273,414,42,BLACK);
+			ILI9486_DrawRect(38,274,412,40,BLACK);
+			break;
+		case 2: 
+			/*if(change_flag)
+			{
+				day = add_cnt;
+			}*/
+			ILI9486_DrawRect(47,97,67,54,BLACK);
+			ILI9486_DrawRect(48,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(167,97,67,54,BLACK);
+			ILI9486_DrawRect(168,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,97,67,54,WHITE);
+			ILI9486_DrawRect(313,98,65,52,WHITE);
+		
+			ILI9486_DrawRect(97,167,67,54,BLACK);
+			ILI9486_DrawRect(98,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(202,167,67,54,BLACK);
+			ILI9486_DrawRect(203,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,167,67,54,BLACK);
+			ILI9486_DrawRect(313,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(75,227,352,37,BLACK);
+			ILI9486_DrawRect(76,228,350,35,BLACK);
+		
+			ILI9486_DrawRect(37,273,414,42,BLACK);
+			ILI9486_DrawRect(38,274,412,40,BLACK);
+			break;
+		case 3: 
+			/*if(change_flag)
+			{
+				date = add_cnt;
+			}*/
+			ILI9486_DrawRect(47,97,67,54,BLACK);
+			ILI9486_DrawRect(48,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(167,97,67,54,BLACK);
+			ILI9486_DrawRect(168,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,97,67,54,BLACK);
+			ILI9486_DrawRect(313,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(97,167,67,54,WHITE);
+			ILI9486_DrawRect(98,168,65,52,WHITE);
+		
+			ILI9486_DrawRect(202,167,67,54,BLACK);
+			ILI9486_DrawRect(203,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,167,67,54,BLACK);
+			ILI9486_DrawRect(313,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(75,227,352,37,BLACK);
+			ILI9486_DrawRect(76,228,350,35,BLACK);
+		
+			ILI9486_DrawRect(37,273,414,42,BLACK);
+			ILI9486_DrawRect(38,274,412,40,BLACK);
+			break;
+		case 4: 
+			/*if(change_flag)
+			{
+				month = add_cnt;
+			}*/
+			ILI9486_DrawRect(47,97,67,54,BLACK);
+			ILI9486_DrawRect(48,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(167,97,67,54,BLACK);
+			ILI9486_DrawRect(168,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,97,67,54,BLACK);
+			ILI9486_DrawRect(313,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(97,167,67,54,BLACK);
+			ILI9486_DrawRect(98,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(202,167,67,54,WHITE);
+			ILI9486_DrawRect(203,168,65,52,WHITE);
+		
+			ILI9486_DrawRect(312,167,67,54,BLACK);
+			ILI9486_DrawRect(313,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(75,227,352,37,BLACK);
+			ILI9486_DrawRect(76,228,350,35,BLACK);
+		
+			ILI9486_DrawRect(37,273,414,42,BLACK);
+			ILI9486_DrawRect(38,274,412,40,BLACK);
+			break;
+		case 5: 
+			/*if(change_flag)
+			{
+				year = add_cnt;
+			}*/
+			ILI9486_DrawRect(47,97,67,54,BLACK);
+			ILI9486_DrawRect(48,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(167,97,67,54,BLACK);
+			ILI9486_DrawRect(168,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,97,67,54,BLACK);
+			ILI9486_DrawRect(313,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(97,167,67,54,BLACK);
+			ILI9486_DrawRect(98,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(202,167,67,54,BLACK);
+			ILI9486_DrawRect(203,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,167,67,54,WHITE);
+			ILI9486_DrawRect(313,168,65,52,WHITE);
+		
+			ILI9486_DrawRect(75,227,352,37,BLACK);
+			ILI9486_DrawRect(76,228,350,35,BLACK);
+		
+			ILI9486_DrawRect(37,273,414,42,BLACK);
+			ILI9486_DrawRect(38,274,412,40,BLACK);
+			break;
+		case 6:
+			ILI9486_DrawRect(47,97,67,54,BLACK);
+			ILI9486_DrawRect(48,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(167,97,67,54,BLACK);
+			ILI9486_DrawRect(168,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,97,67,54,BLACK);
+			ILI9486_DrawRect(313,98,65,52,BLACK);
+		
+			ILI9486_DrawRect(97,167,67,54,BLACK);
+			ILI9486_DrawRect(98,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(202,167,67,54,BLACK);
+			ILI9486_DrawRect(203,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(312,167,67,54,BLACK);
+			ILI9486_DrawRect(313,168,65,52,BLACK);
+		
+			ILI9486_DrawRect(75,227,352,37,WHITE);
+			ILI9486_DrawRect(76,228,350,35,WHITE);
+		
+			ILI9486_DrawRect(37,273,414,42,BLACK);
+			ILI9486_DrawRect(38,274,412,40,BLACK);
+			break;
+		case 7:
+			ILI9486_DrawRect(457,97,67,54,BLACK);
+			ILI9486_DrawRect(48,98,65,52,BLACK);
+			
+			ILI9486_DrawRect(167,97,67,54,BLACK);
+			ILI9486_DrawRect(168,98,65,52,BLACK);
+			
+			ILI9486_DrawRect(312,97,67,54,BLACK);
+			ILI9486_DrawRect(313,98,65,52,BLACK);
+			
+			ILI9486_DrawRect(97,167,67,54,BLACK);
+			ILI9486_DrawRect(98,168,65,52,BLACK);
+			
+			ILI9486_DrawRect(202,167,67,54,BLACK);
+			ILI9486_DrawRect(203,168,65,52,BLACK);
+			
+			ILI9486_DrawRect(312,167,67,54,BLACK);
+			ILI9486_DrawRect(313,168,65,52,BLACK);
+			
+			ILI9486_DrawRect(75,227,352,37,BLACK);
+			ILI9486_DrawRect(76,228,350,35,BLACK);
+			
+			ILI9486_DrawRect(37,273,414,42,WHITE);
+			ILI9486_DrawRect(38,274,412,40,WHITE);
+			break;
+	}
+	/*uint8_t cnt;
 	uint8_t Frame_buffer[1024] = { 0 }; //Буфер кадра
 	Convert_to_string_Clock();
 	LCD_12864_GrapnicMode(1);
@@ -907,12 +1151,24 @@ void Print_Page_Clock_Settings()
 
 	
 	LCD_12864_Draw_bitmap(Frame_buffer);
-	LCD_12864_GrapnicMode(0);
+	LCD_12864_GrapnicMode(0);*/
 }
 //Окно справки
 void Print_Page_About()
 {
-	uint8_t Frame_buffer[1024] = { 0 }; //Буфер кадра
+	ILI9486_FillScreen(BLACK);
+	ILI9486_SetRotation(1);
+	ILI9486_SetCursor(80,20);
+	ILI9486_SetTextColor(BLACK,WHITE);
+	ILI9486_Print_String40x40("О ПРОЕКТЕ",TFT_STRING_MODE_BACKGROUND);
+	
+	
+	ILI9486_SetTextColor(WHITE,BLACK);
+	ILI9486_SetCursor(40,270);
+	ILI9486_Print_String40x40("НАЗАД В МЕНЮ",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_DrawRect(37,273,414,42,WHITE);
+	ILI9486_DrawRect(38,274,412,40,WHITE);
+	/*uint8_t Frame_buffer[1024] = { 0 }; //Буфер кадра
 	LCD_12864_GrapnicMode(1);
 	LCD_12864_Clean_Frame_buffer(Frame_buffer);
 	
@@ -926,41 +1182,72 @@ void Print_Page_About()
 	LCD_12864_Decode_UTF8(25, 7, 1, "Назад в МЕНЮ", Frame_buffer);
 	
 	LCD_12864_Draw_bitmap(Frame_buffer);
-	LCD_12864_GrapnicMode(0);
+	LCD_12864_GrapnicMode(0);*/
 }
 //Окно доп инфо
 void Print_Page_Dop_Info()
 {
-	uint8_t Frame_buffer[1024] = { 0 }; //Буфер кадра
-	LCD_12864_GrapnicMode(1);
-	LCD_12864_Clean_Frame_buffer(Frame_buffer);
+	ILI9486_FillScreen(BLACK);
+	ILI9486_SetRotation(1);
+	ILI9486_SetCursor(40,20);
+	ILI9486_SetTextColor(BLACK,WHITE);
+	ILI9486_Print_String40x40("ДОП СВЕДЕНИЯ",TFT_STRING_MODE_BACKGROUND);
 	
-	LCD_12864_Decode_UTF8(7, 0, 1, "Дополнительная инфо", Frame_buffer);
-	LCD_12864_Decode_UTF8(0, 1, 0, "Время запуска:", Frame_buffer);
-	LCD_12864_Decode_UTF8(0, 2, 0, start_time, Frame_buffer);
-	//LCD_12864_Decode_UTF8(0, 3, 0, "Уличный передатчик:", Frame_buffer);
-	LCD_12864_Decode_UTF8(0, 3, 0, "Время посл.приема:", Frame_buffer);
-	LCD_12864_Decode_UTF8(0, 4, 0, receive_time, Frame_buffer);
-	LCD_12864_Decode_UTF8(0, 5, 0, "Время отправки в БД:", Frame_buffer);
-	LCD_12864_Decode_UTF8(0, 6, 0, send_time, Frame_buffer);
+	ILI9486_SetTextColor(WHITE,BLACK);
+	ILI9486_SetCursor(150,70);
+	ILI9486_Print_String18x32("Start time:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(90,100);
+	ILI9486_Print_String18x32(start_time,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(40,130);
+	ILI9486_Print_String18x32("Outdoor transmitter:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(50,160);
+	ILI9486_Print_String18x32(receive_time,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(40,190);
+	ILI9486_Print_String18x32("Time of sending to DB:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(50,220);
+	ILI9486_Print_String18x32(send_time,TFT_STRING_MODE_BACKGROUND);
 	
-	LCD_12864_Decode_UTF8(25, 7, 1, "Назад в МЕНЮ", Frame_buffer);
-	
-	LCD_12864_Draw_bitmap(Frame_buffer);
-	LCD_12864_GrapnicMode(0);
+	ILI9486_SetTextColor(WHITE,BLACK);
+	ILI9486_SetCursor(40,270);
+	ILI9486_Print_String40x40("НАЗАД В МЕНЮ",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_DrawRect(37,273,414,42,WHITE);
+	ILI9486_DrawRect(38,274,412,40,WHITE);
 }
 //-----------Графика вспомогательная для главного окна------//
-void DrawSun(uint8_t *Frame_buffer)
+void DrawSun()
 {
-	LCD_12864_Draw_circle_filled(110, 53, 5, Frame_buffer);
-	LCD_12864_Draw_line(110, 45, 110, 43, Frame_buffer);
-	LCD_12864_Draw_line(118, 53, 120, 53, Frame_buffer);
-	LCD_12864_Draw_line(102, 53, 100, 53, Frame_buffer);
-	LCD_12864_Draw_line(110, 61, 110, 63, Frame_buffer);
-	LCD_12864_Draw_line(104, 48, 102, 46, Frame_buffer);
-	LCD_12864_Draw_line(116, 48, 118, 46, Frame_buffer);
-	LCD_12864_Draw_line(116, 58, 118, 60, Frame_buffer);
-	LCD_12864_Draw_line(104, 58, 102, 60, Frame_buffer);
+	FATFS fs;
+	WORD s1;
+	asm("nop");
+	pf_mount(&fs); //Монтируем FAT
+	pf_open("/sun.txt");
+
+	uint8_t array1[6010];
+	uint16_t sun[1000];
+	int l, p = 0;
+	for (int k = 0; k < 10; k++)
+	{
+		memset(array1, 0, sizeof(uint8_t) * strlen(array1));//очистка массива
+		char arr[10] = {};
+		p = 0;
+		pf_read(array1,6000,&s1);
+		wdt_reset();
+		for (int m = 0; m < 1000; m++)
+		{
+			l = 0;
+			while (array1[p] != ',')
+			{
+				arr[l] = array1[p];
+				p++;
+				l++;
+			}
+			p += 2;
+			sun[m+1000*k] = (uint16_t)strtol(arr,NULL,16);
+			ILI9486_drawPixel(350+m%100, 5+10*k+(m/100), (uint16_t)strtol(arr,NULL,16));
+			wdt_reset();
+		}
+	}
+	pf_mount(0x00);
 }
 void DrawSunWithClouds(uint8_t *Frame_buffer)
 {
@@ -1524,9 +1811,9 @@ void sprintf_HOME_Weath_Param(void)
 	pressure_home = BMP180_calculation()*0.0075;
 	sprintf(Press_home,"%d",pressure_home);*/
 	
-	int tt=0; //переменна¤ дл¤ хранени¤ температуры в сыром виде
-	tt = dt_check(); //измер¤ем температуру
-
+	//измерение температуры
+	int tt = 0; 
+	tt = dt_check(); 
 	home_temp_sign = tt>>11;//вычисление знака температуры
 	if (home_temp_sign == 0x00)
 	{
@@ -1544,5 +1831,11 @@ void sprintf_HOME_Weath_Param(void)
 		home_temp_integer = ((~(tt))&0x07FF)>>4;
 		//sprintf(data,"-%d,%d\r",buf[1],buf[0]);
 	}
+	//измерение влажности
+	/*long int hum = 0;
+	hum = HTU21D_get_humidity();
+	hum = (hum*125)/65536 - 6;
+	home_hum_integer = hum;*/
+	
 	wdt_reset();
 }
