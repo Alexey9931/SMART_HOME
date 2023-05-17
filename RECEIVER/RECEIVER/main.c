@@ -633,7 +633,7 @@ int main(void)
 			//обновление домашних показаний
 			else if ((millis % 2010) == 0)
 			{
-				//sprintf_HOME_Weath_Param();
+				sprintf_HOME_Weath_Param();
 			}
 			//обновление изображения на дисплее
 			else if((millis % 100) == 0)
@@ -655,7 +655,7 @@ int main(void)
 						}
 						else
 						{
-							sprintf_HOME_Weath_Param();
+							//sprintf_HOME_Weath_Param();
 							Print_Home_Page_In();
 						}
 						break;

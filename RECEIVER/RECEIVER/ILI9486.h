@@ -79,6 +79,7 @@ void ILI9486_fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_
 
 void ILI9486_SetTextColor(uint16_t c, uint16_t b);
 void ILI9486_Print_Char14x24(uint16_t x,uint16_t y,uint8_t data ,uint8_t mode);
+void ILI9486_Print_ConsolasChar16x24(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
 void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
 void ILI9486_Print_Char8x16(uint16_t x,uint16_t y,uint8_t num,uint8_t mode);
 void ILI9486_Print_Char24x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
@@ -88,6 +89,7 @@ void ILI9486_Print_Char40x40(uint16_t x,uint16_t y,uint8_t data,uint8_t mode);
 void ILI9486_SetCursor(int16_t x, int16_t y);
 void ILI9486_SetTextSize(uint8_t s);
 void ILI9486_Print_String32x32(uint8_t *string,uint8_t TFT_STRING_MODE);
+void ILI9486_Print_StringConsolas16x24(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String18x32(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String14x24(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String8x16(uint8_t *string,uint8_t TFT_STRING_MODE);

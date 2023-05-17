@@ -812,6 +812,82 @@ void ILI9486_Print_Char18x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 	pf_mount(0x00);
 
 }
+void ILI9486_Print_ConsolasChar16x24(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
+{
+	//Начинаем работу с файловой системой для считывания массива шрифтов
+	/*FATFS fs;
+	asm("nop");
+	pf_mount(&fs); //Монтируем FAT
+	pf_open("/1832.txt");*/
+	
+	if((x>X_SIZE-16)||(y>Y_SIZE-24)) return;
+	uint8_t i,j,k,temp;
+	uint8_t tem[4*18*32/8+10] = {0};
+	uint8_t bytes[18*32/8+1] = {0};
+	char arr[10] = {0};
+	int l = 0;
+	int p = 0;
+	WORD s1;
+	uint8_t result;
+/*
+	pf_lseek(((uint32_t)data-' ')*4*18*32/8); //Установим курсор чтения на 0
+	pf_read(tem,4*18*32/8-1,&s1);
+	for (int m = 0; m < 18*32/8; m++)
+	{
+		if (data != ' ')
+		{
+			l = 0;
+			while (tem[p] != ',')
+			{
+				arr[l] = tem[p];
+				p++;
+				l++;
+			}
+			p += 2;
+			sscanf(arr, "%x", &bytes[m]);
+		}
+		else
+		{
+			bytes[m] = 0x00;
+		}
+	}
+*/	
+	ILI9486_SetAddrWindow(x,y,x+16-1,y+24-1);
+	for(i=0;i<24/8;i++)
+	{
+		for(j=0;j<8;j++)
+		{
+			for(k=0;k<16;k++)
+			{
+				temp=Consolas16x24[(data-32)*(24/8)*16+k*(24/8)+i];
+				//temp=read_symbol_from_SD((data-' ')*(32/8)*18+k*(32/8)+i);
+				//temp=bytes[k*(32/8)+i];
+				wdt_reset();
+				if(mode==TFT_STRING_MODE_BACKGROUND)
+				{
+					if(temp&(0x01<<j))
+					{
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
+					}
+					else
+					{
+						ILI9486_drawPixel(x+k,y+(8*i+j),BACK_COLOR);
+					}
+				}
+				else
+				{
+					if(temp&(0x01<<j))
+					{
+						ILI9486_drawPixel(x+k,y+(8*i+j),POINT_COLOR);
+					}
+				}
+			}
+		}
+	}
+	// Завершаем работу с файлом
+	//pf_mount(0x00);
+
+}
 void ILI9486_Print_Char32x32(uint16_t x,uint16_t y,uint8_t data,uint8_t mode)
 {
 	if((x>X_SIZE-32)||(y>Y_SIZE-32)) return;
@@ -1179,6 +1255,42 @@ void ILI9486_Print_String18x32(uint8_t *string,uint8_t TFT_STRING_MODE)
 		i++;
 	}
 }
+void ILI9486_Print_StringConsolas16x24(uint8_t *string,uint8_t TFT_STRING_MODE)
+{
+	uint8_t i=0;
+	uint8_t font_w=14;
+	uint8_t font_h=24;
+
+	while(*(string+i)!='\0')
+	{
+
+		if(*(string+i)==0)
+		{
+			return;
+		}
+
+		if(*(string+i)=='\n')
+		{
+			cursor_x+=font_h;
+			cursor_y=0;
+			string++;
+		}
+
+		if(cursor_y>X_SIZE-font_w)
+		{
+			cursor_y=0;cursor_x+=font_h;
+		}
+
+		if(cursor_x>Y_SIZE-font_h)
+		{
+			cursor_x=cursor_y=0;
+		}
+
+		ILI9486_Print_ConsolasChar16x24(cursor_y,cursor_x,*(string+i),TFT_STRING_MODE);
+		cursor_y+=font_w;
+		i++;
+	}
+}
 void ILI9486_Print_String32x32(uint8_t *string,uint8_t TFT_STRING_MODE)
 {
 	uint8_t i=0;
@@ -1417,4 +1529,9 @@ void ILI9486_Print_Number(long  Number, uint8_t TFT_STRING_MODE)
 	}
 
 
+}
+
+void ILI9486_Draw_Image(char *filename, uint32_t width, uint32 height)
+{
+	
 }
