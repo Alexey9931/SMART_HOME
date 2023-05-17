@@ -98,6 +98,7 @@ void ILI9486_Print_String32x48(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String40x40(uint8_t *string,uint8_t TFT_STRING_MODE);
 void ILI9486_Print_String(uint8_t *string , uint8_t TFT_STRING_MODE);
 void ILI9486_Print_Number(long  Number, uint8_t TFT_STRING_MODE);
+void ILI9486_Draw_Image(char *filename, uint32_t width, uint32_t height, uint32_t x_pos, uint32_t y_pos);
 
 
 

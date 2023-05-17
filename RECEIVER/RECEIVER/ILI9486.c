@@ -1531,7 +1531,36 @@ void ILI9486_Print_Number(long  Number, uint8_t TFT_STRING_MODE)
 
 }
 
-void ILI9486_Draw_Image(char *filename, uint32_t width, uint32 height)
+void ILI9486_Draw_Image(char *filename, uint32_t width, uint32_t height, uint32_t x_pos, uint32_t y_pos)
 {
-	
+	FATFS fs;
+	WORD s1;
+	asm("nop");
+	pf_mount(&fs); //Монтируем FAT
+	pf_open(filename);
+
+	uint8_t array[10+(6*width*height/10)];
+	int l, p = 0;
+	for (int k = 0; k < 10; k++)
+	{
+		memset(array, 0, sizeof(uint8_t) * strlen(array));//очистка массива
+		char arr[10] = {};
+		p = 0;
+		pf_read(array,6*width*height/10,&s1);
+		wdt_reset();
+		for (int m = 0; m < width*height/10; m++)
+		{
+			l = 0;
+			while (array[p] != ',')
+			{
+				arr[l] = array[p];
+				p++;
+				l++;
+			}
+			p += 2;
+			ILI9486_drawPixel(x_pos+m%width, y_pos+(width/10)*k+(m/height), (uint16_t)strtol(arr,NULL,16));
+			wdt_reset();
+		}
+	}
+	pf_mount(0x00);
 }

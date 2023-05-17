@@ -107,10 +107,22 @@ void Print_Static_Home_Page()
 {
 	ILI9486_FillScreen(BLACK);
 	ILI9486_SetRotation(1);
+	//надписи для уровней приема
+	ILI9486_SetTextColor(0xB7F9,BLACK);
+	ILI9486_SetCursor(160,40);
+	ILI9486_Print_StringConsolas16x24("WiFi",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(223,40);
+	ILI9486_Print_StringConsolas16x24("Ch2",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(275,40);
+	ILI9486_Print_StringConsolas16x24("Ch1",TFT_STRING_MODE_BACKGROUND);
 	//вывод границ
 	Print_Boards_Main();
 	//вывод статики флюгера
 	DrawWeatherVane();
+	//вывод всех иконок
+	ILI9486_Draw_Image("/wsp.txt", 30, 30, 170, 255);//ск ветра
+	ILI9486_Draw_Image("/pres.txt", 30, 30, 172, 285);//давление
+	ILI9486_Draw_Image("/rain.txt", 30, 30, 330, 90);//осадки
 	//вывод надписи для скорости ветра
 	/*ILI9486_SetTextColor(BLUE,BLACK);
 	ILI9486_SetCursor(173,241);
@@ -143,34 +155,34 @@ void Print_Home_Page_Out()
 	if(wind_speed_integer < 10)
 	{
 		sprintf(data," %d",wind_speed_integer);
-		ILI9486_SetCursor(184,260);
+		ILI9486_SetCursor(201,260);
 		ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(214,260);
+		ILI9486_SetCursor(227,260);
 		ILI9486_Print_StringConsolas16x24(".",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(229,260);
+		ILI9486_SetCursor(240,260);
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",wind_speed_fraction);
 		ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(265,260);
+		ILI9486_SetCursor(270,260);
 		ILI9486_Print_StringConsolas16x24("m/",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(292,260);
+		ILI9486_SetCursor(294,260);
 		ILI9486_Print_StringConsolas16x24("s",TFT_STRING_MODE_BACKGROUND);
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
 	else
 	{
 		sprintf(data,"%d",wind_speed_integer);
-		ILI9486_SetCursor(184,260);
+		ILI9486_SetCursor(201,260);
 		ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(214,260);
+		ILI9486_SetCursor(227,260);
 		ILI9486_Print_StringConsolas16x24(".",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(229,260);
+		ILI9486_SetCursor(240,260);
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",wind_speed_fraction);
 		ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(265,260);
+		ILI9486_SetCursor(271,260);
 		ILI9486_Print_StringConsolas16x24("m/",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(292,260);
+		ILI9486_SetCursor(295,260);
 		ILI9486_Print_StringConsolas16x24("s",TFT_STRING_MODE_BACKGROUND);
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
@@ -236,36 +248,46 @@ void Print_Home_Page_Out()
 	//вывод прогноза погоды
 	if ((wind_speed (HALL_counter) == 0) && (RAIN_AMOUNT(adc_value2) <= 10))
 	{
-		DrawSun();
+		ILI9486_Draw_Image("/sun.txt", 100, 100, 370, 3);
+		//DrawSun();
 	}
 	else if ((wind_speed (HALL_counter) > 1000))
 	{
-		DrawClouds();
+		ILI9486_Draw_Image("/clou.txt", 100, 100, 370, 3);
+		//DrawClouds();
 	}
 	else if ((wind_speed (HALL_counter) > 0) && (RAIN_AMOUNT(adc_value2) <= 10))
 	{
-		DrawSunWithClouds();
+		ILI9486_Draw_Image("/sucl.txt", 100, 100, 370, 3);
+		//DrawSunWithClouds();
 	}
 	else if ((RAIN_AMOUNT(adc_value2) > 15) && (RAIN_AMOUNT(adc_value2) <= 40))
 	{
-		DrawSmalRain();
+		ILI9486_Draw_Image("/smra.txt", 100, 100, 370, 3);
+		//DrawSmalRain();
 	}
 	else if ((RAIN_AMOUNT(adc_value2) > 40) && (RAIN_AMOUNT(adc_value2) <= 100))
 	{
-		DrawHardRain();
+		ILI9486_Draw_Image("/hara.txt", 100, 100, 370, 3);
+		//DrawHardRain();
 	}
 	else
 	{
-		DrawSun();
+		ILI9486_Draw_Image("/sun.txt", 100, 100, 370, 3);
+		//DrawSun();
 	}
 	//вывод кол-ва осадков
 	ILI9486_SetTextColor(0xA39F,BLACK);
-	ILI9486_SetCursor(325,75);
+	ILI9486_SetCursor(360,95);
 	ILI9486_Print_StringConsolas16x24("10%",TFT_STRING_MODE_BACKGROUND);
 	//вывод уровня сигнала WiFi
-	DrawLevelWiFi();
+	//DrawLevelWiFi();
+	ILI9486_Draw_Image("/wi4.txt", 40, 40, 165, 2);
 	//вывод уровня сигнала NRF
-	DrawLevelNrf();
+	//DrawLevelNrf();
+	ILI9486_Draw_Image("/nrf4.txt", 30, 30, 280, 10);
+	//вывод второго уровня сигнала NRF (в перспективе для котла)
+	ILI9486_Draw_Image("/nrf0.txt", 30, 30, 229, 10);
 }
 //Главное окно(домашние показания)
 void Print_Home_Page_In()
@@ -287,7 +309,7 @@ void Print_Home_Page_In()
 	wdt_reset();
 	//вывод домашних показаний
 	//температура
-	ILI9486_SetTextColor(ORANGE,BLACK);
+	ILI9486_SetTextColor(0xFB80,BLACK);
 	if (home_temp_sign != 0x00)
 	{
 		ILI9486_SetCursor(79,250);
@@ -349,10 +371,10 @@ void Print_Home_Page_In()
 	ILI9486_Print_String18x32("%",TFT_STRING_MODE_BACKGROUND);//ед измерения
 	//вывод атм. давления
 	ILI9486_SetTextColor(0xF96B,BLACK);
-	ILI9486_SetCursor(325,95);
+	ILI9486_SetCursor(206,290);
 	ILI9486_Print_StringConsolas16x24("750",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(380,95);
-	ILI9486_Print_StringConsolas16x24("mm Hg",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(248,290);
+	ILI9486_Print_StringConsolas16x24("mmHg",TFT_STRING_MODE_BACKGROUND);
 }
 //Основная разметка для главного окна
 void Print_Boards_Main()
@@ -642,7 +664,7 @@ void Print_Boards_Main()
 	ILI9486_SetTextColor(YELLOW, BLACK);
 	ILI9486_SetCursor(349, 208);
 	ILI9486_Print_String14x24("OUTDOOR",TFT_STRING_MODE_NO_BACKGROUND);
-	ILI9486_SetTextColor(ORANGE, BLACK);
+	ILI9486_SetTextColor(0xFB80, BLACK);
 	ILI9486_SetCursor(40, 208);
 	ILI9486_Print_String14x24("INDOOR",TFT_STRING_MODE_NO_BACKGROUND);
 }
