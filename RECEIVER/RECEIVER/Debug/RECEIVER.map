@@ -148,26 +148,6 @@ Discarded input sections
  .text          0x00000000        0x0 BMP180.o
  .data          0x00000000        0x0 BMP180.o
  .bss           0x00000000        0x0 BMP180.o
- .text.Read     0x00000000       0x4e BMP180.o
- .text.BMP180_Calibration
-                0x00000000       0x9c BMP180.o
- .text.BMP180_get_temper
-                0x00000000       0x34 BMP180.o
- .text.BMP180_get_pressure
-                0x00000000       0xd6 BMP180.o
- .text.BMP180_calculation
-                0x00000000      0x2d0 BMP180.o
- .debug_info    0x00000000      0x68f BMP180.o
- .debug_abbrev  0x00000000      0x18c BMP180.o
- .debug_loc     0x00000000      0x923 BMP180.o
- .debug_aranges
-                0x00000000       0x40 BMP180.o
- .debug_ranges  0x00000000       0x30 BMP180.o
- .debug_line    0x00000000      0x2db BMP180.o
- .debug_str     0x00000000      0x2a4 BMP180.o
- .comment       0x00000000       0x31 BMP180.o
- .debug_frame   0x00000000      0x10c BMP180.o
- COMMON         0x00000000       0x16 BMP180.o
  .text          0x00000000        0x0 DHT22.o
  .data          0x00000000        0x0 DHT22.o
  .bss           0x00000000        0x0 DHT22.o
@@ -247,36 +227,18 @@ Discarded input sections
  .text          0x00000000        0x0 NRF24.o
  .data          0x00000000        0x0 NRF24.o
  .bss           0x00000000        0x0 NRF24.o
- .rodata.str1.1
-                0x00000000        0xe NRF24.o
- .text.NRF24L01_Receive
-                0x00000000      0x5c0 NRF24.o
  .text.NRF24_Transmit
                 0x00000000       0x60 NRF24.o
- .text.NRF24_FlushRX
-                0x00000000       0x1c NRF24.o
- .text.NRF24_FlushTX
-                0x00000000       0x1c NRF24.o
- .text.NRF24_ToggleFeatures
-                0x00000000       0x22 NRF24.o
- .text.NRF24_Write_Buf
-                0x00000000       0x56 NRF24.o
  .text.NRF24L01_TX_Mode
                 0x00000000       0x1c NRF24.o
  .text.nRF_command
                 0x00000000       0x12 NRF24.o
- .text.NRF24L01_RX_Mode
-                0x00000000       0x2c NRF24.o
- .text.NRF24_ini
-                0x00000000       0x98 NRF24.o
  .text.NRF24L01_Send
                 0x00000000       0x8c NRF24.o
  .data.flag_irq
                 0x00000000        0x1 NRF24.o
  .bss.ErrCnt_Fl
                 0x00000000        0x1 NRF24.o
- .data.TX_ADDRESS
-                0x00000000        0x3 NRF24.o
  .text          0x00000000        0x0 pff.o
  .data          0x00000000        0x0 pff.o
  .bss           0x00000000        0x0 pff.o
@@ -348,9 +310,6 @@ Discarded input sections
                 0x00000000      0x15c WeatherStation.o
  .text.DrawLevelWiFi
                 0x00000000      0x14e WeatherStation.o
- .text.DrawLevelNrf
-                0x00000000      0x14c WeatherStation.o
- .text.V_BAT    0x00000000       0x6c WeatherStation.o
  .text.DrawBattery
                 0x00000000      0x19a WeatherStation.o
  .progmem.data.grass
@@ -432,8 +391,6 @@ Discarded input sections
  .bss           0x00000000        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodhi4.o)
  .text.libgcc.mul
                 0x00000000        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodhi4.o)
- .text.libgcc.div
-                0x00000000       0x28 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodhi4.o)
  .text.libgcc   0x00000000        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodhi4.o)
  .text.libgcc.prologue
                 0x00000000        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodhi4.o)
@@ -581,8 +538,6 @@ Discarded input sections
  .bss           0x00000000        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodhi4.o)
  .text.libgcc.mul
                 0x00000000        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodhi4.o)
- .text.libgcc.div
-                0x00000000       0x28 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodhi4.o)
  .text.libgcc   0x00000000        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodhi4.o)
  .text.libgcc.prologue
                 0x00000000        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodhi4.o)
@@ -797,7 +752,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000    0x17e38
+.text           0x00000000    0x18d90
  *(.vectors)
  .vectors       0x00000000       0xe4 D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega2560/avr6/crtatmega2560.o
                 0x00000000                __vector_default
@@ -885,6 +840,7 @@ END GROUP
                 0x0000fa8c                __vector_38
                 0x0000fa8c                __vector_22
                 0x0000fa8c                __vector_28
+                0x0000fa8c                __vector_1
                 0x0000fa8c                __vector_32
                 0x0000fa8c                __vector_34
                 0x0000fa8c                __vector_24
@@ -895,7 +851,6 @@ END GROUP
                 0x0000fa8c                __vector_31
                 0x0000fa8c                __vector_35
                 0x0000fa8c                __vector_39
-                0x0000fa8c                __vector_3
                 0x0000fa8c                __vector_23
                 0x0000fa8c                __vector_30
                 0x0000fa8c                __vector_45
@@ -934,425 +889,478 @@ END GROUP
                 0x0000fa8c                __vector_42
                 0x0000fa90                . = ALIGN (0x2)
  *(.text.*)
+ .text.Read     0x0000fa90       0x4e BMP180.o
+                0x0000fa90                Read
+ .text.BMP180_Calibration
+                0x0000fade       0x86 BMP180.o
+                0x0000fade                BMP180_Calibration
+ .text.BMP180_get_temper
+                0x0000fb64       0x32 BMP180.o
+                0x0000fb64                BMP180_get_temper
+ .text.BMP180_get_pressure
+                0x0000fb96       0xd6 BMP180.o
+                0x0000fb96                BMP180_get_pressure
+ .text.BMP180_calculation
+                0x0000fc6c      0x2cc BMP180.o
+                0x0000fc6c                BMP180_calculation
  .text.dt_testdevice
-                0x0000fa90       0x4a DS18B20.o
-                0x0000fa90                dt_testdevice
+                0x0000ff38       0x4a DS18B20.o
+                0x0000ff38                dt_testdevice
  .text.dt_readbit
-                0x0000fada       0x34 DS18B20.o
-                0x0000fada                dt_readbit
+                0x0000ff82       0x34 DS18B20.o
+                0x0000ff82                dt_readbit
  .text.dt_readbyte
-                0x0000fb0e       0x2a DS18B20.o
-                0x0000fb0e                dt_readbyte
+                0x0000ffb6       0x2a DS18B20.o
+                0x0000ffb6                dt_readbyte
  .text.dt_sendbit
-                0x0000fb38       0x3a DS18B20.o
-                0x0000fb38                dt_sendbit
+                0x0000ffe0       0x3a DS18B20.o
+                0x0000ffe0                dt_sendbit
  .text.dt_sendbyte
-                0x0000fb72       0x3e DS18B20.o
-                0x0000fb72                dt_sendbyte
+                0x0001001a       0x3e DS18B20.o
+                0x0001001a                dt_sendbyte
  .text.dt_check
-                0x0000fbb0       0x44 DS18B20.o
-                0x0000fbb0                dt_check
+                0x00010058       0x44 DS18B20.o
+                0x00010058                dt_check
  .text.ILI9486_Write8
-                0x0000fbf4       0x14 ILI9486.o
-                0x0000fbf4                ILI9486_Write8
+                0x0001009c       0x14 ILI9486.o
+                0x0001009c                ILI9486_Write8
  .text.ILI9486_Write16
-                0x0000fc08       0x10 ILI9486.o
-                0x0000fc08                ILI9486_Write16
+                0x000100b0       0x10 ILI9486.o
+                0x000100b0                ILI9486_Write16
  .text.ILI9486_SendCommand
-                0x0000fc18       0x1c ILI9486.o
-                0x0000fc18                ILI9486_SendCommand
+                0x000100c0       0x1c ILI9486.o
+                0x000100c0                ILI9486_SendCommand
  .text.ILI9486_SendData
-                0x0000fc34        0xe ILI9486.o
-                0x0000fc34                ILI9486_SendData
+                0x000100dc        0xe ILI9486.o
+                0x000100dc                ILI9486_SendData
  .text.ILI9486_Write_Cmd_Data
-                0x0000fc42       0x2a ILI9486.o
-                0x0000fc42                ILI9486_Write_Cmd_Data
+                0x000100ea       0x2a ILI9486.o
+                0x000100ea                ILI9486_Write_Cmd_Data
  .text.ILI9486_reset
-                0x0000fc6c       0x6e ILI9486.o
-                0x0000fc6c                ILI9486_reset
+                0x00010114       0x6e ILI9486.o
+                0x00010114                ILI9486_reset
  .text.ILI9486_SetRotation
-                0x0000fcda       0xa8 ILI9486.o
-                0x0000fcda                ILI9486_SetRotation
+                0x00010182       0xa8 ILI9486.o
+                0x00010182                ILI9486_SetRotation
  .text.ILI9486_ini
-                0x0000fd82      0x326 ILI9486.o
-                0x0000fd82                ILI9486_ini
+                0x0001022a      0x326 ILI9486.o
+                0x0001022a                ILI9486_ini
  .text.ILI9486_SetAddrWindow
-                0x000100a8       0xba ILI9486.o
-                0x000100a8                ILI9486_SetAddrWindow
+                0x00010550       0xba ILI9486.o
+                0x00010550                ILI9486_SetAddrWindow
  .text.ILI9486_drawPixel
-                0x00010162       0x1a ILI9486.o
-                0x00010162                ILI9486_drawPixel
+                0x0001060a       0x1a ILI9486.o
+                0x0001060a                ILI9486_drawPixel
  .text.ILI9486_FillScreen
-                0x0001017c       0xb6 ILI9486.o
-                0x0001017c                ILI9486_FillScreen
+                0x00010624       0xb6 ILI9486.o
+                0x00010624                ILI9486_FillScreen
  .text.ILI9486_fillRect
-                0x00010232       0xde ILI9486.o
-                0x00010232                ILI9486_fillRect
+                0x000106da       0xde ILI9486.o
+                0x000106da                ILI9486_fillRect
  .text.ILI9486_DrawFastVLine
-                0x00010310       0x4a ILI9486.o
-                0x00010310                ILI9486_DrawFastVLine
+                0x000107b8       0x4a ILI9486.o
+                0x000107b8                ILI9486_DrawFastVLine
  .text.ILI9486_DrawFastHLine
-                0x0001035a       0x48 ILI9486.o
-                0x0001035a                ILI9486_DrawFastHLine
+                0x00010802       0x48 ILI9486.o
+                0x00010802                ILI9486_DrawFastHLine
  .text.ILI9486_writeLine
-                0x000103a2      0x14e ILI9486.o
-                0x000103a2                ILI9486_writeLine
+                0x0001084a      0x14e ILI9486.o
+                0x0001084a                ILI9486_writeLine
  .text.ILI9486_Draw_Line
-                0x000104f0       0x56 ILI9486.o
-                0x000104f0                ILI9486_Draw_Line
+                0x00010998       0x56 ILI9486.o
+                0x00010998                ILI9486_Draw_Line
  .text.ILI9486_Draw_Circle
-                0x00010546      0x19a ILI9486.o
-                0x00010546                ILI9486_Draw_Circle
+                0x000109ee      0x19a ILI9486.o
+                0x000109ee                ILI9486_Draw_Circle
  .text.ILI9486_fillCircleHelper
-                0x000106e0      0x152 ILI9486.o
-                0x000106e0                ILI9486_fillCircleHelper
+                0x00010b88      0x152 ILI9486.o
+                0x00010b88                ILI9486_fillCircleHelper
  .text.ILI9486_fillCircle
-                0x00010832       0x4e ILI9486.o
-                0x00010832                ILI9486_fillCircle
+                0x00010cda       0x4e ILI9486.o
+                0x00010cda                ILI9486_fillCircle
  .text.ILI9486_DrawRect
-                0x00010880       0x62 ILI9486.o
-                0x00010880                ILI9486_DrawRect
+                0x00010d28       0x62 ILI9486.o
+                0x00010d28                ILI9486_DrawRect
  .text.ILI9486_fillTriangle
-                0x000108e2      0x32a ILI9486.o
-                0x000108e2                ILI9486_fillTriangle
+                0x00010d8a      0x32a ILI9486.o
+                0x00010d8a                ILI9486_fillTriangle
  .text.ILI9486_SetTextColor
-                0x00010c0c       0x12 ILI9486.o
-                0x00010c0c                ILI9486_SetTextColor
+                0x000110b4       0x12 ILI9486.o
+                0x000110b4                ILI9486_SetTextColor
  .text.ILI9486_Print_Char14x24
-                0x00010c1e      0x16e ILI9486.o
-                0x00010c1e                ILI9486_Print_Char14x24
+                0x000110c6      0x16e ILI9486.o
+                0x000110c6                ILI9486_Print_Char14x24
  .text.ILI9486_Print_Char18x32
-                0x00010d8c      0x16c ILI9486.o
-                0x00010d8c                ILI9486_Print_Char18x32
+                0x00011234      0x16c ILI9486.o
+                0x00011234                ILI9486_Print_Char18x32
  .text.ILI9486_Print_ConsolasChar16x24
-                0x00010ef8      0x162 ILI9486.o
-                0x00010ef8                ILI9486_Print_ConsolasChar16x24
+                0x000113a0      0x162 ILI9486.o
+                0x000113a0                ILI9486_Print_ConsolasChar16x24
  .text.ILI9486_Print_Char32x32
-                0x0001105a      0x160 ILI9486.o
-                0x0001105a                ILI9486_Print_Char32x32
+                0x00011502      0x160 ILI9486.o
+                0x00011502                ILI9486_Print_Char32x32
  .text.ILI9486_Print_Char24x32
-                0x000111ba      0x16c ILI9486.o
-                0x000111ba                ILI9486_Print_Char24x32
+                0x00011662      0x16c ILI9486.o
+                0x00011662                ILI9486_Print_Char24x32
  .text.ILI9486_Print_Char32x48
-                0x00011326      0x17a ILI9486.o
-                0x00011326                ILI9486_Print_Char32x48
+                0x000117ce      0x17a ILI9486.o
+                0x000117ce                ILI9486_Print_Char32x48
  .text.ILI9486_Print_Char40x40
-                0x000114a0      0x17a ILI9486.o
-                0x000114a0                ILI9486_Print_Char40x40
+                0x00011948      0x17a ILI9486.o
+                0x00011948                ILI9486_Print_Char40x40
  .text.ILI9486_SetCursor
-                0x0001161a       0x12 ILI9486.o
-                0x0001161a                ILI9486_SetCursor
+                0x00011ac2       0x12 ILI9486.o
+                0x00011ac2                ILI9486_SetCursor
  .text.ILI9486_Print_String40x40
-                0x0001162c       0xe2 ILI9486.o
-                0x0001162c                ILI9486_Print_String40x40
+                0x00011ad4       0xe2 ILI9486.o
+                0x00011ad4                ILI9486_Print_String40x40
  .text.ILI9486_Print_String18x32
-                0x0001170e       0xe2 ILI9486.o
-                0x0001170e                ILI9486_Print_String18x32
+                0x00011bb6       0xe2 ILI9486.o
+                0x00011bb6                ILI9486_Print_String18x32
  .text.ILI9486_Print_StringConsolas16x24
-                0x000117f0       0xe2 ILI9486.o
-                0x000117f0                ILI9486_Print_StringConsolas16x24
+                0x00011c98       0xe2 ILI9486.o
+                0x00011c98                ILI9486_Print_StringConsolas16x24
  .text.ILI9486_Print_String32x32
-                0x000118d2       0xe2 ILI9486.o
-                0x000118d2                ILI9486_Print_String32x32
+                0x00011d7a       0xe2 ILI9486.o
+                0x00011d7a                ILI9486_Print_String32x32
  .text.ILI9486_Print_String24x32
-                0x000119b4       0xe2 ILI9486.o
-                0x000119b4                ILI9486_Print_String24x32
+                0x00011e5c       0xe2 ILI9486.o
+                0x00011e5c                ILI9486_Print_String24x32
  .text.ILI9486_Print_String32x48
-                0x00011a96       0xe2 ILI9486.o
-                0x00011a96                ILI9486_Print_String32x48
+                0x00011f3e       0xe2 ILI9486.o
+                0x00011f3e                ILI9486_Print_String32x48
  .text.ILI9486_Print_String14x24
-                0x00011b78       0xe4 ILI9486.o
-                0x00011b78                ILI9486_Print_String14x24
+                0x00012020       0xe4 ILI9486.o
+                0x00012020                ILI9486_Print_String14x24
  .text.ILI9486_Draw_Image
-                0x00011c5c      0x2be ILI9486.o
-                0x00011c5c                ILI9486_Draw_Image
+                0x00012104      0x2be ILI9486.o
+                0x00012104                ILI9486_Draw_Image
  .text.timer1_ini
-                0x00011f1a       0x28 main.o
-                0x00011f1a                timer1_ini
+                0x000123c2       0x28 main.o
+                0x000123c2                timer1_ini
  .text.timer0_ini
-                0x00011f42       0x1c main.o
-                0x00011f42                timer0_ini
+                0x000123ea       0x1c main.o
+                0x000123ea                timer0_ini
  .text.__vector_17
-                0x00011f5e       0x4a main.o
-                0x00011f5e                __vector_17
+                0x00012406       0x4a main.o
+                0x00012406                __vector_17
  .text.__vector_21
-                0x00011fa8       0x14 main.o
-                0x00011fa8                __vector_21
+                0x00012450       0x14 main.o
+                0x00012450                __vector_21
  .text.__vector_5
-                0x00011fbc       0xf2 main.o
-                0x00011fbc                __vector_5
+                0x00012464       0xf2 main.o
+                0x00012464                __vector_5
  .text.__vector_6
-                0x000120ae       0x50 main.o
-                0x000120ae                __vector_6
+                0x00012556       0x50 main.o
+                0x00012556                __vector_6
  .text.__vector_7
-                0x000120fe       0x62 main.o
-                0x000120fe                __vector_7
+                0x000125a6       0x62 main.o
+                0x000125a6                __vector_7
  .text.__vector_8
-                0x00012160       0x5a main.o
-                0x00012160                __vector_8
+                0x00012608       0x5a main.o
+                0x00012608                __vector_8
  .text.SPI_init
-                0x000121ba       0x18 main.o
-                0x000121ba                SPI_init
+                0x00012662       0x18 main.o
+                0x00012662                SPI_init
  .text.port_init
-                0x000121d2       0x78 main.o
-                0x000121d2                port_init
+                0x0001267a       0x78 main.o
+                0x0001267a                port_init
  .text.spi_send_recv
-                0x0001224a        0xc main.o
-                0x0001224a                spi_send_recv
- .text.main     0x00012256      0x324 main.o
-                0x00012256                main
+                0x000126f2        0xc main.o
+                0x000126f2                spi_send_recv
+ .text.main     0x000126fe      0x456 main.o
+                0x000126fe                main
  .text.xmit_spi
-                0x0001257a       0x3a mmc.o
-                0x0001257a                xmit_spi
- .text.rcv_spi  0x000125b4       0x38 mmc.o
-                0x000125b4                rcv_spi
+                0x00012b54       0x3a mmc.o
+                0x00012b54                xmit_spi
+ .text.rcv_spi  0x00012b8e       0x38 mmc.o
+                0x00012b8e                rcv_spi
  .text.send_cmd
-                0x000125ec       0x86 mmc.o
+                0x00012bc6       0x86 mmc.o
  .text.release_spi
-                0x00012672        0x4 mmc.o
+                0x00012c4c        0x4 mmc.o
  .text.disk_readp
-                0x00012676       0xb2 mmc.o
-                0x00012676                disk_readp
+                0x00012c50       0xb2 mmc.o
+                0x00012c50                disk_readp
  .text.disk_writep
-                0x00012728       0xe4 mmc.o
-                0x00012728                disk_writep
+                0x00012d02       0xe4 mmc.o
+                0x00012d02                disk_writep
  .text.disk_initialize
-                0x0001280c      0x1ac mmc.o
-                0x0001280c                disk_initialize
+                0x00012de6      0x1ac mmc.o
+                0x00012de6                disk_initialize
+ .text.NRF24L01_Receive
+                0x00012f92      0x5c0 NRF24.o
+                0x00012f92                NRF24L01_Receive
+ .text.NRF24_FlushRX
+                0x00013552       0x1a NRF24.o
+                0x00013552                NRF24_FlushRX
+ .text.NRF24_FlushTX
+                0x0001356c       0x1a NRF24.o
+                0x0001356c                NRF24_FlushTX
+ .text.NRF24_ToggleFeatures
+                0x00013586       0x1e NRF24.o
+                0x00013586                NRF24_ToggleFeatures
  .text.NRF24_Read_Buf
-                0x000129b8       0x4a NRF24.o
-                0x000129b8                NRF24_Read_Buf
+                0x000135a4       0x4a NRF24.o
+                0x000135a4                NRF24_Read_Buf
+ .text.NRF24_Write_Buf
+                0x000135ee       0x52 NRF24.o
+                0x000135ee                NRF24_Write_Buf
  .text.nRF_write_register
-                0x00012a02       0x1c NRF24.o
-                0x00012a02                nRF_write_register
+                0x00013640       0x1c NRF24.o
+                0x00013640                nRF_write_register
  .text.nRF_read_register
-                0x00012a1e       0x20 NRF24.o
-                0x00012a1e                nRF_read_register
- .text.__vector_1
-                0x00012a3e       0x76 NRF24.o
-                0x00012a3e                __vector_1
- .text.mem_set  0x00012ab4       0x14 pff.o
- .text.mem_cmp  0x00012ac8       0x3a pff.o
+                0x0001365c       0x20 NRF24.o
+                0x0001365c                nRF_read_register
+ .text.__vector_3
+                0x0001367c       0x76 NRF24.o
+                0x0001367c                __vector_3
+ .text.NRF24L01_RX_Mode
+                0x000136f2       0x24 NRF24.o
+                0x000136f2                NRF24L01_RX_Mode
+ .text.NRF24_ini
+                0x00013716       0x7a NRF24.o
+                0x00013716                NRF24_ini
+ .text.mem_set  0x00013790       0x14 pff.o
+ .text.mem_cmp  0x000137a4       0x3a pff.o
  .text.clust2sect
-                0x00012b02       0x56 pff.o
+                0x000137de       0x56 pff.o
  .text.dir_rewind
-                0x00012b58       0x9a pff.o
+                0x00013834       0x9a pff.o
  .text.create_name
-                0x00012bf2       0x8a pff.o
+                0x000138ce       0x8a pff.o
  .text.check_fs
-                0x00012c7c       0x8e pff.o
- .text.get_fat  0x00012d0a      0x228 pff.o
+                0x00013958       0x8e pff.o
+ .text.get_fat  0x000139e6      0x228 pff.o
  .text.dir_next
-                0x00012f32       0xfc pff.o
+                0x00013c0e       0xfc pff.o
  .text.dir_find
-                0x0001302e       0x9c pff.o
+                0x00013d0a       0x9e pff.o
  .text.follow_path
-                0x000130ca       0xee pff.o
+                0x00013da8       0xee pff.o
  .text.pf_mount
-                0x000131b8      0x266 pff.o
-                0x000131b8                pf_mount
- .text.pf_open  0x0001341e       0xb6 pff.o
-                0x0001341e                pf_open
- .text.pf_read  0x000134d4      0x1dc pff.o
-                0x000134d4                pf_read
+                0x00013e96      0x26c pff.o
+                0x00013e96                pf_mount
+ .text.pf_open  0x00014102       0xb6 pff.o
+                0x00014102                pf_open
+ .text.pf_read  0x000141b8      0x1de pff.o
+                0x000141b8                pf_read
  .text.RTC_ConvertFromDec
-                0x000136b0       0x16 RTC_DS3231.o
-                0x000136b0                RTC_ConvertFromDec
+                0x00014396       0x16 RTC_DS3231.o
+                0x00014396                RTC_ConvertFromDec
  .text.RTC_init
-                0x000136c6       0x16 RTC_DS3231.o
-                0x000136c6                RTC_init
+                0x000143ac       0x16 RTC_DS3231.o
+                0x000143ac                RTC_init
  .text.I2C_Init
-                0x000136dc        0x8 TWI.o
-                0x000136dc                I2C_Init
+                0x000143c2        0x8 TWI.o
+                0x000143c2                I2C_Init
  .text.I2C_StartCondition
-                0x000136e4       0x10 TWI.o
-                0x000136e4                I2C_StartCondition
+                0x000143ca       0x10 TWI.o
+                0x000143ca                I2C_StartCondition
  .text.I2C_StopCondition
-                0x000136f4        0x8 TWI.o
-                0x000136f4                I2C_StopCondition
+                0x000143da        0x8 TWI.o
+                0x000143da                I2C_StopCondition
  .text.I2C_SendByte
-                0x000136fc       0x14 TWI.o
-                0x000136fc                I2C_SendByte
+                0x000143e2       0x14 TWI.o
+                0x000143e2                I2C_SendByte
  .text.I2C_ReadByte
-                0x00013710       0x14 TWI.o
-                0x00013710                I2C_ReadByte
+                0x000143f6       0x14 TWI.o
+                0x000143f6                I2C_ReadByte
  .text.I2C_ReadLastByte
-                0x00013724       0x14 TWI.o
-                0x00013724                I2C_ReadLastByte
+                0x0001440a       0x14 TWI.o
+                0x0001440a                I2C_ReadLastByte
  .text.USART_Init
-                0x00013738       0x28 usart.o
-                0x00013738                USART_Init
+                0x0001441e       0x28 usart.o
+                0x0001441e                USART_Init
  .text.Print_Hello_World
-                0x00013760       0x4e WeatherStation.o
-                0x00013760                Print_Hello_World
+                0x00014446       0x4e WeatherStation.o
+                0x00014446                Print_Hello_World
  .text.Print_Boards_Main
-                0x000137ae      0x9a4 WeatherStation.o
-                0x000137ae                Print_Boards_Main
+                0x00014494      0x9a4 WeatherStation.o
+                0x00014494                Print_Boards_Main
  .text.Print_Menu_Page_Static
-                0x00014152       0x96 WeatherStation.o
-                0x00014152                Print_Menu_Page_Static
+                0x00014e38       0x96 WeatherStation.o
+                0x00014e38                Print_Menu_Page_Static
  .text.Print_Menu_Page
-                0x000141e8      0x482 WeatherStation.o
-                0x000141e8                Print_Menu_Page
+                0x00014ece      0x482 WeatherStation.o
+                0x00014ece                Print_Menu_Page
  .text.Print_Page_Clock_Settings
-                0x0001466a      0xa9e WeatherStation.o
-                0x0001466a                Print_Page_Clock_Settings
+                0x00015350      0xa9e WeatherStation.o
+                0x00015350                Print_Page_Clock_Settings
  .text.Print_Page_About
-                0x00015108       0x88 WeatherStation.o
-                0x00015108                Print_Page_About
+                0x00015dee       0x88 WeatherStation.o
+                0x00015dee                Print_Page_About
+ .text.Print_Page_Dop_Info_Static
+                0x00015e76       0xec WeatherStation.o
+                0x00015e76                Print_Page_Dop_Info_Static
  .text.Print_Page_Dop_Info
-                0x00015190      0x118 WeatherStation.o
-                0x00015190                Print_Page_Dop_Info
+                0x00015f62       0x2e WeatherStation.o
+                0x00015f62                Print_Page_Dop_Info
  .text.DrawWeatherVane
-                0x000152a8      0x412 WeatherStation.o
-                0x000152a8                DrawWeatherVane
+                0x00015f90      0x412 WeatherStation.o
+                0x00015f90                DrawWeatherVane
  .text.Print_Static_Home_Page
-                0x000156ba      0x126 WeatherStation.o
-                0x000156ba                Print_Static_Home_Page
+                0x000163a2      0x18a WeatherStation.o
+                0x000163a2                Print_Static_Home_Page
+ .text.DrawLevelNrf
+                0x0001652c      0x1a0 WeatherStation.o
+                0x0001652c                DrawLevelNrf
  .text.DrawWindDirect
-                0x000157e0      0x30c WeatherStation.o
-                0x000157e0                DrawWindDirect
- .text.Convert_to_string_Clock
-                0x00015aec      0x3ea WeatherStation.o
-                0x00015aec                Convert_to_string_Clock
- .text.Clock    0x00015ed6       0x7a WeatherStation.o
-                0x00015ed6                Clock
- .text.Print_Home_Page_In
-                0x00015f50      0x410 WeatherStation.o
-                0x00015f50                Print_Home_Page_In
- .text.Print_Page_Clock_Settings_Static
-                0x00016360      0x15e WeatherStation.o
-                0x00016360                Print_Page_Clock_Settings_Static
- .text.RAIN_AMOUNT
-                0x000164be       0x74 WeatherStation.o
-                0x000164be                RAIN_AMOUNT
- .text.wind_speed
-                0x00016532       0x6e WeatherStation.o
-                0x00016532                wind_speed
+                0x000166cc      0x30c WeatherStation.o
+                0x000166cc                DrawWindDirect
  .text.Print_Home_Page_Out
-                0x000165a0      0x610 WeatherStation.o
-                0x000165a0                Print_Home_Page_Out
+                0x000169d8      0x3d2 WeatherStation.o
+                0x000169d8                Print_Home_Page_Out
+ .text.Convert_to_string_Clock
+                0x00016daa      0x3e6 WeatherStation.o
+                0x00016daa                Convert_to_string_Clock
+ .text.Clock    0x00017190       0x7a WeatherStation.o
+                0x00017190                Clock
+ .text.Print_Home_Page_In
+                0x0001720a      0x400 WeatherStation.o
+                0x0001720a                Print_Home_Page_In
+ .text.Print_Page_Clock_Settings_Static
+                0x0001760a      0x15e WeatherStation.o
+                0x0001760a                Print_Page_Clock_Settings_Static
+ .text.RAIN_AMOUNT
+                0x00017768       0x74 WeatherStation.o
+                0x00017768                RAIN_AMOUNT
+ .text.V_BAT    0x000177dc       0x64 WeatherStation.o
+                0x000177dc                V_BAT
+ .text.wind_speed
+                0x00017840       0x6e WeatherStation.o
+                0x00017840                wind_speed
+ .text.Print_Home_Page_WeatherForecast
+                0x000178ae      0x1d8 WeatherStation.o
+                0x000178ae                Print_Home_Page_WeatherForecast
  .text.sprintf_HOME_Weath_Param
-                0x00016bb0       0x7e WeatherStation.o
-                0x00016bb0                sprintf_HOME_Weath_Param
+                0x00017a86       0xb2 WeatherStation.o
+                0x00017a86                sprintf_HOME_Weath_Param
  .text.avr-libc.fplib
-                0x00016c2e        0xa d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fixsfsi.o)
-                0x00016c2e                __fixsfsi
+                0x00017b38        0xa d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fixsfsi.o)
+                0x00017b38                __fixsfsi
  .text.avr-libc.fplib
-                0x00016c38       0x58 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fixunssfsi.o)
-                0x00016c38                __fixunssfsi
+                0x00017b42       0x58 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fixunssfsi.o)
+                0x00017b42                __fixunssfsi
  .text.avr-libc.fplib
-                0x00016c90       0x7a d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(floatsisf.o)
-                0x00016c90                __floatunsisf
-                0x00016c94                __floatsisf
+                0x00017b9a       0x7a d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(floatsisf.o)
+                0x00017b9a                __floatunsisf
+                0x00017b9e                __floatsisf
  .text.avr-libc.fplib
-                0x00016d0a       0x44 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_split3.o)
-                0x00016d0a                __fp_split3
-                0x00016d1a                __fp_splitA
+                0x00017c14       0x44 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_split3.o)
+                0x00017c14                __fp_split3
+                0x00017c24                __fp_splitA
  .text.avr-libc.fplib
-                0x00016d4e        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_zero.o)
-                0x00016d4e                __fp_zero
-                0x00016d50                __fp_szero
+                0x00017c58        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_zero.o)
+                0x00017c58                __fp_zero
+                0x00017c5a                __fp_szero
  .text.avr-libc.fplib
-                0x00016d5c        0x4 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(mulsf3.o)
-                0x00016d5c                __mulsf3
+                0x00017c66        0x4 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(mulsf3.o)
+                0x00017c66                __mulsf3
  .text.avr-libc.fplib
-                0x00016d60       0xc2 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(mulsf3x.o)
-                0x00016d74                __mulsf3x
-                0x00016d78                __mulsf3_pse
+                0x00017c6a       0xc2 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(mulsf3x.o)
+                0x00017c7e                __mulsf3x
+                0x00017c82                __mulsf3_pse
  .text.avr-libc.fplib
-                0x00016e22        0xc d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_inf.o)
-                0x00016e22                __fp_inf
+                0x00017d2c        0xc d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_inf.o)
+                0x00017d2c                __fp_inf
  .text.avr-libc.fplib
-                0x00016e2e        0x6 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_nan.o)
-                0x00016e2e                __fp_nan
+                0x00017d38        0x6 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_nan.o)
+                0x00017d38                __fp_nan
  .text.avr-libc.fplib
-                0x00016e34        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_pscA.o)
-                0x00016e34                __fp_pscA
+                0x00017d3e        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_pscA.o)
+                0x00017d3e                __fp_pscA
  .text.avr-libc.fplib
-                0x00016e42        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_pscB.o)
-                0x00016e42                __fp_pscB
+                0x00017d4c        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_pscB.o)
+                0x00017d4c                __fp_pscB
  .text.avr-libc.fplib
-                0x00016e50       0x22 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_round.o)
-                0x00016e50                __fp_round
+                0x00017d5a       0x22 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libm.a(fp_round.o)
+                0x00017d5a                __fp_round
  .text.libgcc.mul
-                0x00016e72       0x1e d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_mulsi3.o)
-                0x00016e72                __mulsi3
+                0x00017d7c       0x1e d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_mulsi3.o)
+                0x00017d7c                __mulsi3
  .text.libgcc.div
-                0x00016e90       0x44 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodsi4.o)
-                0x00016e90                __udivmodsi4
+                0x00017d9a       0x26 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodhi4.o)
+                0x00017d9a                _div
+                0x00017d9a                __divmodhi4
  .text.libgcc.div
-                0x00016ed4       0x28 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodsi4.o)
-                0x00016ed4                __divmodsi4
+                0x00017dc0       0x44 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodsi4.o)
+                0x00017dc0                __udivmodsi4
  .text.libgcc.div
-                0x00016efc       0x10 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_negsi2.o)
-                0x00016efc                __negsi2
- .text.libgcc   0x00016f0c       0x10 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_tablejump2.o)
-                0x00016f0c                __tablejump2__
+                0x00017e04       0x28 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_divmodsi4.o)
+                0x00017e04                __divmodsi4
+ .text.libgcc.div
+                0x00017e2c       0x10 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_negsi2.o)
+                0x00017e2c                __negsi2
+ .text.libgcc   0x00017e3c       0x10 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_tablejump2.o)
+                0x00017e3c                __tablejump2__
  .text.libgcc.mul
-                0x00016f1c       0x14 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_muluhisi3.o)
-                0x00016f1c                __muluhisi3
+                0x00017e4c       0x14 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_muluhisi3.o)
+                0x00017e4c                __muluhisi3
  .text.libgcc.mul
-                0x00016f30        0xc d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_mulshisi3.o)
-                0x00016f30                __mulshisi3
-                0x00016f34                __mulohisi3
+                0x00017e60        0xc d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_mulshisi3.o)
+                0x00017e60                __mulshisi3
+                0x00017e64                __mulohisi3
+ .text.libgcc.div
+                0x00017e6c       0x28 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_udivmodhi4.o)
+                0x00017e6c                __udivmodhi4
  .text.libgcc.mul
-                0x00016f3c       0x1e d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_umulhisi3.o)
-                0x00016f3c                __umulhisi3
+                0x00017e94       0x1e d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_umulhisi3.o)
+                0x00017e94                __umulhisi3
  .text.avr-libc
-                0x00016f5a      0x256 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strtol.o)
-                0x00016f5a                strtol
+                0x00017eb2      0x256 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strtol.o)
+                0x00017eb2                strtol
  .text.avr-libc
-                0x000171b0       0x10 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(isspace.o)
-                0x000171b0                isspace
+                0x00018108       0x10 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(isspace.o)
+                0x00018108                isspace
  .text.avr-libc
-                0x000171c0        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(memset.o)
-                0x000171c0                memset
+                0x00018118        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(memset.o)
+                0x00018118                memset
  .text.avr-libc
-                0x000171ce       0x12 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strcmp.o)
-                0x000171ce                strcmp
+                0x00018126       0x12 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strcmp.o)
+                0x00018126                strcmp
  .text.avr-libc
-                0x000171e0       0x5c d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(sprintf.o)
-                0x000171e0                sprintf
+                0x00018138       0x5c d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(sprintf.o)
+                0x00018138                sprintf
  .text.avr-libc
-                0x0001723c       0x42 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(sscanf.o)
-                0x0001723c                sscanf
+                0x00018194       0x42 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(sscanf.o)
+                0x00018194                sscanf
  .text.avr-libc
-                0x0001727e      0x3fa d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(vfprintf_std.o)
-                0x0001727e                vfprintf
+                0x000181d6      0x3fa d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(vfprintf_std.o)
+                0x000181d6                vfprintf
  .text.avr-libc
-                0x00017678      0x592 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(vfscanf_std.o)
-                0x000179dc                vfscanf
+                0x000185d0      0x592 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(vfscanf_std.o)
+                0x00018934                vfscanf
  .text.avr-libc
-                0x00017c0a        0x6 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(cty_isfalse.o)
-                0x00017c0a                __ctype_isfalse
-                0x00017c0e                __ctype_istrue
+                0x00018b62        0x6 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(cty_isfalse.o)
+                0x00018b62                __ctype_isfalse
+                0x00018b66                __ctype_istrue
  .text.avr-libc
-                0x00017c10       0x16 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strchr_P.o)
-                0x00017c10                strchr_P
+                0x00018b68       0x16 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strchr_P.o)
+                0x00018b68                strchr_P
  .text.avr-libc
-                0x00017c26       0x16 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen_P.o)
-                0x00017c26                strnlen_P
+                0x00018b7e       0x16 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen_P.o)
+                0x00018b7e                strnlen_P
  .text.avr-libc
-                0x00017c3c       0x16 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen.o)
-                0x00017c3c                strnlen
+                0x00018b94       0x16 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(strnlen.o)
+                0x00018b94                strnlen
  .text.avr-libc
-                0x00017c52       0x7c d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(fgetc.o)
-                0x00017c52                fgetc
+                0x00018baa       0x7c d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(fgetc.o)
+                0x00018baa                fgetc
  .text.avr-libc
-                0x00017cce       0x78 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(fputc.o)
-                0x00017cce                fputc
+                0x00018c26       0x78 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(fputc.o)
+                0x00018c26                fputc
  .text.avr-libc
-                0x00017d46       0x32 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(ungetc.o)
-                0x00017d46                ungetc
+                0x00018c9e       0x32 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(ungetc.o)
+                0x00018c9e                ungetc
  .text.avr-libc
-                0x00017d78       0xbc d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(ultoa_invert.o)
-                0x00017d78                __ultoa_invert
-                0x00017e34                . = ALIGN (0x2)
+                0x00018cd0       0xbc d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(ultoa_invert.o)
+                0x00018cd0                __ultoa_invert
+                0x00018d8c                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00017e34        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
-                0x00017e34                _exit
-                0x00017e34                exit
+ .fini9         0x00018d8c        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
+                0x00018d8c                _exit
+                0x00018d8c                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -1371,11 +1379,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00017e34        0x4 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
+ .fini0         0x00018d8c        0x4 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr6\libgcc.a(_exit.o)
  *(.fini0)
-                0x00017e38                _etext = .
+                0x00018d90                _etext = .
 
-.data           0x00800200      0x252 load address 0x00017e38
+.data           0x00800200      0x274 load address 0x00018d90
                 0x00800200                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -1385,136 +1393,153 @@ END GROUP
  .data.receive_time
                 0x0080021e       0x14 main.o
                 0x0080021e                receive_time
+ .data.TX_ADDRESS
+                0x00800232        0x3 NRF24.o
+                0x00800232                TX_ADDRESS
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800232       0x1c main.o
+                0x00800235       0x1c main.o
  .rodata.str1.1
-                0x0080024e      0x203 WeatherStation.o
-                                0x21d (size before relaxing)
+                0x00800251        0x6 NRF24.o
+                                  0xe (size before relaxing)
+ .rodata.str1.1
+                0x00800257      0x21d WeatherStation.o
+                                0x237 (size before relaxing)
  *(.gnu.linkonce.r*)
-                0x00800452                . = ALIGN (0x2)
- *fill*         0x00800451        0x1 
-                0x00800452                _edata = .
-                0x00800452                PROVIDE (__data_end, .)
+                0x00800474                . = ALIGN (0x2)
+                0x00800474                _edata = .
+                0x00800474                PROVIDE (__data_end, .)
 
-.bss            0x00800452       0xd4
-                0x00800452                PROVIDE (__bss_start, .)
+.bss            0x00800474       0xea
+                0x00800474                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.Y_SIZE    0x00800452        0x2 ILI9486.o
-                0x00800452                Y_SIZE
- .bss.X_SIZE    0x00800454        0x2 ILI9486.o
-                0x00800454                X_SIZE
- .bss.millis    0x00800456        0x4 main.o
-                0x00800456                millis
+ .bss.Y_SIZE    0x00800474        0x2 ILI9486.o
+                0x00800474                Y_SIZE
+ .bss.X_SIZE    0x00800476        0x2 ILI9486.o
+                0x00800476                X_SIZE
+ .bss.millis    0x00800478        0x4 main.o
+                0x00800478                millis
  .bss.up_down_count
-                0x0080045a        0x1 main.o
-                0x0080045a                up_down_count
+                0x0080047c        0x1 main.o
+                0x0080047c                up_down_count
  .bss.start_time
-                0x0080045b       0x14 main.o
-                0x0080045b                start_time
- .bss.wc.1710   0x0080046f        0x2 mmc.o
- .bss.CardType  0x00800471        0x1 mmc.o
- .bss.rx_flag   0x00800472        0x1 NRF24.o
-                0x00800472                rx_flag
+                0x0080047d       0x14 main.o
+                0x0080047d                start_time
+ .bss.wc.1710   0x00800491        0x2 mmc.o
+ .bss.CardType  0x00800493        0x1 mmc.o
+ .bss.rx_flag   0x00800494        0x1 NRF24.o
+                0x00800494                rx_flag
  .bss.HALL_counter
-                0x00800473        0x5 NRF24.o
-                0x00800473                HALL_counter
- .bss.RX_BUF    0x00800478        0x5 NRF24.o
-                0x00800478                RX_BUF
- .bss.FatFs     0x0080047d        0x2 pff.o
+                0x00800495        0x5 NRF24.o
+                0x00800495                HALL_counter
+ .bss.RX_BUF    0x0080049a        0x5 NRF24.o
+                0x0080049a                RX_BUF
+ .bss.FatFs     0x0080049f        0x2 pff.o
  .bss.Rain_to_DB
-                0x0080047f        0x6 WeatherStation.o
-                0x0080047f                Rain_to_DB
+                0x008004a1        0x6 WeatherStation.o
+                0x008004a1                Rain_to_DB
  .bss.Vbat_to_DB
-                0x00800485        0x5 WeatherStation.o
-                0x00800485                Vbat_to_DB
+                0x008004a7        0x5 WeatherStation.o
+                0x008004a7                Vbat_to_DB
  .bss.wind_direction_to_DB
-                0x0080048a        0x6 WeatherStation.o
-                0x0080048a                wind_direction_to_DB
+                0x008004ac        0x6 WeatherStation.o
+                0x008004ac                wind_direction_to_DB
  .bss.WIND_speed_to_DB
-                0x00800490        0x5 WeatherStation.o
-                0x00800490                WIND_speed_to_DB
+                0x008004b2        0x5 WeatherStation.o
+                0x008004b2                WIND_speed_to_DB
  .bss.hum_street_to_DB
-                0x00800495        0x5 WeatherStation.o
-                0x00800495                hum_street_to_DB
+                0x008004b7        0x5 WeatherStation.o
+                0x008004b7                hum_street_to_DB
  .bss.temp_street_to_DB
-                0x0080049a        0x6 WeatherStation.o
-                0x0080049a                temp_street_to_DB
+                0x008004bc        0x6 WeatherStation.o
+                0x008004bc                temp_street_to_DB
  .bss.Press_home
-                0x008004a0        0x6 WeatherStation.o
-                0x008004a0                Press_home
- .bss.Rain      0x008004a6        0x6 WeatherStation.o
-                0x008004a6                Rain
- .bss.Vbat      0x008004ac        0x5 WeatherStation.o
-                0x008004ac                Vbat
+                0x008004c2        0x6 WeatherStation.o
+                0x008004c2                Press_home
+ .bss.Rain      0x008004c8        0x6 WeatherStation.o
+                0x008004c8                Rain
+ .bss.Vbat      0x008004ce        0x5 WeatherStation.o
+                0x008004ce                Vbat
  .bss.WIND_speed
-                0x008004b1        0x5 WeatherStation.o
-                0x008004b1                WIND_speed
- .bss.hum_home  0x008004b6        0x5 WeatherStation.o
-                0x008004b6                hum_home
+                0x008004d3        0x5 WeatherStation.o
+                0x008004d3                WIND_speed
+ .bss.hum_home  0x008004d8        0x5 WeatherStation.o
+                0x008004d8                hum_home
  .bss.temp_home
-                0x008004bb        0x6 WeatherStation.o
-                0x008004bb                temp_home
+                0x008004dd        0x6 WeatherStation.o
+                0x008004dd                temp_home
  .bss.hum_street
-                0x008004c1        0x5 WeatherStation.o
-                0x008004c1                hum_street
+                0x008004e3        0x5 WeatherStation.o
+                0x008004e3                hum_street
  .bss.temp_street
-                0x008004c6        0x6 WeatherStation.o
-                0x008004c6                temp_street
+                0x008004e8        0x6 WeatherStation.o
+                0x008004e8                temp_street
  *(COMMON)
- COMMON         0x008004cc        0x9 ILI9486.o
-                0x008004cc                BACK_COLOR
-                0x008004ce                POINT_COLOR
-                0x008004d0                cursor_y
-                0x008004d2                cursor_x
-                0x008004d4                textsize
- COMMON         0x008004d5       0x10 main.o
-                0x008004d5                PageAbout_Flag
-                0x008004d6                AddInfoPage_Flag
-                0x008004d7                month
-                0x008004d8                hour
-                0x008004d9                menu_flag
-                0x008004da                clock_change_mode
-                0x008004db                HomePage_Flag
-                0x008004dc                min
-                0x008004dd                year
-                0x008004de                sec
-                0x008004df                day
-                0x008004e0                alarmhour
-                0x008004e1                date
-                0x008004e2                MainMenuPage_Flag
-                0x008004e3                TimeSettingsPage_Flag
-                0x008004e4                alarmmin
- COMMON         0x008004e5       0x12 NRF24.o
-                0x008004e5                receive_counter
-                0x008004e6                street_temp_fraction
-                0x008004e7                street_temp_sign
-                0x008004e8                adc_value1
-                0x008004ee                wind_speed_fraction
-                0x008004ef                wind_speed_integer
-                0x008004f0                adc_value2
-                0x008004f6                street_temp_integer
- COMMON         0x008004f7       0x2d WeatherStation.o
-                0x008004f7                home_temp_fraction
-                0x008004f8                wind_direction
-                0x008004fe                home_temp_integer
-                0x008004ff                T_Param
-                0x00800521                home_temp_sign
-                0x00800522                home_hum_integer
- COMMON         0x00800524        0x2 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(errno.o)
-                0x00800524                errno
-                0x00800526                PROVIDE (__bss_end, .)
-                0x00017e38                __data_load_start = LOADADDR (.data)
-                0x0001808a                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x008004ee       0x16 BMP180.o
+                0x008004ee                b2
+                0x008004f0                mb
+                0x008004f2                ac1
+                0x008004f4                b1
+                0x008004f6                ac6
+                0x008004f8                ac5
+                0x008004fa                ac2
+                0x008004fc                md
+                0x008004fe                ac4
+                0x00800500                mc
+                0x00800502                ac3
+ COMMON         0x00800504        0x9 ILI9486.o
+                0x00800504                BACK_COLOR
+                0x00800506                POINT_COLOR
+                0x00800508                cursor_y
+                0x0080050a                cursor_x
+                0x0080050c                textsize
+ COMMON         0x0080050d       0x10 main.o
+                0x0080050d                PageAbout_Flag
+                0x0080050e                AddInfoPage_Flag
+                0x0080050f                month
+                0x00800510                hour
+                0x00800511                menu_flag
+                0x00800512                clock_change_mode
+                0x00800513                HomePage_Flag
+                0x00800514                min
+                0x00800515                year
+                0x00800516                sec
+                0x00800517                day
+                0x00800518                alarmhour
+                0x00800519                date
+                0x0080051a                MainMenuPage_Flag
+                0x0080051b                TimeSettingsPage_Flag
+                0x0080051c                alarmmin
+ COMMON         0x0080051d       0x12 NRF24.o
+                0x0080051d                receive_counter
+                0x0080051e                street_temp_fraction
+                0x0080051f                street_temp_sign
+                0x00800520                adc_value1
+                0x00800526                wind_speed_fraction
+                0x00800527                wind_speed_integer
+                0x00800528                adc_value2
+                0x0080052e                street_temp_integer
+ COMMON         0x0080052f       0x2d WeatherStation.o
+                0x0080052f                home_temp_fraction
+                0x00800530                wind_direction
+                0x00800536                home_temp_integer
+                0x00800537                T_Param
+                0x00800559                home_temp_sign
+                0x0080055a                home_hum_integer
+ COMMON         0x0080055c        0x2 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr6\libc.a(errno.o)
+                0x0080055c                errno
+                0x0080055e                PROVIDE (__bss_end, .)
+                0x00018d90                __data_load_start = LOADADDR (.data)
+                0x00019004                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800526        0x0
+.noinit         0x0080055e        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800526                _end = .
+                0x0080055e                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -1556,8 +1581,9 @@ END GROUP
 
 .comment        0x00000000       0x5c
  *(.comment)
- .comment       0x00000000       0x30 DS18B20.o
+ .comment       0x00000000       0x30 BMP180.o
                                  0x31 (size before relaxing)
+ .comment       0x00000030       0x31 DS18B20.o
  .comment       0x00000030       0x31 ILI9486.o
  .comment       0x00000030       0x31 main.o
  .comment       0x00000030       0x31 mmc.o
@@ -1598,123 +1624,132 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x5a8
+.debug_aranges  0x00000000      0x5f8
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x50 DS18B20.o
+                0x00000000       0x40 BMP180.o
  .debug_aranges
-                0x00000050      0x190 ILI9486.o
+                0x00000040       0x50 DS18B20.o
  .debug_aranges
-                0x000001e0       0x78 main.o
+                0x00000090      0x190 ILI9486.o
  .debug_aranges
-                0x00000258       0x50 mmc.o
+                0x00000220       0x78 main.o
  .debug_aranges
-                0x000002a8       0x90 NRF24.o
+                0x00000298       0x50 mmc.o
  .debug_aranges
-                0x00000338       0xb0 pff.o
+                0x000002e8       0x90 NRF24.o
  .debug_aranges
-                0x000003e8       0x50 RTC_DS3231.o
+                0x00000378       0xb0 pff.o
  .debug_aranges
-                0x00000438       0x50 TWI.o
+                0x00000428       0x50 RTC_DS3231.o
  .debug_aranges
-                0x00000488       0x28 usart.o
+                0x00000478       0x50 TWI.o
  .debug_aranges
-                0x000004b0       0xf8 WeatherStation.o
+                0x000004c8       0x28 usart.o
+ .debug_aranges
+                0x000004f0      0x108 WeatherStation.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000    0x10e22
+.debug_info     0x00000000    0x113f4
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xbbc D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_info    0x00000bbc      0x52b DS18B20.o
- .debug_info    0x000010e7     0x3306 ILI9486.o
- .debug_info    0x000043ed      0x950 main.o
- .debug_info    0x00004d3d      0x62f mmc.o
- .debug_info    0x0000536c      0xc49 NRF24.o
- .debug_info    0x00005fb5     0x11d8 pff.o
- .debug_info    0x0000718d      0x73b RTC_DS3231.o
- .debug_info    0x000078c8      0x198 TWI.o
- .debug_info    0x00007a60       0xec usart.o
- .debug_info    0x00007b4c     0x92d6 WeatherStation.o
+ .debug_info    0x00000bbc      0x68f BMP180.o
+ .debug_info    0x0000124b      0x52b DS18B20.o
+ .debug_info    0x00001776     0x3306 ILI9486.o
+ .debug_info    0x00004a7c      0x7f9 main.o
+ .debug_info    0x00005275      0x62f mmc.o
+ .debug_info    0x000058a4      0xc49 NRF24.o
+ .debug_info    0x000064ed     0x11d8 pff.o
+ .debug_info    0x000076c5      0x73b RTC_DS3231.o
+ .debug_info    0x00007e00      0x198 TWI.o
+ .debug_info    0x00007f98       0xec usart.o
+ .debug_info    0x00008084     0x9370 WeatherStation.o
 
-.debug_abbrev   0x00000000     0x1f01
+.debug_abbrev   0x00000000     0x205e
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0xb1a D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_abbrev  0x00000b1a      0x1ce DS18B20.o
- .debug_abbrev  0x00000ce8      0x346 ILI9486.o
- .debug_abbrev  0x0000102e      0x29a main.o
- .debug_abbrev  0x000012c8      0x1cf mmc.o
- .debug_abbrev  0x00001497      0x28a NRF24.o
- .debug_abbrev  0x00001721      0x268 pff.o
- .debug_abbrev  0x00001989      0x101 RTC_DS3231.o
- .debug_abbrev  0x00001a8a       0xe1 TWI.o
- .debug_abbrev  0x00001b6b       0x92 usart.o
- .debug_abbrev  0x00001bfd      0x304 WeatherStation.o
+ .debug_abbrev  0x00000b1a      0x18c BMP180.o
+ .debug_abbrev  0x00000ca6      0x1ce DS18B20.o
+ .debug_abbrev  0x00000e74      0x346 ILI9486.o
+ .debug_abbrev  0x000011ba      0x260 main.o
+ .debug_abbrev  0x0000141a      0x1cf mmc.o
+ .debug_abbrev  0x000015e9      0x28a NRF24.o
+ .debug_abbrev  0x00001873      0x268 pff.o
+ .debug_abbrev  0x00001adb      0x101 RTC_DS3231.o
+ .debug_abbrev  0x00001bdc       0xe1 TWI.o
+ .debug_abbrev  0x00001cbd       0x92 usart.o
+ .debug_abbrev  0x00001d4f      0x30f WeatherStation.o
 
-.debug_line     0x00000000     0x5f5b
+.debug_line     0x00000000     0x62a2
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x1fa D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_line    0x000001fa      0x2e7 DS18B20.o
- .debug_line    0x000004e1     0x1935 ILI9486.o
- .debug_line    0x00001e16      0x6f4 main.o
- .debug_line    0x0000250a      0x529 mmc.o
- .debug_line    0x00002a33      0x67c NRF24.o
- .debug_line    0x000030af      0xc29 pff.o
- .debug_line    0x00003cd8      0x2c6 RTC_DS3231.o
- .debug_line    0x00003f9e      0x179 TWI.o
- .debug_line    0x00004117       0xeb usart.o
- .debug_line    0x00004202     0x1d59 WeatherStation.o
+ .debug_line    0x000001fa      0x2db BMP180.o
+ .debug_line    0x000004d5      0x2e7 DS18B20.o
+ .debug_line    0x000007bc     0x1935 ILI9486.o
+ .debug_line    0x000020f1      0x77c main.o
+ .debug_line    0x0000286d      0x529 mmc.o
+ .debug_line    0x00002d96      0x67c NRF24.o
+ .debug_line    0x00003412      0xc29 pff.o
+ .debug_line    0x0000403b      0x2c6 RTC_DS3231.o
+ .debug_line    0x00004301      0x179 TWI.o
+ .debug_line    0x0000447a       0xeb usart.o
+ .debug_line    0x00004565     0x1d3d WeatherStation.o
 
-.debug_frame    0x00000000     0x1b70
+.debug_frame    0x00000000     0x1ce4
  *(.debug_frame)
- .debug_frame   0x00000000       0xa4 DS18B20.o
- .debug_frame   0x000000a4      0x91c ILI9486.o
- .debug_frame   0x000009c0      0x1b4 main.o
- .debug_frame   0x00000b74      0x108 mmc.o
- .debug_frame   0x00000c7c      0x2dc NRF24.o
- .debug_frame   0x00000f58      0x45c pff.o
- .debug_frame   0x000013b4       0xa8 RTC_DS3231.o
- .debug_frame   0x0000145c       0x90 TWI.o
- .debug_frame   0x000014ec       0x34 usart.o
- .debug_frame   0x00001520      0x650 WeatherStation.o
+ .debug_frame   0x00000000      0x10c BMP180.o
+ .debug_frame   0x0000010c       0xa4 DS18B20.o
+ .debug_frame   0x000001b0      0x91c ILI9486.o
+ .debug_frame   0x00000acc      0x1e8 main.o
+ .debug_frame   0x00000cb4      0x108 mmc.o
+ .debug_frame   0x00000dbc      0x2dc NRF24.o
+ .debug_frame   0x00001098      0x45c pff.o
+ .debug_frame   0x000014f4       0xa8 RTC_DS3231.o
+ .debug_frame   0x0000159c       0x90 TWI.o
+ .debug_frame   0x0000162c       0x34 usart.o
+ .debug_frame   0x00001660      0x684 WeatherStation.o
 
-.debug_str      0x00000000     0x16f2
+.debug_str      0x00000000     0x1794
  *(.debug_str)
  .debug_str     0x00000000      0x3e6 D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_str     0x000003e6      0x205 DS18B20.o
+ .debug_str     0x000003e6      0x252 BMP180.o
+                                0x2a4 (size before relaxing)
+ .debug_str     0x00000638       0x78 DS18B20.o
                                 0x23e (size before relaxing)
- .debug_str     0x000005eb      0x620 ILI9486.o
+ .debug_str     0x000006b0      0x612 ILI9486.o
                                 0x833 (size before relaxing)
- .debug_str     0x00000c0b      0x3af main.o
-                                0x5cd (size before relaxing)
- .debug_str     0x00000fba       0x98 mmc.o
+ .debug_str     0x00000cc2      0x2c3 main.o
+                                0x4cf (size before relaxing)
+ .debug_str     0x00000f85       0x98 mmc.o
                                 0x22d (size before relaxing)
- .debug_str     0x00001052      0x1e1 NRF24.o
+ .debug_str     0x0000101d      0x1d1 NRF24.o
                                 0x479 (size before relaxing)
- .debug_str     0x00001233      0x1a4 pff.o
+ .debug_str     0x000011ee      0x1a4 pff.o
                                 0x405 (size before relaxing)
- .debug_str     0x000013d7       0xd6 RTC_DS3231.o
+ .debug_str     0x00001392       0x8f RTC_DS3231.o
                                 0x279 (size before relaxing)
- .debug_str     0x000014ad       0x1e TWI.o
+ .debug_str     0x00001421       0x27 TWI.o
                                 0x1f7 (size before relaxing)
- .debug_str     0x000014cb       0x1c usart.o
+ .debug_str     0x00001448       0x27 usart.o
                                 0x1ad (size before relaxing)
- .debug_str     0x000014e7      0x20b WeatherStation.o
-                                0x991 (size before relaxing)
+ .debug_str     0x0000146f      0x325 WeatherStation.o
+                                0x9ef (size before relaxing)
 
-.debug_loc      0x00000000     0x9d9a
+.debug_loc      0x00000000     0xa72e
  *(.debug_loc)
- .debug_loc     0x00000000      0x418 DS18B20.o
- .debug_loc     0x00000418     0x42db ILI9486.o
- .debug_loc     0x000046f3      0x4a3 main.o
- .debug_loc     0x00004b96      0x75a mmc.o
- .debug_loc     0x000052f0      0xd2b NRF24.o
- .debug_loc     0x0000601b     0x1e2c pff.o
- .debug_loc     0x00007e47      0x24a RTC_DS3231.o
- .debug_loc     0x00008091       0xb4 TWI.o
- .debug_loc     0x00008145       0x78 usart.o
- .debug_loc     0x000081bd     0x1bdd WeatherStation.o
+ .debug_loc     0x00000000      0x923 BMP180.o
+ .debug_loc     0x00000923      0x418 DS18B20.o
+ .debug_loc     0x00000d3b     0x42db ILI9486.o
+ .debug_loc     0x00005016      0x524 main.o
+ .debug_loc     0x0000553a      0x75a mmc.o
+ .debug_loc     0x00005c94      0xd2b NRF24.o
+ .debug_loc     0x000069bf     0x1e2c pff.o
+ .debug_loc     0x000087eb      0x24a RTC_DS3231.o
+ .debug_loc     0x00008a35       0xb4 TWI.o
+ .debug_loc     0x00008ae9       0x78 usart.o
+ .debug_loc     0x00008b61     0x1bcd WeatherStation.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -1734,18 +1769,19 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x5e0
+.debug_ranges   0x00000000      0x608
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x40 DS18B20.o
- .debug_ranges  0x00000040      0x1b0 ILI9486.o
- .debug_ranges  0x000001f0       0x68 main.o
- .debug_ranges  0x00000258       0x40 mmc.o
- .debug_ranges  0x00000298       0x80 NRF24.o
- .debug_ranges  0x00000318       0xa0 pff.o
- .debug_ranges  0x000003b8       0x40 RTC_DS3231.o
- .debug_ranges  0x000003f8       0x40 TWI.o
- .debug_ranges  0x00000438       0x18 usart.o
- .debug_ranges  0x00000450      0x190 WeatherStation.o
+ .debug_ranges  0x00000000       0x30 BMP180.o
+ .debug_ranges  0x00000030       0x40 DS18B20.o
+ .debug_ranges  0x00000070      0x1b0 ILI9486.o
+ .debug_ranges  0x00000220       0x68 main.o
+ .debug_ranges  0x00000288       0x40 mmc.o
+ .debug_ranges  0x000002c8       0x80 NRF24.o
+ .debug_ranges  0x00000348       0xa0 pff.o
+ .debug_ranges  0x000003e8       0x40 RTC_DS3231.o
+ .debug_ranges  0x00000428       0x40 TWI.o
+ .debug_ranges  0x00000468       0x18 usart.o
+ .debug_ranges  0x00000480      0x188 WeatherStation.o
 
 .debug_macro
  *(.debug_macro)

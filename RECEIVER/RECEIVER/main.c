@@ -457,8 +457,8 @@ void SPI_init(void) //инициализация SPI
 void port_init(void)
 {
 	//инициализация ножки IRQ для внеш прерывания
-	DDRE &= ~(1<<IRQ);
-	PORTE |= (1<<IRQ);
+	DDRD &= ~(1<<IRQ);
+	PORTD |= (1<<IRQ);
 	//инициализация портов для светодиода
 	DDRL |= (1 << LED);//led
 	PORTL &= ~ (1 << LED);
@@ -508,10 +508,10 @@ int main(void)
 	Print_Hello_World();
 	wdt_reset();
 	//Инициализация оборудования
-	//NRF24_ini();
+	NRF24_ini();
 	RTC_init();
 	//dht22_init();
-	//BMP180_Calibration();
+	BMP180_Calibration();
 	wdt_reset();
 	_delay_ms(1500);
 	// Установка времени для DS3231(делается 1 разv)
@@ -528,7 +528,8 @@ int main(void)
 	timer0_ini();
 	// настраиваем параметры прерывания
 	EICRB |= (1<<ISC41) | (1<<ISC51) | (1<<ISC61) | (1<<ISC71);
-	EIMSK |= (1<<INT4) | (1<<INT5) | (1<<INT6) | (1<<INT7);
+	EICRA |= (0<<ISC20) | (1<<ISC21);
+	EIMSK |= (1<<INT4) | (1<<INT5) | (1<<INT6) | (1<<INT7) | (1<<INT2);
 	//enc_interrupt_ini();
 	//Начальная конфигурация
 	strcpy(temp_street_to_DB,"NULL");
@@ -567,6 +568,7 @@ int main(void)
 	sprintf_HOME_Weath_Param();
 	Print_Static_Home_Page();
 	Print_Home_Page_In();
+	Print_Home_Page_WeatherForecast();
 	Print_Home_Page_Out();
 	HomePage_Flag = 0;
 	MainMenuPage_Flag = 1;
@@ -579,7 +581,7 @@ int main(void)
 			time1 = millis;
 			while(rx_count < 6)
 			{
-				/*time2 = millis;
+				time2 = millis;
 				if ((time2-time1)>15000)
 				{
 					rx_flag = 0;
@@ -590,29 +592,29 @@ int main(void)
 				if(rx_flag == 1)
 				{
 					_delay_us(300);
-					PORTB |= (1<<LED);
+					PORTL |= (1<<LED);
 					_delay_us(300);
-					PORTB &= ~(1<<LED);
+					PORTL &= ~(1<<LED);
 					NRF24L01_Receive();
 					Clock ();
 					sprintf(receive_time,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);
 					rx_count++;
 				}
 				//обновление показаний на экране
-				switch (menu_flag)
+				if (menu_flag == 0)
 				{
-					case 0:	Print_Home_Page();
-					break;
-					case 1:	Print_Menu_Page();
-					break;
-					case 2:	Print_Page_Clock_Settings();
-					break;
-					case 3:	Print_Page_About();
-					break;
-					case 4:	Print_Page_Dop_Info();
-					break;
+					Print_Home_Page_Out();
 				}
-				wdt_reset();*/
+				else if (menu_flag == 4)
+				{
+					Print_Page_Dop_Info();
+				}
+				wdt_reset();
+			}
+			if (menu_flag == 0)
+			{
+				Print_Home_Page_WeatherForecast();
+				Print_Home_Page_Out();
 			}
 			rx_count = 0;
 			_delay_ms(1000);
@@ -646,6 +648,7 @@ int main(void)
 							sprintf_HOME_Weath_Param();
 							Print_Static_Home_Page();
 							Print_Home_Page_In();
+							Print_Home_Page_WeatherForecast();
 							Print_Home_Page_Out();
 							HomePage_Flag = 0;
 							MainMenuPage_Flag = 1;
@@ -709,6 +712,7 @@ int main(void)
 					case 4:	
 						if(AddInfoPage_Flag == 1)
 						{
+							Print_Page_Dop_Info_Static();
 							Print_Page_Dop_Info();
 							TimeSettingsPage_Flag = 1;
 							MainMenuPage_Flag = 1;
@@ -718,7 +722,7 @@ int main(void)
 						}
 						else
 						{
-							
+							Print_Page_Dop_Info();
 						}
 					break;
 				}

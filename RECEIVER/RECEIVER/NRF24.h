@@ -16,7 +16,7 @@
 #define MOSI PORTB2
 #define SS PORTB0 // (CSN)
 #define CE PORTB4
-#define IRQ PORTE4
+#define IRQ PORTD2
 //-------------------------------------------------------------
 #define LOW_CE PORTB &= ~(1 << CE);// Установка низкого уровня на линии CE 
 #define HIGH_CE PORTB |= (1 << CE);// Установка высокого уровня на линии CE 

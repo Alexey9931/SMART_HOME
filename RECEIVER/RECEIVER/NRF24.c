@@ -174,7 +174,7 @@ void NRF24L01_Receive(void)
 	}
 }
 //-------------------------------------------------------------
-ISR(INT0_vect)
+ISR(INT2_vect)
 {
 	uint8_t status=0x01;
 	status = nRF_read_register(STATUS);
