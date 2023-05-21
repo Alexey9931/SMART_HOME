@@ -9,15 +9,7 @@
 
 #define RADIUS 0.139
 
-char temp_street[6] = {0};
-char hum_street[5] = {0};
-char temp_home[6] = {0};
-char hum_home[5] = {0};
-char WIND_speed[5] = {0};
 char wind_direction[6];
-char Vbat[5] = {0};
-char Rain[6] = {0};
-char Press_home[6] = {0};
 
 char temp_street_to_DB[6] = {0};
 char hum_street_to_DB[5] = {0};
@@ -44,24 +36,27 @@ extern char adc_value1[6];
 extern char HALL_counter[5];
 extern char adc_value2[6];
 
-extern uint8_t change_flag;
+extern uint8_t clock_change_flag;
 extern int8_t up_down_count;
 extern int8_t add_cnt;
 extern uint8_t receive_counter;
 extern uint8_t WiFi_Flag;
+extern int8_t clock_setting_count;
 
 
 uint8_t home_temp_sign;//знак домаш темп
 uint8_t home_temp_integer;//цела€ часть домаш темп
 uint8_t home_temp_fraction;//дробна€ часть домаш темп
 int home_hum_integer;//цела€ часть домаш влажн
+int pressure_home;//цела€ часть давлени€
 
 extern uint8_t street_temp_sign;//знак уличн темп
 extern uint8_t street_temp_integer;//цела€ часть уличн темп
 extern uint8_t street_temp_fraction;//дробна€ часть уличн темп
-
+extern int street_hum_integer;//цела€ часть уличн влажн
 extern uint8_t wind_speed_integer;//цела€ часть ск ветра
 extern uint8_t wind_speed_fraction;//дробна€ часть ск ветра
+extern uint8_t rain; //цела€ часть осадков
 
 //ќкно приветсви€ на экране диспле€
 void Print_Hello_World()
@@ -157,42 +152,27 @@ void Print_Home_Page_Out()
 	char data[10];
 	//вывод скорости ветра
 	ILI9486_SetTextColor(LIGHTBLUE,BLACK);
-	wind_speed_integer = 9;
-	wind_speed_fraction = 44;
 	if(wind_speed_integer < 10)
 	{
 		sprintf(data," %d",wind_speed_integer);
-		ILI9486_SetCursor(201,260);
-		ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(227,260);
-		ILI9486_Print_StringConsolas16x24(".",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(240,260);
-		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
-		sprintf(data,"%d",wind_speed_fraction);
-		ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(270,260);
-		ILI9486_Print_StringConsolas16x24("m/",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(294,260);
-		ILI9486_Print_StringConsolas16x24("s",TFT_STRING_MODE_BACKGROUND);
-		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
 	else
 	{
 		sprintf(data,"%d",wind_speed_integer);
-		ILI9486_SetCursor(201,260);
-		ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(227,260);
-		ILI9486_Print_StringConsolas16x24(".",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(240,260);
-		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
-		sprintf(data,"%d",wind_speed_fraction);
-		ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(271,260);
-		ILI9486_Print_StringConsolas16x24("m/",TFT_STRING_MODE_BACKGROUND);
-		ILI9486_SetCursor(295,260);
-		ILI9486_Print_StringConsolas16x24("s",TFT_STRING_MODE_BACKGROUND);
-		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
+	ILI9486_SetCursor(204,260);
+	ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(231,260);
+	ILI9486_Print_StringConsolas16x24(".",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(244,260);
+	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
+	sprintf(data,"%d",wind_speed_fraction);
+	ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(270,260);
+	ILI9486_Print_StringConsolas16x24("m/",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(294,260);
+	ILI9486_Print_StringConsolas16x24("s",TFT_STRING_MODE_BACKGROUND);
+	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	//вывод уличных показаний
 	ILI9486_SetTextColor(YELLOW,BLACK);
 	if (street_temp_sign != 0x00)
@@ -247,15 +227,35 @@ void Print_Home_Page_Out()
 	ILI9486_Print_String18x32("C",TFT_STRING_MODE_BACKGROUND);//ед измерени€
 	//влажность
 	ILI9486_SetCursor(361,150);
-	ILI9486_Print_String32x48("30",TFT_STRING_MODE_BACKGROUND);
+	if(street_hum_integer < 10)
+	{
+		sprintf(data," %d",street_hum_integer);
+	}
+	else
+	{
+		sprintf(data,"%d",street_hum_integer);
+	}
+	ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);
+	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	ILI9486_SetCursor(429,165);
 	ILI9486_Print_String18x32("%",TFT_STRING_MODE_BACKGROUND);//ед измерени€
 	//вывод флюгера
 	DrawWindDirect();
 	//вывод кол-ва осадков
 	ILI9486_SetTextColor(0xA39F,BLACK);
-	ILI9486_SetCursor(360,95);
-	ILI9486_Print_StringConsolas16x24("10%",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(363,95);
+	if(rain < 10)
+	{
+		sprintf(data," %d",rain);
+	}
+	else
+	{
+		sprintf(data,"%d",rain);
+	}
+	ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(395,95);
+	ILI9486_Print_StringConsolas16x24("%",TFT_STRING_MODE_BACKGROUND);
+	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	//вывод уровн€ сигнала NRF
 	DrawLevelNrf();
 }
@@ -313,8 +313,22 @@ void Print_Home_Page_In()
 	ILI9486_Print_String18x32(DATE,TFT_STRING_MODE_BACKGROUND);
 	wdt_reset();
 	//вывод домашних показаний
-	//температура
+	//влажность
 	ILI9486_SetTextColor(0xFB80,BLACK);
+	ILI9486_SetCursor(47,150);
+	if (home_hum_integer < 10)
+	{
+		sprintf(data," %d",home_hum_integer);
+	}
+	else
+	{
+		sprintf(data,"%d",home_hum_integer);
+	}
+	ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(115,165);
+	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
+	ILI9486_Print_String18x32("%",TFT_STRING_MODE_BACKGROUND);//ед измерени€
+	//температура
 	if (home_temp_sign != 0x00)
 	{
 		ILI9486_SetCursor(79,250);
@@ -367,17 +381,12 @@ void Print_Home_Page_In()
 	}
 	ILI9486_SetCursor(143,268);
 	ILI9486_Print_String18x32("C",TFT_STRING_MODE_BACKGROUND);//ед измерени€
-	//влажность
-	ILI9486_SetCursor(47,150);
-	sprintf(data,"%d",home_hum_integer);
-	ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(115,165);
-	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
-	ILI9486_Print_String18x32("%",TFT_STRING_MODE_BACKGROUND);//ед измерени€
 	//вывод атм. давлени€
 	ILI9486_SetTextColor(0xF96B,BLACK);
 	ILI9486_SetCursor(206,290);
-	ILI9486_Print_StringConsolas16x24(Press_home,TFT_STRING_MODE_BACKGROUND);
+	sprintf(data,"%d",pressure_home);
+	ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
+	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	ILI9486_SetCursor(248,290);
 	ILI9486_Print_StringConsolas16x24("mmHg",TFT_STRING_MODE_BACKGROUND);
 }
@@ -784,13 +793,15 @@ void Print_Page_Clock_Settings_Static()
 }
 void Print_Page_Clock_Settings()
 {
+	Convert_to_string_Clock();
 	switch (up_down_count%8)
 	{
 		case 0:	
-			/*if(change_flag)
+			if (clock_change_flag == 1)
 			{
-				hour = add_cnt;
-			}*/
+				ILI9486_SetCursor(50,100);
+				ILI9486_Print_String32x48(T_Param.hours,TFT_STRING_MODE_BACKGROUND);
+			}
 			ILI9486_DrawRect(47,97,67,54,WHITE);
 			ILI9486_DrawRect(48,98,65,52,WHITE);
 		
@@ -816,10 +827,11 @@ void Print_Page_Clock_Settings()
 			ILI9486_DrawRect(38,274,412,40,BLACK);
 			break;
 		case 1: 
-			/*if(change_flag)
+			if (clock_change_flag == 1)
 			{
-				min = add_cnt;
-			}*/
+				ILI9486_SetCursor(170,100);
+				ILI9486_Print_String32x48(T_Param.minutes,TFT_STRING_MODE_BACKGROUND);
+			}
 			ILI9486_DrawRect(47,97,67,54,BLACK);
 			ILI9486_DrawRect(48,98,65,52,BLACK);
 		
@@ -845,10 +857,11 @@ void Print_Page_Clock_Settings()
 			ILI9486_DrawRect(38,274,412,40,BLACK);
 			break;
 		case 2: 
-			/*if(change_flag)
+			if (clock_change_flag == 1)
 			{
-				day = add_cnt;
-			}*/
+				ILI9486_SetCursor(315,100);
+				ILI9486_Print_String32x48(T_Param.seconds,TFT_STRING_MODE_BACKGROUND);
+			}
 			ILI9486_DrawRect(47,97,67,54,BLACK);
 			ILI9486_DrawRect(48,98,65,52,BLACK);
 		
@@ -874,10 +887,11 @@ void Print_Page_Clock_Settings()
 			ILI9486_DrawRect(38,274,412,40,BLACK);
 			break;
 		case 3: 
-			/*if(change_flag)
+			if (clock_change_flag == 1)
 			{
-				date = add_cnt;
-			}*/
+				ILI9486_SetCursor(100,170);
+				ILI9486_Print_String32x48(T_Param.mounthday,TFT_STRING_MODE_BACKGROUND);
+			}
 			ILI9486_DrawRect(47,97,67,54,BLACK);
 			ILI9486_DrawRect(48,98,65,52,BLACK);
 		
@@ -903,10 +917,11 @@ void Print_Page_Clock_Settings()
 			ILI9486_DrawRect(38,274,412,40,BLACK);
 			break;
 		case 4: 
-			/*if(change_flag)
+			if (clock_change_flag == 1)
 			{
-				month = add_cnt;
-			}*/
+				ILI9486_SetCursor(205,170);
+				ILI9486_Print_String32x48(T_Param.Mounth,TFT_STRING_MODE_BACKGROUND);
+			}
 			ILI9486_DrawRect(47,97,67,54,BLACK);
 			ILI9486_DrawRect(48,98,65,52,BLACK);
 		
@@ -932,10 +947,11 @@ void Print_Page_Clock_Settings()
 			ILI9486_DrawRect(38,274,412,40,BLACK);
 			break;
 		case 5: 
-			/*if(change_flag)
+			if (clock_change_flag == 1)
 			{
-				year = add_cnt;
-			}*/
+				ILI9486_SetCursor(315,170);
+				ILI9486_Print_String32x48(T_Param.Year,TFT_STRING_MODE_BACKGROUND);
+			}
 			ILI9486_DrawRect(47,97,67,54,BLACK);
 			ILI9486_DrawRect(48,98,65,52,BLACK);
 		
@@ -961,6 +977,11 @@ void Print_Page_Clock_Settings()
 			ILI9486_DrawRect(38,274,412,40,BLACK);
 			break;
 		case 6:
+			if (clock_change_flag == 1)
+			{
+				ILI9486_SetCursor(190,230);
+				ILI9486_Print_String18x32(T_Param.weakday,TFT_STRING_MODE_BACKGROUND);
+			}
 			ILI9486_DrawRect(47,97,67,54,BLACK);
 			ILI9486_DrawRect(48,98,65,52,BLACK);
 		
@@ -1076,173 +1097,6 @@ void Print_Page_Dop_Info()
 	ILI9486_Print_String18x32(send_time,TFT_STRING_MODE_BACKGROUND);
 }
 //-----------√рафика вспомогательна€ дл€ главного окна------//
-void DrawSun()
-{
-	FATFS fs;
-	WORD s1;
-	asm("nop");
-	pf_mount(&fs); //ћонтируем FAT
-	pf_open("/sun.txt");
-
-	uint8_t array1[6010];
-	//uint16_t sun[1000];
-	int l, p = 0;
-	for (int k = 0; k < 10; k++)
-	{
-		memset(array1, 0, sizeof(uint8_t) * strlen(array1));//очистка массива
-		char arr[10] = {};
-		p = 0;
-		pf_read(array1,6000,&s1);
-		wdt_reset();
-		for (int m = 0; m < 1000; m++)
-		{
-			l = 0;
-			while (array1[p] != ',')
-			{
-				arr[l] = array1[p];
-				p++;
-				l++;
-			}
-			p += 2;
-			//sun[m+1000*k] = (uint16_t)strtol(arr,NULL,16);
-			ILI9486_drawPixel(370+m%100, 3+10*k+(m/100), (uint16_t)strtol(arr,NULL,16));
-			wdt_reset();
-		}
-	}
-	pf_mount(0x00);
-}
-void DrawSunWithClouds()
-{
-	FATFS fs;
-	WORD s1;
-	asm("nop");
-	pf_mount(&fs); //ћонтируем FAT
-	pf_open("/sucl.txt");
-
-	uint8_t array1[6010];
-	int l, p = 0;
-	for (int k = 0; k < 10; k++)
-	{
-		memset(array1, 0, sizeof(uint8_t) * strlen(array1));//очистка массива
-		char arr[10] = {};
-		p = 0;
-		pf_read(array1,6000,&s1);
-		wdt_reset();
-		for (int m = 0; m < 1000; m++)
-		{
-			l = 0;
-			while (array1[p] != ',')
-			{
-				arr[l] = array1[p];
-				p++;
-				l++;
-			}
-			p += 2;
-			ILI9486_drawPixel(370+m%100, 3+10*k+(m/100), (uint16_t)strtol(arr,NULL,16));
-			wdt_reset();
-		}
-	}
-	pf_mount(0x00);
-}
-void DrawClouds()
-{
-	FATFS fs;
-	WORD s1;
-	asm("nop");
-	pf_mount(&fs); //ћонтируем FAT
-	pf_open("/clou.txt");
-
-	uint8_t array1[6010];
-	int l, p = 0;
-	for (int k = 0; k < 10; k++)
-	{
-		memset(array1, 0, sizeof(uint8_t) * strlen(array1));//очистка массива
-		char arr[10] = {};
-		p = 0;
-		pf_read(array1,6000,&s1);
-		wdt_reset();
-		for (int m = 0; m < 1000; m++)
-		{
-			l = 0;
-			while (array1[p] != ',')
-			{
-				arr[l] = array1[p];
-				p++;
-				l++;
-			}
-			p += 2;
-			ILI9486_drawPixel(370+m%100, 3+10*k+(m/100), (uint16_t)strtol(arr,NULL,16));
-			wdt_reset();
-		}
-	}
-	pf_mount(0x00);
-}
-void DrawSmalRain()
-{
-	FATFS fs;
-	WORD s1;
-	asm("nop");
-	pf_mount(&fs); //ћонтируем FAT
-	pf_open("/smra.txt");
-
-	uint8_t array1[6010];
-	int l, p = 0;
-	for (int k = 0; k < 10; k++)
-	{
-		memset(array1, 0, sizeof(uint8_t) * strlen(array1));//очистка массива
-		char arr[10] = {};
-		p = 0;
-		pf_read(array1,6000,&s1);
-		wdt_reset();
-		for (int m = 0; m < 1000; m++)
-		{
-			l = 0;
-			while (array1[p] != ',')
-			{
-				arr[l] = array1[p];
-				p++;
-				l++;
-			}
-			p += 2;
-			ILI9486_drawPixel(370+m%100, 3+10*k+(m/100), (uint16_t)strtol(arr,NULL,16));
-			wdt_reset();
-		}
-	}
-	pf_mount(0x00);
-}
-void DrawHardRain()
-{
-	FATFS fs;
-	WORD s1;
-	asm("nop");
-	pf_mount(&fs); //ћонтируем FAT
-	pf_open("/hara.txt");
-
-	uint8_t array1[6010];
-	int l, p = 0;
-	for (int k = 0; k < 10; k++)
-	{
-		memset(array1, 0, sizeof(uint8_t) * strlen(array1));//очистка массива
-		char arr[10] = {};
-		p = 0;
-		pf_read(array1,6000,&s1);
-		wdt_reset();
-		for (int m = 0; m < 1000; m++)
-		{
-			l = 0;
-			while (array1[p] != ',')
-			{
-				arr[l] = array1[p];
-				p++;
-				l++;
-			}
-			p += 2;
-			ILI9486_drawPixel(370+m%100, 3+10*k+(m/100), (uint16_t)strtol(arr,NULL,16));
-			wdt_reset();
-		}
-	}
-	pf_mount(0x00);
-}
 void DrawWeatherVane()
 {
 	ILI9486_Draw_Circle(239, 159, 75,WHITE);
@@ -1372,7 +1226,7 @@ void DrawLevelNrf()
 }
 void DrawWindDirect()
 {
-	sprintf(wind_direction,"%s","N");
+	//sprintf(wind_direction,"%s","N");
 	if (!strcmp(wind_direction, "N"))
 	{
 		ILI9486_fillTriangle(239, 99, 233, 124, 239, 115, GREEN);
@@ -1412,62 +1266,6 @@ void DrawWindDirect()
 	{
 		ILI9486_fillTriangle(197, 201, 219, 188, 208, 190, GREEN);
 		ILI9486_fillTriangle(197, 201, 210, 179, 208, 190, GREEN);
-	}
-}
-void DrawBattery(uint8_t *Frame_buffer)
-{
-	LCD_12864_Draw_line(34, 28, 40, 28, Frame_buffer);
-	LCD_12864_Draw_line(34, 19, 34, 27, Frame_buffer);
-	LCD_12864_Draw_line(40, 19, 40, 27, Frame_buffer);
-	LCD_12864_Draw_line(34, 19, 36, 19, Frame_buffer);
-	LCD_12864_Draw_line(38, 19, 40, 19, Frame_buffer);
-	LCD_12864_Draw_line(36, 18, 36, 19, Frame_buffer);
-	LCD_12864_Draw_line(38, 18, 38, 19, Frame_buffer);
-	LCD_12864_Draw_line(36, 18, 38, 18, Frame_buffer);
-	uint8_t v_count;
-	if (V_BAT(adc_value1) >= 400) {
-		v_count = 6;
-		/*LCD_12864_Draw_line(36, 26, 38, 26, Frame_buffer);
-		LCD_12864_Draw_line(36, 25, 38, 25, Frame_buffer);
-		LCD_12864_Draw_line(36, 24, 38, 24, Frame_buffer);
-		LCD_12864_Draw_line(36, 23, 38, 23, Frame_buffer);
-		LCD_12864_Draw_line(36, 22, 38, 22, Frame_buffer);
-		LCD_12864_Draw_line(36, 21, 38, 21, Frame_buffer);*/
-	}
-	else if ((V_BAT(adc_value1) >= 390) && (V_BAT(adc_value1) < 400)) {
-		v_count = 5;
-		/*LCD_12864_Draw_line(36, 26, 38, 26, Frame_buffer);
-		LCD_12864_Draw_line(36, 25, 38, 25, Frame_buffer);
-		LCD_12864_Draw_line(36, 24, 38, 24, Frame_buffer);
-		LCD_12864_Draw_line(36, 23, 38, 23, Frame_buffer);
-		LCD_12864_Draw_line(36, 22, 38, 22, Frame_buffer);*/
-	}
-	else if ((V_BAT(adc_value1) >= 380) && (V_BAT(adc_value1) < 390)) {
-		v_count = 4;
-		/*LCD_12864_Draw_line(36, 26, 38, 26, Frame_buffer);
-		LCD_12864_Draw_line(36, 25, 38, 25, Frame_buffer);
-		LCD_12864_Draw_line(36, 24, 38, 24, Frame_buffer);
-		LCD_12864_Draw_line(36, 23, 38, 23, Frame_buffer);*/
-	}
-	else if ((V_BAT(adc_value1) >= 370) && (V_BAT(adc_value1) < 380)) {
-		v_count = 3;
-		//LCD_12864_Draw_line(36, 26, 38, 26, Frame_buffer);
-		//LCD_12864_Draw_line(36, 25, 38, 25, Frame_buffer);
-		//LCD_12864_Draw_line(36, 24, 38, 24, Frame_buffer);
-	}
-	else if ((V_BAT(adc_value1) >= 360) && (V_BAT(adc_value1) < 370)) {
-		v_count = 2;
-		//LCD_12864_Draw_line(36, 26, 38, 26, Frame_buffer);
-		//LCD_12864_Draw_line(36, 25, 38, 25, Frame_buffer);
-	}
-	else if ((V_BAT(adc_value1) >= 350) && (V_BAT(adc_value1) < 360)) {
-		v_count = 1;
-		//LCD_12864_Draw_line(36, 26, 38, 26, Frame_buffer);
-	}
-	else {v_count = 0;}
-	for (uint8_t i = 0; i < v_count; i++)
-	{
-		LCD_12864_Draw_line(36, 26 - i, 38, 26 - i, Frame_buffer);
 	}
 }
 void Clock (void)
@@ -1656,25 +1454,6 @@ int wind_speed (char *counter)
 void sprintf_HOME_Weath_Param(void)
 {
 	wdt_reset();
-	uint8_t data[5] = {0};
-	int pressure_home = 0;
-	int home_temp, home_hum;
-
-	/*if (dht22_GetData(data))
-	{
-		//data[1]-младший бит температуры
-		//data[2]-старший бит температуры
-		//data[3]-младший бит влажности
-		//data[4]-старший бит влажности
-		home_temp = ((data[2]<<8)|data[1]);
-		if ((home_temp & 0x8000) == 0x8000) home_temp = ~(home_temp & 0x7FFF);
-		home_hum = ((data[4]<<8)|data[3]) / 10;
-	}
-	sprintf(temp_home,"%d.%d",home_temp/10, abs(home_temp)%10);
-	sprintf(hum_home,"%d",home_hum);
-	pressure_home = BMP180_calculation()*0.0075;
-	sprintf(Press_home,"%d",pressure_home);*/
-	
 	//измерение температуры
 	int tt = 0; 
 	tt = dt_check(); 
@@ -1702,7 +1481,6 @@ void sprintf_HOME_Weath_Param(void)
 	home_hum_integer = hum;*/
 	//измерение атмосферного давлени€
 	pressure_home = BMP180_calculation()*0.0075;
-	sprintf(Press_home,"%d",pressure_home);
 	
 	wdt_reset();
 }

@@ -10,15 +10,7 @@
 #define TX_PLOAD_WIDTH 5// величина пакета(кол-во байт в пакете)
 uint8_t TX_ADDRESS[TX_ADR_WIDTH] = {0xb3,0xb4,0x01};//адрес
 uint8_t RX_BUF[TX_PLOAD_WIDTH] = {0};//буффер для пакетов
-extern char temp_street[5];
-extern char hum_street[5];
-extern char temp_home[5];
-extern char hum_home[5];
-extern char WIND_speed[5];
 extern char wind_direction[6];
-extern char Vbat[5];
-extern char Rain[6];
-extern char Press_home[6];
 extern char temp_street_to_DB[6];
 extern char hum_street_to_DB[5];
 extern char WIND_speed_to_DB[5];
@@ -47,8 +39,12 @@ extern uint8_t timer1_flag, timer2_flag;
 uint8_t street_temp_sign;//знак уличн темп
 uint8_t street_temp_integer;//целая часть уличн темп
 uint8_t street_temp_fraction;//дробная часть уличн темп
+int street_hum_integer;//целая часть уличн влажн
 uint8_t wind_speed_integer;//целая часть ск ветра
 uint8_t wind_speed_fraction;//дробная часть ск ветра
+uint8_t rain; //целая часть осадков
+uint8_t V_Bat_integer;//целая часть заряда акб
+uint8_t V_Bat_fraction;//дробная часть заряда акб
 
 //-------------------------------------------------------------
 void NRF24_ini(void)
@@ -84,36 +80,35 @@ void NRF24L01_Receive(void)
 	if(rx_flag==1)
 	{
 		switch (RX_BUF[0])
-		{
-			
+		{	
 			//--------------------------------------
 			//получение температуры
 			case 1:	receive_counter++;
-					memset(temp_street, 0, sizeof(char) * strlen(temp_street));//очистка массива
 					memset(temp_street_to_DB, 0, sizeof(char) * strlen(temp_street_to_DB));//очистка массива
-					byte1 = RX_BUF[1];//младший бит температуры
-					byte2 = RX_BUF[2];//старший бит температуры
-					temp = ((byte2<<8)|byte1);
-					if ((temp & 0x8000) == 0x8000) temp = ~(temp & 0x7FFF);
-					sprintf(temp_street,"%d.%d",temp/10 ,abs(temp)%10);
-					sprintf(temp_street_to_DB,"%d.%d",temp/10 ,abs(temp)%10);
+					street_temp_sign = RX_BUF[1];
+					street_temp_integer = RX_BUF[2];
+					street_temp_fraction = RX_BUF[3];
+					if (RX_BUF[1] != 0x00)
+					{
+						//отриц темп
+						sprintf(temp_street_to_DB,"-%d.%d",RX_BUF[2],RX_BUF[3]);
+					}
+					else
+					{
+						sprintf(temp_street_to_DB,"%d.%d",RX_BUF[2],RX_BUF[3]);
+					}
 					break;
 			//--------------------------------------
 			//получение влажности
 			case 5:	receive_counter++;
-					memset(hum_street, 0, sizeof(char) * strlen(hum_street));//очистка массива
 					memset(hum_street_to_DB, 0, sizeof(char) * strlen(hum_street_to_DB));//очистка массива
-					byte1 = RX_BUF[1];//младший бит температуры
-					byte2 = RX_BUF[2];//старший бит температуры
-					hum = ((byte2<<8)|byte1) / 10;
-					sprintf(hum_street,"%d",hum);
-					sprintf(hum_street_to_DB,"%d",hum);
+					street_hum_integer = RX_BUF[1];
+					sprintf(hum_street_to_DB,"%d",RX_BUF[1]);
 					break;
 			//--------------------------------------
 			//получение скорости ветра
 			case 2:	receive_counter++;
 					memset(HALL_counter, 0, sizeof(char) * strlen(HALL_counter));//очистка массива
-					memset(WIND_speed, 0, sizeof(char) * strlen(WIND_speed));//очистка массива
 					memset(WIND_speed_to_DB, 0, sizeof(char) * strlen(WIND_speed_to_DB));//очистка массива
 					for ( n = 0; n < (strlen(RX_BUF)-1); n++)
 					{
@@ -121,12 +116,14 @@ void NRF24L01_Receive(void)
 					}
 					if (wind_speed (HALL_counter) != 0)
 					{
-						sprintf(WIND_speed,"%d.%d", wind_speed (HALL_counter)/100, wind_speed (HALL_counter)%100);
+						wind_speed_integer = wind_speed (HALL_counter)/100;
+						wind_speed_fraction = wind_speed (HALL_counter)%100;
 						sprintf(WIND_speed_to_DB,"%d.%d", wind_speed (HALL_counter)/100, wind_speed (HALL_counter)%100);
 					}
 					else
 					{
-						sprintf(WIND_speed,"0.00");
+						wind_speed_integer = 0;
+						wind_speed_fraction = 0;
 						sprintf(WIND_speed_to_DB,"0.00");
 					}
 					break;
@@ -145,26 +142,25 @@ void NRF24L01_Receive(void)
 			//получение заряда аккумулятора
 			case 4:	receive_counter++;
 					memset(adc_value1, 0, sizeof(char) * strlen(adc_value1));//очистка массива
-					memset(Vbat, 0, sizeof(char) * strlen(Vbat));//очистка массива
 					memset(Vbat_to_DB, 0, sizeof(char) * strlen(Vbat_to_DB));//очистка массива
 					for ( n = 0; n < (strlen(RX_BUF)-1); n++)
 					{
 						adc_value1[n] = RX_BUF[n+1];
 					}
-					sprintf(Vbat,"%d.%d", V_BAT(adc_value1)/100, V_BAT(adc_value1)%100);
+					V_Bat_integer = V_BAT(adc_value1)/100;
+					V_Bat_fraction = V_BAT(adc_value1)%100;
 					sprintf(Vbat_to_DB,"%d.%d", V_BAT(adc_value1)/100, V_BAT(adc_value1)%100);
 					break;
 			//--------------------------------------
 			//получение кол-ва осадков
 			case 6:	receive_counter++;
 					memset(adc_value2, 0, sizeof(char) * strlen(adc_value2));//очистка массива
-					memset(Rain, 0, sizeof(char) * strlen(Rain));//очистка массива
 					memset(Rain_to_DB, 0, sizeof(char) * strlen(Rain_to_DB));//очистка массива
 					for ( n = 0; n < (strlen(RX_BUF)-1); n++)
 					{
 						adc_value2[n] = RX_BUF[n+1];
 					}
-					sprintf(Rain,"%d", RAIN_AMOUNT(adc_value2));
+					rain = RAIN_AMOUNT(adc_value2);
 					sprintf(Rain_to_DB,"%d", RAIN_AMOUNT(adc_value2));
 					break;
 		}

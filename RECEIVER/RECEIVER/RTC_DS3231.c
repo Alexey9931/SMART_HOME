@@ -8,7 +8,7 @@
 #include "RTC_DS3231.h"
 
 //выбор режима редактировани€
-#define MODE_WITHOUT_CHANGE 0
+#define MODE_CHANGE_SECONDS 0
 #define MODE_CHANGE_HOURS 1
 #define MODE_CHANGE_MINUTES 2
 #define MODE_CHANGE_DATE 3
@@ -104,6 +104,13 @@ void ModifyRTC(void)
 	I2C_SendByte(0b11010000);
 	switch(clock_change_mode)
 	{
+		case MODE_CHANGE_SECONDS: //секунды
+		{
+			I2C_SendByte(0);//ѕереходим на 0x02 Ч байт секунд
+			if (sec <= 59) I2C_SendByte(RTC_ConvertFromBinDec( sec ));
+			else I2C_SendByte(RTC_ConvertFromBinDec(0));
+			break;
+		}
 		case MODE_CHANGE_HOURS: //часы
 		{
 			I2C_SendByte(2);//ѕереходим на 0x02 Ч байт часов
@@ -114,7 +121,7 @@ void ModifyRTC(void)
 		case MODE_CHANGE_MINUTES: // минуты
 		{
 			I2C_SendByte(1);//ѕереходим на 0x01 Ч байт минут
-			if(min<59) I2C_SendByte(RTC_ConvertFromBinDec(min));
+			if(min<=59) I2C_SendByte(RTC_ConvertFromBinDec(min));
 			else I2C_SendByte(RTC_ConvertFromBinDec(0));
 			break;
 		}
@@ -149,7 +156,7 @@ void ModifyRTC(void)
 		case MODE_CHANGE_MONTH: // мес€ц
 		{
 			I2C_SendByte(5);//ѕереходим на 0x05 Ч байт мес€ца
-			if(month<12) I2C_SendByte(RTC_ConvertFromBinDec(month));
+			if(month<=12) I2C_SendByte(RTC_ConvertFromBinDec(month));
 			else I2C_SendByte(RTC_ConvertFromBinDec(1));
 			break;
 		}
@@ -163,7 +170,7 @@ void ModifyRTC(void)
 		case MODE_CHANGE_WEAKDAY: // день недели
 		{
 			I2C_SendByte(3);//ѕереходим на 0x03 Ч байт дн€ недели
-			if(day<7) I2C_SendByte(RTC_ConvertFromBinDec(day));
+			if(day<=7) I2C_SendByte(RTC_ConvertFromBinDec(day));
 			else I2C_SendByte(RTC_ConvertFromBinDec(1));
 			break;
 		}

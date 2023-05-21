@@ -7,15 +7,22 @@
 
 #include "main.h"
 
-extern char temp_street[6];
-extern char hum_street[5];
-extern char temp_home[6];
-extern char hum_home[5];
-extern char WIND_speed[5];
-extern char wind_direction[6];
-extern char Vbat[5];
-extern char Rain[6];
-extern char Press_home[6];
+extern uint8_t home_temp_sign;//знак домаш темп
+extern uint8_t home_temp_integer;//целая часть домаш темп
+extern uint8_t home_temp_fraction;//дробная часть домаш темп
+extern int home_hum_integer;//целая часть домаш влажн
+
+extern uint8_t street_temp_sign;//знак уличн темп
+extern uint8_t street_temp_integer;//целая часть уличн темп
+extern uint8_t street_temp_fraction;//дробная часть уличн темп
+extern int street_hum_integer;//целая часть уличн влажн
+extern uint8_t wind_speed_integer;//целая часть ск ветра
+extern uint8_t wind_speed_fraction;//дробная часть ск ветра
+extern uint8_t rain; //целая часть осадков
+extern uint8_t V_Bat_integer;//целая часть заряда акб
+extern uint8_t V_Bat_fraction;//дробная часть заряда акб
+extern char wind_direction[6];//направление ветра
+
 extern char temp_street_to_DB[6];
 extern char hum_street_to_DB[5];
 extern char WIND_speed_to_DB[5];
@@ -46,7 +53,7 @@ menu_flag
 4 - доп инфо
 */
 uint8_t menu_flag;
-int8_t up_down_count = 0;
+int up_down_count = 0;
 
 extern uint8_t rx_flag;
 extern uint8_t receive_counter;
@@ -61,6 +68,9 @@ uint8_t AddInfoPage_Flag;
 
 uint8_t timer0_flag = 0;
 int timer0_counter = 0;
+uint8_t clock_change_flag = 0;
+int8_t clock_setting_count = 0;
+
 
 //-------------------------------------------------------------
 /*void timer2_ini(void)//период 8мс
@@ -257,23 +267,101 @@ ISR (INT4_vect)
 		switch (up_down_count%8)
 		{
 			case 0:
-			break;
+				if (!clock_change_flag)
+				{
+					clock_setting_count = hour;
+					clock_change_flag = 1;
+					clock_change_mode = 1;
+				}
+				else
+				{
+					ModifyRTC();
+					clock_change_flag = 0;
+				}
+				break;
 			case 1:
-			break;
+				if (!clock_change_flag)
+				{
+					clock_setting_count = min;
+					clock_change_flag = 1;
+					clock_change_mode = 2;
+				}
+				else
+				{
+					ModifyRTC();
+					clock_change_flag = 0;
+				}
+				break;
 			case 2:
-			break;
+				if (!clock_change_flag)
+				{
+					clock_setting_count = sec;
+					clock_change_flag = 1;
+					clock_change_mode = 0;
+				}
+				else
+				{
+					ModifyRTC();
+					clock_change_flag = 0;
+				}
+				break;
 			case 3:
-			break;
+				if (!clock_change_flag)
+				{
+					clock_setting_count = date;
+					clock_change_flag = 1;
+					clock_change_mode = 3;
+				}
+				else
+				{
+					ModifyRTC();
+					clock_change_flag = 0;
+				}
+				break;
 			case 4:
-			break;
+				if (!clock_change_flag)
+				{
+					clock_setting_count = month;
+					clock_change_flag = 1;
+					clock_change_mode = 4;
+				}
+				else
+				{
+					ModifyRTC();
+					clock_change_flag = 0;
+				}
+				break;
 			case 5:
-			break;
+				if (!clock_change_flag)
+				{
+					clock_setting_count = year;
+					clock_change_flag = 1;
+					clock_change_mode = 5;
+				}
+				else
+				{
+					ModifyRTC();
+					clock_change_flag = 0;
+				}
+				break;
 			case 6:
-			break;
+				if (!clock_change_flag)
+				{
+					clock_setting_count = day;
+					clock_change_flag = 1;
+					clock_change_mode = 6;
+				}
+				else
+				{
+					ModifyRTC();
+					clock_change_flag = 0;
+				}
+				break;
 			case 7:
-			up_down_count = 0;
-			menu_flag = 1;
-			break;
+				up_down_count = 0;
+				clock_setting_count = 0;
+				menu_flag = 1;
+				break;
 		}
 	}
 	else if (menu_flag == 3)
@@ -293,6 +381,7 @@ ISR (INT5_vect)
 	_delay_us(1000);
 	PORTL |= (1 << BUZZER);
 	up_down_count = 0;
+	clock_setting_count = 0;
 	menu_flag = 0;
 }
 ISR (INT6_vect)
@@ -301,10 +390,75 @@ ISR (INT6_vect)
 	_delay_us(1000);
 	PORTL |= (1 << BUZZER);
 	PORTL &= ~(1<<LED);
-	up_down_count--;
-	if (up_down_count < 0)
+	if (!clock_change_flag)
 	{
-		up_down_count = 15;
+		up_down_count--;
+	}
+	else
+	{
+		clock_setting_count--;
+	}
+	if (clock_change_flag == 1)
+	{
+		switch(clock_change_mode)
+		{
+			case 0:
+			if (clock_setting_count <= -1)
+			{
+				clock_setting_count = 59;
+			}
+			sec = clock_setting_count;
+			break;
+			case 1:
+			if (clock_setting_count <= -1)
+			{
+				clock_setting_count = 23;
+			}
+			hour = clock_setting_count;
+			break;
+			case 2:
+			if (clock_setting_count <= -1)
+			{
+				clock_setting_count = 59;
+			}
+			min = clock_setting_count;
+			break;
+			case 3:
+			if (clock_setting_count <= -1)
+			{
+				clock_setting_count = 31;
+			}
+			date = clock_setting_count;
+			break;
+			case 4:
+			if (clock_setting_count <= 0)
+			{
+				clock_setting_count = 12;
+			}
+			month = clock_setting_count;
+			break;
+			case 5:
+			if (clock_setting_count <= -1)
+			{
+				clock_setting_count = 99;
+			}
+			year = clock_setting_count;
+			break;
+			case 6:
+			if (clock_setting_count <= 0)
+			{
+				clock_setting_count = 7;
+			}
+			day = clock_setting_count;
+			break;
+		}
+	}
+	else
+	{
+		if (up_down_count < 0)
+		{
+			up_down_count = 127;
+		}
 	}
 }
 ISR (INT7_vect)
@@ -312,10 +466,75 @@ ISR (INT7_vect)
 	PORTL &= ~ (1 << BUZZER);
 	_delay_us(1000);
 	PORTL |= (1 << BUZZER);
-	up_down_count++;
-	if (up_down_count > 15)
+	if (!clock_change_flag)
 	{
-		up_down_count = 0;
+		up_down_count++;
+	}
+	else
+	{
+		clock_setting_count++;
+	}
+	if (clock_change_flag == 1)
+	{
+		switch(clock_change_mode)
+		{
+			case 0:
+				if (clock_setting_count >= 60)
+				{
+					clock_setting_count = 0;
+				}
+				sec = clock_setting_count;
+				break;
+			case 1:
+				if (clock_setting_count >= 24)
+				{
+					clock_setting_count = 0;
+				}
+				hour = clock_setting_count;
+				break;
+			case 2:
+				if (clock_setting_count >= 60)
+				{
+					clock_setting_count = 0;
+				}
+				min = clock_setting_count;
+				break;
+			case 3:
+				if (clock_setting_count >= 32)
+				{
+					clock_setting_count = 0;
+				}
+				date = clock_setting_count;
+				break;
+			case 4:
+				if (clock_setting_count > 12)
+				{
+					clock_setting_count = 1;
+				}
+				month = clock_setting_count;
+				break;
+			case 5:
+				if (clock_setting_count >= 100)
+				{
+					clock_setting_count = 0;
+				}
+				year = clock_setting_count;
+				break;
+			case 6:
+				if (clock_setting_count > 7)
+				{
+					clock_setting_count = 1;
+				}
+				day = clock_setting_count;
+				break;
+		}
+	}
+	else
+	{
+		if (up_down_count > 127)
+		{
+			up_down_count = 0;
+		}
 	}
 }
 //прерывания по UART
@@ -538,30 +757,22 @@ int main(void)
 	strcpy(wind_direction_to_DB,"NULL");
 	strcpy(Vbat_to_DB,"NULL");
 	strcpy(Rain_to_DB,"NULL");
-	temp_street[0] = '0';
-	temp_street[1] = '0';
-	temp_street[2] = '.';
-	temp_street[3] = '0';
-	hum_street[0] = '0';
-	hum_street[1] = '0';
-	Vbat[0] = '0';
-	Vbat[1] = '.';
-	Vbat[2] = '0';
-	Vbat[3] = '0';
-	temp_home[0] = '0';
-	temp_home[1] = '0';
-	temp_home[2] = '.';
-	temp_home[3] = '0';
-	hum_home[0] = '0';
-	hum_home[1] = '0';
-	sprintf(WIND_speed,"0.00");
-	/*WIND_speed[0] = '0';
-	WIND_speed[1] = '.';
-	WIND_speed[2] = '0';
-	WIND_speed[3] = '0';*/
-	Press_home[0] = '0';
+	
+	home_temp_sign = 0;
+	home_temp_integer = 0;
+	home_temp_fraction = 0;
+	home_hum_integer = 0;
+
+	street_temp_sign = 0;
+	street_temp_integer = 0;
+	street_temp_fraction = 0;
+	street_hum_integer = 0;
+	wind_speed_integer = 0;
+	wind_speed_fraction = 0;
+	rain = 0; 
+	V_Bat_integer = 0;
+	V_Bat_fraction = 0;
 	wind_direction[0] = '-';
-	Rain[0] = '-';
 	//Фиксация времени начала работы
 	Clock ();
 	sprintf(start_time,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);	
@@ -578,6 +789,7 @@ int main(void)
 		//прием данных от передатчика
 		if (rx_flag == 1)
 		{
+			rx_count = 0;
 			time1 = millis;
 			while(rx_count < 6)
 			{
@@ -616,7 +828,6 @@ int main(void)
 				Print_Home_Page_WeatherForecast();
 				Print_Home_Page_Out();
 			}
-			rx_count = 0;
 			_delay_ms(1000);
 		}
 		else
@@ -633,7 +844,7 @@ int main(void)
 				millis = 0;
 			}
 			//обновление домашних показаний
-			else if ((millis % 2010) == 0)
+			else if ((millis % 1010) == 0)
 			{
 				sprintf_HOME_Weath_Param();
 			}

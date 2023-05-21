@@ -30,16 +30,10 @@ void Convert_to_string_Clock(void);
 int RAIN_AMOUNT(char *adc_value);
 int V_BAT (char *adc_value);
 int wind_speed (char *counter);
-void DrawSun();
-void DrawSunWithClouds();
-void DrawClouds();
-void DrawSmalRain();
-void DrawHardRain();
 void DrawWeatherVane();
 void DrawLevelWiFi();
 void DrawLevelNrf();
 void DrawWindDirect();
-void DrawBattery(uint8_t *Frame_buffer);
 void sprintf_Home_Weath_Param(void);
 
 
