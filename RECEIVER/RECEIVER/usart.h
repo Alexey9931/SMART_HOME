@@ -13,6 +13,7 @@
 
 void USART_Init( unsigned int speed);
 void USART_Transmit( char* data );
+void USART_Transmit_bytes( uint8_t data[], uint8_t data_size );
 
 
 #endif /* USART_H_ */

@@ -16,7 +16,7 @@ void Print_Download();
 void Print_Home_Page_Out();
 void Print_Home_Page_WeatherForecast();
 void Print_Static_Home_Page();
-void Print_Home_Page_In();
+uint8_t Print_Home_Page_In();
 void Print_Boards_Main();
 void Print_Menu_Page_Static();
 void Print_Menu_Page();
@@ -25,6 +25,7 @@ void Print_Page_Clock_Settings();
 void Print_Page_About();
 void Print_Page_Dop_Info();
 void Print_Page_Dop_Info_Static();
+void Print_WIFI_Page();
 void Clock (void);
 void Convert_to_string_Clock(void);
 int RAIN_AMOUNT(char *adc_value);
@@ -35,6 +36,7 @@ void DrawLevelWiFi();
 void DrawLevelNrf();
 void DrawWindDirect();
 void sprintf_Home_Weath_Param(void);
+void Weath_Param_ini();
 
 
 #endif /* WEATHERSTATION_H_ */

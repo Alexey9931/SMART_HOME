@@ -29,6 +29,9 @@ extern char WIND_speed_to_DB[5];
 extern char wind_direction_to_DB[6];
 extern char Vbat_to_DB[5];
 extern char Rain_to_DB[6];
+extern char temp_home_to_DB[6];
+extern char hum_home_to_DB[5];
+extern char Press_home_to_DB[5];
 extern struct Time_Parameters {
 	char hours[4];
 	char minutes[4];
@@ -43,7 +46,8 @@ unsigned char clock_change_mode;
 char receive_time[20] = "No any receptions!";
 char start_time[20] = {0};
 char send_time[30] = "There was no sending!";
-//char DATA_TO_UART[80] = {0};
+char DATA_TO_UART[80] = {0};
+uint8_t rx_count;
 /*
 menu_flag
 0 - домашняя страница
@@ -51,6 +55,7 @@ menu_flag
 2 - настройка времени
 3 - о проекте
 4 - доп инфо
+5 - состояние wifi
 */
 uint8_t menu_flag;
 int up_down_count = 0;
@@ -65,11 +70,17 @@ uint8_t MainMenuPage_Flag;
 uint8_t TimeSettingsPage_Flag;
 uint8_t PageAbout_Flag;
 uint8_t AddInfoPage_Flag;
+uint8_t WiFiInfoPage_Flag;
 
 uint8_t timer0_flag = 0;
 int timer0_counter = 0;
 uint8_t clock_change_flag = 0;
 int8_t clock_setting_count = 0;
+
+uint8_t wifi_enable_flag = 0;
+char WiFi_SSID[20];
+char WiFi_PSWD[20];
+char WiFi_IP[20];
 
 
 //-------------------------------------------------------------
@@ -98,18 +109,6 @@ void timer0_ini(void) // период 100мкс
 	TIMSK0 |= (1<<OCIE0A); //устанавливаем бит разрешения прерывания 0-ого счетчика по совпадению с OCR0A
 }
 //-------------------------------------------------------------
-/*ISR (TIMER2_COMPA_vect)
-{ 
-	if (timer2_flag == 0) 
-	{
-		timer2_flag = 1;
-	}
-	else 
-	{
-		timer2_flag = 0;
-	}
-}*/
-//-------------------------------------------------------------
 ISR (TIMER1_COMPA_vect)
 {	
 	/*if (millis == 300001)
@@ -117,6 +116,10 @@ ISR (TIMER1_COMPA_vect)
 		millis = 0;
 	}*/
 	millis++;
+	if ((millis % 750) == 0)
+	{
+		sprintf_HOME_Weath_Param();
+	}
 }
 //-------------------------------------------------------------
 //обработчик прерываний по таймеру 0 для отслеживания нажатий кнопок
@@ -242,24 +245,28 @@ ISR (INT4_vect)
 	}
 	else if (menu_flag == 1)
 	{
-		switch(up_down_count%4)
+		switch(up_down_count%5)
 		{
 			case 0:
-			up_down_count = 0;
-			menu_flag = 0;
-			break;
+				up_down_count = 0;
+				menu_flag = 0;
+				break;
 			case 1:
-			up_down_count = 0;
-			menu_flag = 2;
-			break;
+				up_down_count = 0;
+				menu_flag = 2;
+				break;
 			case 2:
-			up_down_count = 0;
-			menu_flag = 3;
-			break;
+				up_down_count = 0;
+				menu_flag = 3;
+				break;
 			case 3:
-			up_down_count = 0;
-			menu_flag = 4;
-			break;
+				up_down_count = 0;
+				menu_flag = 4;
+				break;
+			case 4:
+				up_down_count = 0;
+				menu_flag = 5;
+				break;
 		}
 	}
 	else if (menu_flag == 2)
@@ -374,6 +381,11 @@ ISR (INT4_vect)
 		up_down_count = 0;
 		menu_flag = 1;
 	}
+	else if (menu_flag == 5)
+	{
+		up_down_count = 0;
+		menu_flag = 1;
+	}
 }
 ISR (INT5_vect)
 {
@@ -389,7 +401,6 @@ ISR (INT6_vect)
 	PORTL &= ~ (1 << BUZZER);
 	_delay_us(1000);
 	PORTL |= (1 << BUZZER);
-	PORTL &= ~(1<<LED);
 	if (!clock_change_flag)
 	{
 		up_down_count--;
@@ -457,7 +468,7 @@ ISR (INT6_vect)
 	{
 		if (up_down_count < 0)
 		{
-			up_down_count = 127;
+			up_down_count = 159;
 		}
 	}
 }
@@ -531,139 +542,57 @@ ISR (INT7_vect)
 	}
 	else
 	{
-		if (up_down_count > 127)
+		if (up_down_count > 159)
 		{
 			up_down_count = 0;
 		}
 	}
 }
-//прерывания по UART
-/*ISR(USART_RX_vect)
+//обработчик прерывания по UART
+int uart_rx_count = 0;
+char uart_rx_buffer[100];
+char uart_message[100];
+ISR(USART0_RX_vect)
 {
-	UCSR0B &= ~(1<<RXCIE0); 
-	WiFi_Flag = 1;
- 	_delay_us(300);
- 	PORTB |= (1<<LED);
- 	_delay_us(300);
-	PORTB &= ~(1<<LED);
-}*/
-//-------------------------------------------------------------
-//обработчик внешн.прерываний от кнопки энкодера
-/*ISR(INT1_vect)
-{
-	//enc_int_flag = 1;
-	switch (menu_flag)
+	uart_rx_buffer[uart_rx_count] = UDR0;
+	if (uart_rx_buffer[uart_rx_count] == '/')
 	{
-		case 0: menu_flag = 1;
-		//cnt = 0;
-		break;
-		case 1:	switch(cnt%4)
+		memcpy(uart_message,uart_rx_buffer,strlen(uart_rx_buffer)-1);
+		memset(uart_rx_buffer,0,strlen(uart_rx_buffer));
+		uart_rx_count = 0;
+		//Получение данные о wifi по uart
+		if (strstr(uart_message,"WiFi-OK")!=0)
 		{
-			case 0:	menu_flag = 0;
-			break;
-			case 1:	menu_flag = 2;
-			break;
-			case 2:	menu_flag = 3;
-			break;
-			case 3:	menu_flag = 4;
-			break;
+			wifi_enable_flag = 1;
 		}
-		//cnt = 0;
-		break;
-		case 2:	switch(cnt%7)
+		if (strstr(uart_message,"WiFi-ERROR")!=0)
 		{
-			case 0:	if(!change_flag)
-			{
-				add_cnt = hour;
-				change_flag = 1;
-			}
-			else
-			{
-				hour = add_cnt;
-				clock_change_mode = 1;
-				ModifyRTC();
-				change_flag = 0;
-			}
-			break;
-			case 1:	if(!change_flag)
-			{
-				add_cnt = min;
-				change_flag = 1;
-			}
-			else
-			{
-				min = add_cnt;
-				clock_change_mode = 2;
-				ModifyRTC();
-				change_flag = 0;
-			}
-			break;
-			case 2:	if(!change_flag)
-			{
-				add_cnt = day;
-				change_flag = 1;
-			}
-			else
-			{
-				day = add_cnt;
-				clock_change_mode = 6;
-				ModifyRTC();
-				change_flag = 0;
-			}
-			break;
-			case 3:	if(!change_flag)
-			{
-				add_cnt = date;
-				change_flag = 1;
-			}
-			else
-			{
-				date = add_cnt;
-				clock_change_mode = 3;
-				ModifyRTC();
-				change_flag = 0;
-			}
-			break;
-			case 4:	if(!change_flag)
-			{
-				add_cnt = month;
-				change_flag = 1;
-			}
-			else
-			{
-				month = add_cnt;
-				clock_change_mode = 4;
-				ModifyRTC();
-				change_flag = 0;
-			}
-			break;
-			case 5:	if(!change_flag)
-			{
-				add_cnt = year;
-				change_flag = 1;
-			}
-			else
-			{
-				year = add_cnt;
-				clock_change_mode = 5;
-				ModifyRTC();
-				change_flag = 0;
-			}
-			break;
-			case 6:	clock_change_mode = 0;
-			menu_flag = 1;
-			//cnt = 1;
-			break;
+			wifi_enable_flag = 0;
 		}
-		break;
-		case 3: menu_flag = 1;
-		//cnt = 0;
-		break;
-		case 4: menu_flag = 1;
-		//cnt = 0;
-		break;
+		if (strstr(uart_message,"SSID")!=0)
+		{
+			memset(WiFi_SSID,0,strlen(WiFi_SSID));
+			memcpy(WiFi_SSID,uart_message+5,strlen(uart_message)-6);
+			memset(uart_message,0,sizeof(char)*strlen(uart_message));
+		}
+		if (strstr(uart_message,"PSWD")!=0)
+		{
+			memset(WiFi_PSWD,0,strlen(WiFi_PSWD));
+			memcpy(WiFi_PSWD,uart_message+5,strlen(uart_message)-5);
+			memset(uart_message,0,sizeof(char)*strlen(uart_message));
+		}
+		if (strstr(uart_message,"IP")!=0)
+		{
+			memset(WiFi_IP,0,strlen(WiFi_IP));
+			memcpy(WiFi_IP,uart_message+3,strlen(uart_message)-3);
+			memset(uart_message,0,sizeof(char)*strlen(uart_message));
+		}
 	}
-}*/
+	else
+	{
+		uart_rx_count++;
+	}
+}
 //-------------------------------------------------------------
 void SPI_init(void) //инициализация SPI
 {
@@ -709,7 +638,6 @@ uint8_t spi_send_recv(uint8_t data) // Передаёт и принимает 1 байт по SPI, возвр
 //-------------------------------------------------------------
 int main(void)
 {	
-	uint8_t rx_count = 0;
 	int32_t time1 = 0;
 	int32_t time2 = 0;
 	//настрока WDT
@@ -721,7 +649,7 @@ int main(void)
 	//Инициализация интерфейсов
 	SPI_init();
 	I2C_Init();
-	USART_Init(8);    //Инициализация модуля USART скорость 115200	
+	USART_Init(16);    //Инициализация модуля USART скорость 115200	
 	ILI9486_ini();
 	//Вывод приветствия
 	Print_Hello_World();
@@ -751,32 +679,11 @@ int main(void)
 	EIMSK |= (1<<INT4) | (1<<INT5) | (1<<INT6) | (1<<INT7) | (1<<INT2);
 	//enc_interrupt_ini();
 	//Начальная конфигурация
-	strcpy(temp_street_to_DB,"NULL");
-	strcpy(hum_street_to_DB,"NULL");
-	strcpy(WIND_speed_to_DB,"NULL");
-	strcpy(wind_direction_to_DB,"NULL");
-	strcpy(Vbat_to_DB,"NULL");
-	strcpy(Rain_to_DB,"NULL");
-	
-	home_temp_sign = 0;
-	home_temp_integer = 0;
-	home_temp_fraction = 0;
-	home_hum_integer = 0;
-
-	street_temp_sign = 0;
-	street_temp_integer = 0;
-	street_temp_fraction = 0;
-	street_hum_integer = 0;
-	wind_speed_integer = 0;
-	wind_speed_fraction = 0;
-	rain = 0; 
-	V_Bat_integer = 0;
-	V_Bat_fraction = 0;
-	wind_direction[0] = '-';
+	Weath_Param_ini();
 	//Фиксация времени начала работы
 	Clock ();
 	sprintf(start_time,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);	
-	sprintf_HOME_Weath_Param();
+	//sprintf_HOME_Weath_Param();
 	Print_Static_Home_Page();
 	Print_Home_Page_In();
 	Print_Home_Page_WeatherForecast();
@@ -803,60 +710,59 @@ int main(void)
 				}
 				if(rx_flag == 1)
 				{
-					_delay_us(300);
 					PORTL |= (1<<LED);
 					_delay_us(300);
 					PORTL &= ~(1<<LED);
 					NRF24L01_Receive();
-					Clock ();
-					sprintf(receive_time,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);
 					rx_count++;
 				}
 				//обновление показаний на экране
 				if (menu_flag == 0)
 				{
-					Print_Home_Page_Out();
-				}
-				else if (menu_flag == 4)
-				{
-					Print_Page_Dop_Info();
+					DrawLevelNrf();
 				}
 				wdt_reset();
+				
 			}
+			Clock ();
+			sprintf(receive_time,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);
 			if (menu_flag == 0)
 			{
 				Print_Home_Page_WeatherForecast();
 				Print_Home_Page_Out();
 			}
-			_delay_ms(1000);
+			//_delay_ms(1000);
 		}
 		else
 		{
 			//отправка данных в БД
 			if(millis >= 300000)
  			{
-				/*Clock ();
+				Clock ();
+				memset(send_time, 0, sizeof(char) * strlen(send_time));//очистка массива
 				sprintf(send_time,"%d:%d:%d,%d/%d/%d", hour, min, sec, date, month, year);
-				sprintf_HOME_Weath_Param();
-				sprintf(DATA_TO_UART,"%s %s %s %s %s %s %s %s %s %s ", temp_street_to_DB, temp_home, hum_street_to_DB, hum_home, Press_home, Rain_to_DB, Vbat_to_DB, WIND_speed_to_DB, wind_direction_to_DB, send_time);
+				//sprintf_HOME_Weath_Param();
+				sprintf(DATA_TO_UART,"%s %s %s %s %s %s %s %s %s %s ", temp_street_to_DB, temp_home_to_DB, hum_street_to_DB, hum_home_to_DB, Press_home_to_DB, Rain_to_DB, Vbat_to_DB, WIND_speed_to_DB, wind_direction_to_DB, send_time);
 				USART_Transmit(DATA_TO_UART);
-				memset(DATA_TO_UART, 0, sizeof(char) * strlen(DATA_TO_UART));//очистка массива*/
+				memset(DATA_TO_UART, 0, sizeof(char) * strlen(DATA_TO_UART));//очистка массива
 				millis = 0;
 			}
 			//обновление домашних показаний
-			else if ((millis % 1010) == 0)
+			else if ((millis % 2010) == 0)
 			{
-				sprintf_HOME_Weath_Param();
+				//int32_t millis1 = millis;
+				//sprintf_HOME_Weath_Param();
+				//millis = millis1;
 			}
 			//обновление изображения на дисплее
 			else if((millis % 100) == 0)
-			{
+			{	
 				switch (menu_flag)
 				{
 					case 0:	
 						if (HomePage_Flag == 1)
 						{
-							sprintf_HOME_Weath_Param();
+							//sprintf_HOME_Weath_Param();
 							Print_Static_Home_Page();
 							Print_Home_Page_In();
 							Print_Home_Page_WeatherForecast();
@@ -866,6 +772,7 @@ int main(void)
 							TimeSettingsPage_Flag = 1;
 							PageAbout_Flag = 1;
 							AddInfoPage_Flag = 1;
+							WiFiInfoPage_Flag = 1;
 						}
 						else
 						{
@@ -883,6 +790,7 @@ int main(void)
 							TimeSettingsPage_Flag = 1;
 							PageAbout_Flag = 1;
 							AddInfoPage_Flag = 1;
+							WiFiInfoPage_Flag = 1;
 						}
 						else
 						{
@@ -899,6 +807,7 @@ int main(void)
 							HomePage_Flag = 1;
 							PageAbout_Flag = 1;
 							AddInfoPage_Flag = 1;
+							WiFiInfoPage_Flag = 1;
 						}
 						else
 						{
@@ -914,11 +823,9 @@ int main(void)
 							HomePage_Flag = 1;
 							PageAbout_Flag = 0;
 							AddInfoPage_Flag = 1;
+							WiFiInfoPage_Flag = 1;
 						}
-						else
-						{
-							
-						}
+						
 						break;
 					case 4:	
 						if(AddInfoPage_Flag == 1)
@@ -930,13 +837,28 @@ int main(void)
 							HomePage_Flag = 1;
 							PageAbout_Flag = 1;
 							AddInfoPage_Flag = 0;
+							WiFiInfoPage_Flag = 1;
 						}
 						else
 						{
 							Print_Page_Dop_Info();
 						}
-					break;
+						break;
+					case 5:
+						if(WiFiInfoPage_Flag == 1)
+						{
+							Print_WIFI_Page();
+							TimeSettingsPage_Flag = 1;
+							MainMenuPage_Flag = 1;
+							HomePage_Flag = 1;
+							PageAbout_Flag = 1;
+							AddInfoPage_Flag = 1;
+							WiFiInfoPage_Flag = 0;
+						}
+						
+						break;
 				}
+				//millis = millis1;
 			}
 		}
 		wdt_reset();

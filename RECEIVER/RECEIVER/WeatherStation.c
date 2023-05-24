@@ -17,6 +17,9 @@ char WIND_speed_to_DB[5] = {0};
 char wind_direction_to_DB[6] = {0};
 char Vbat_to_DB[5] = {0};
 char Rain_to_DB[6] = {0};
+char temp_home_to_DB[6] = {0};
+char hum_home_to_DB[5] = {0};
+char Press_home_to_DB[5] = {0};
 
 struct Time_Parameters {
 	char hours[4];
@@ -36,8 +39,9 @@ extern char adc_value1[6];
 extern char HALL_counter[5];
 extern char adc_value2[6];
 
+extern uint8_t rx_count;
 extern uint8_t clock_change_flag;
-extern int8_t up_down_count;
+extern int up_down_count;
 extern int8_t add_cnt;
 extern uint8_t receive_counter;
 extern uint8_t WiFi_Flag;
@@ -57,6 +61,14 @@ extern int street_hum_integer;//целая часть уличн влажн
 extern uint8_t wind_speed_integer;//целая часть ск ветра
 extern uint8_t wind_speed_fraction;//дробная часть ск ветра
 extern uint8_t rain; //целая часть осадков
+extern uint8_t V_Bat_integer;//целая часть заряда акб
+extern uint8_t V_Bat_fraction;//дробная часть заряда акб
+
+extern uint8_t wifi_enable_flag;
+extern char WiFi_SSID[20];
+extern char WiFi_PSWD[20];
+extern char WiFi_IP[20];
+extern uint8_t rx_flag;
 
 //Окно приветсвия на экране дисплея
 void Print_Hello_World()
@@ -65,11 +77,13 @@ void Print_Hello_World()
 	ILI9486_SetRotation(1);
 	
 	ILI9486_SetTextColor(WHITE,BLACK);
-	ILI9486_SetCursor(40,80);
+	ILI9486_SetCursor(20,80);
 	ILI9486_Print_String32x32("Вас приветствует",TFT_STRING_MODE_NO_BACKGROUND);
 	wdt_reset();
-	ILI9486_SetCursor(20,150);
-	ILI9486_Print_String32x32("система Умный Дом!",TFT_STRING_MODE_NO_BACKGROUND);
+	ILI9486_SetCursor(140,130);
+	ILI9486_Print_String32x32("система",TFT_STRING_MODE_NO_BACKGROUND);
+	ILI9486_SetCursor(110,180);
+	ILI9486_Print_String32x32("Умный Дом!",TFT_STRING_MODE_NO_BACKGROUND);
 	wdt_reset();
 	//ILI9486_SetCursor(100,220);
 	//ILI9486_Print_String32x24("is with you now!",TFT_STRING_MODE_NO_BACKGROUND);
@@ -118,10 +132,6 @@ void Print_Static_Home_Page()
 	ILI9486_Draw_Image("/wsp.txt", 30, 30, 170, 255);//ск ветра
 	ILI9486_Draw_Image("/pres.txt", 30, 30, 172, 285);//давление
 	ILI9486_Draw_Image("/rain.txt", 30, 30, 330, 90);//осадки
-	
-	//вывод уровня сигнала WiFi (пока сюда запихнул)
-	//DrawLevelWiFi();
-	ILI9486_Draw_Image("/wi4.txt", 40, 40, 165, 2);
 	//вывод второго уровня сигнала NRF (в перспективе для котла)-тоже пока сюда
 	ILI9486_Draw_Image("/nrf0.txt", 30, 30, 229, 10);
 	
@@ -295,7 +305,7 @@ void Print_Home_Page_WeatherForecast()
 	}
 }
 //Главное окно(домашние показания)
-void Print_Home_Page_In()
+uint8_t Print_Home_Page_In()
 {
 	char data[10];
 	char TIME[10] = {0};
@@ -304,6 +314,10 @@ void Print_Home_Page_In()
 	Clock();
 	sprintf(TIME,"%s:%s",T_Param.hours, T_Param.minutes);
 	sprintf(DATE,"%s/%s/%s",T_Param.mounthday, T_Param.Mounth, T_Param.Year);
+	if (rx_flag == 1)
+	{
+		return 0;
+	}
 	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(10,15);
 	ILI9486_Print_String24x32(TIME,TFT_STRING_MODE_BACKGROUND);
@@ -312,6 +326,16 @@ void Print_Home_Page_In()
 	ILI9486_SetCursor(9,80);
 	ILI9486_Print_String18x32(DATE,TFT_STRING_MODE_BACKGROUND);
 	wdt_reset();
+	if (rx_flag == 1)
+	{
+		return 0;
+	}
+	//вывод уровня сигнала WiFi
+	DrawLevelWiFi();
+	if (rx_flag == 1)
+	{
+		return 0;
+	}
 	//вывод домашних показаний
 	//влажность
 	ILI9486_SetTextColor(0xFB80,BLACK);
@@ -328,6 +352,10 @@ void Print_Home_Page_In()
 	ILI9486_SetCursor(115,165);
 	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	ILI9486_Print_String18x32("%",TFT_STRING_MODE_BACKGROUND);//ед измерения
+	if (rx_flag == 1)
+	{
+		return 0;
+	}
 	//температура
 	if (home_temp_sign != 0x00)
 	{
@@ -381,14 +409,23 @@ void Print_Home_Page_In()
 	}
 	ILI9486_SetCursor(143,268);
 	ILI9486_Print_String18x32("C",TFT_STRING_MODE_BACKGROUND);//ед измерения
+	if (rx_flag == 1)
+	{
+		return 0;
+	}
 	//вывод атм. давления
 	ILI9486_SetTextColor(0xF96B,BLACK);
 	ILI9486_SetCursor(206,290);
 	sprintf(data,"%d",pressure_home);
 	ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
+	if (rx_flag == 1)
+	{
+		return 0;
+	}
 	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	ILI9486_SetCursor(248,290);
 	ILI9486_Print_StringConsolas16x24("mmHg",TFT_STRING_MODE_BACKGROUND);
+	return 0;
 }
 //Основная разметка для главного окна
 void Print_Boards_Main()
@@ -690,65 +727,88 @@ void Print_Menu_Page_Static()
 	ILI9486_SetCursor(40,20);
 	ILI9486_SetTextColor(BLACK,WHITE);
 	ILI9486_Print_String40x40("ГЛАВНОЕ МЕНЮ",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(40,70);
+	ILI9486_SetCursor(70,70);
 	ILI9486_SetTextColor(WHITE,BLACK);
-	ILI9486_Print_String40x40("Главное окно",TFT_STRING_MODE_BACKGROUND);							   
-	ILI9486_SetCursor(40,110);
-	ILI9486_Print_String40x40("Дата и время",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(40,150);
-	ILI9486_Print_String40x40(" О проекте",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(40,190);
-	ILI9486_Print_String40x40("Доп сведения",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String32x32("Главное окно",TFT_STRING_MODE_BACKGROUND);							   
+	ILI9486_SetCursor(70,110);
+	ILI9486_Print_String32x32("Дата и время",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(70,150);
+	ILI9486_Print_String32x32(" О проекте",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(70,190);
+	ILI9486_Print_String32x32("Доп сведения",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(70,230);
+	ILI9486_Print_String32x32(" Wi-Fi сеть",TFT_STRING_MODE_BACKGROUND);
 }
 //Окно меню динамич
 void Print_Menu_Page()
 {
-	switch (up_down_count%4)
+	switch (up_down_count%5)
 	{
 		case 0: 
 				ILI9486_fillTriangle(22,72,37,88,22,104,WHITE);
 				ILI9486_fillTriangle(22,112,37,128,22,144,BLACK);
 				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
 				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
+				ILI9486_fillTriangle(22,232,37,248,22,264,BLACK);
 				
 				ILI9486_fillTriangle(456,72,441,88,456,104,WHITE);
 				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
 				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
 				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
+				ILI9486_fillTriangle(456,232,441,248,456,264,BLACK);
 				break;
 		case 1: 
 				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
 				ILI9486_fillTriangle(22,112,37,128,22,144,WHITE);
 				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
 				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
+				ILI9486_fillTriangle(22,232,37,248,22,264,BLACK);
 				
 				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
 				ILI9486_fillTriangle(456,112,441,128,456,144,WHITE);
 				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
 				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
+				ILI9486_fillTriangle(456,232,441,248,456,264,BLACK);
 				break;
 		case 2: 
 				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
 				ILI9486_fillTriangle(22,112,37,128,22,144,BLACK);
 				ILI9486_fillTriangle(22,152,37,168,22,184,WHITE);
 				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
+				ILI9486_fillTriangle(22,232,37,248,22,264,BLACK);
 				
 				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
 				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
 				ILI9486_fillTriangle(456,152,441,168,456,184,WHITE);
 				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
+				ILI9486_fillTriangle(456,232,441,248,456,264,BLACK);
 				break;
 		case 3: 
 				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
 				ILI9486_fillTriangle(22,112,37,128,22,144,BLACK);
 				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
 				ILI9486_fillTriangle(22,192,37,208,22,224,WHITE);
+				ILI9486_fillTriangle(22,232,37,248,22,264,BLACK);
 				
 				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
 				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
 				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
 				ILI9486_fillTriangle(456,192,441,208,456,224,WHITE);
-		break;
+				ILI9486_fillTriangle(456,232,441,248,456,264,BLACK);
+				break;
+		case 4:
+				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
+				ILI9486_fillTriangle(22,112,37,128,22,144,BLACK);
+				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
+				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
+				ILI9486_fillTriangle(22,232,37,248,22,264,WHITE);
+				
+				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
+				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
+				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
+				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
+				ILI9486_fillTriangle(456,232,441,248,456,264,WHITE);
+				break;
 	}
 }
 //Окно настроек времени
@@ -1096,6 +1156,46 @@ void Print_Page_Dop_Info()
 	ILI9486_SetCursor(50,220);
 	ILI9486_Print_String18x32(send_time,TFT_STRING_MODE_BACKGROUND);
 }
+//Окно статус wifi
+void Print_WIFI_Page()
+{
+	ILI9486_FillScreen(BLACK);
+	ILI9486_SetRotation(1);
+	ILI9486_SetCursor(70,20);
+	ILI9486_SetTextColor(BLACK,WHITE);
+	ILI9486_Print_String32x32("WI-FI",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(230,20);
+	ILI9486_Print_String40x40("СЕТЬ",TFT_STRING_MODE_BACKGROUND);
+	
+	ILI9486_SetTextColor(WHITE,BLACK);
+	ILI9486_SetCursor(20,60);
+	if (wifi_enable_flag == 1)
+	{
+		ILI9486_Print_String32x32("Состояние: ВКЛ",TFT_STRING_MODE_BACKGROUND);
+	}
+	else
+	{
+		ILI9486_Print_String32x32("Состояние: ОТКЛ",TFT_STRING_MODE_BACKGROUND);
+	}
+	ILI9486_SetCursor(20,100);
+	ILI9486_Print_String32x32("IP:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(120,100);
+	ILI9486_Print_String32x32(WiFi_IP,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(20,140);
+	ILI9486_Print_String32x32("SSID:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(170,140);
+	ILI9486_Print_String32x32(WiFi_SSID,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(20,180);
+	ILI9486_Print_String32x32("PSWD:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(170,180);
+	ILI9486_Print_String32x32(WiFi_PSWD,TFT_STRING_MODE_BACKGROUND);
+	
+	ILI9486_SetTextColor(WHITE,BLACK);
+	ILI9486_SetCursor(40,270);
+	ILI9486_Print_String40x40("НАЗАД В МЕНЮ",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_DrawRect(37,273,414,42,WHITE);
+	ILI9486_DrawRect(38,274,412,40,WHITE);
+}
 //-----------Графика вспомогательная для главного окна------//
 void DrawWeatherVane()
 {
@@ -1169,40 +1269,19 @@ void DrawWeatherVane()
 }
 void DrawLevelWiFi()
 {
-	FATFS fs;
-	WORD s1;
-	asm("nop");
-	pf_mount(&fs); //Монтируем FAT
-	pf_open("/wi4.txt");
-
-	uint8_t array1[1610];
-	int l, p = 0;
-	for (int k = 0; k < 10; k++)
+	switch (wifi_enable_flag)
 	{
-		memset(array1, 0, sizeof(uint8_t) * strlen(array1));//очистка массива
-		char arr[10] = {};
-		p = 0;
-		pf_read(array1,960,&s1);
-		wdt_reset();
-		for (int m = 0; m < 160; m++)
-		{
-			l = 0;
-			while (array1[p] != ',')
-			{
-				arr[l] = array1[p];
-				p++;
-				l++;
-			}
-			p += 2;
-			ILI9486_drawPixel(160+m%40, 5+4*k+(m/40), (uint16_t)strtol(arr,NULL,16));
-			wdt_reset();
-		}
+		case 0:
+			ILI9486_Draw_Image("/wi0.txt", 40, 40, 165, 2);
+			break;
+		case 1:
+			ILI9486_Draw_Image("/wi4.txt", 40, 40, 165, 2);
+			break;
 	}
-	pf_mount(0x00);
 }
 void DrawLevelNrf()
 {
-	switch (receive_counter)
+	switch (rx_count)
 	{
 		case 0:
 			ILI9486_Draw_Image("/nrf0.txt", 30, 30, 280, 10);
@@ -1220,6 +1299,9 @@ void DrawLevelNrf()
 			ILI9486_Draw_Image("/nrf3.txt", 30, 30, 280, 10);
 			break;
 		case 5:
+			ILI9486_Draw_Image("/nrf4.txt", 30, 30, 280, 10);
+			break;
+		case 6:
 			ILI9486_Draw_Image("/nrf4.txt", 30, 30, 280, 10);
 			break;
 	}
@@ -1451,6 +1533,7 @@ int wind_speed (char *counter)
 	
 	return speed;
 }
+//вычисление домашних показателей
 void sprintf_HOME_Weath_Param(void)
 {
 	wdt_reset();
@@ -1465,6 +1548,8 @@ void sprintf_HOME_Weath_Param(void)
 		home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
 		home_temp_integer = (tt&0x07FF)>>4;
 		//sprintf(data,"%d,%d\r",buf[1],buf[0]);
+		sprintf(temp_home_to_DB,"%d.%d",home_temp_integer,home_temp_fraction);
+		
 	}
 	else
 	{
@@ -1473,14 +1558,43 @@ void sprintf_HOME_Weath_Param(void)
 		home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
 		home_temp_integer = ((~(tt))&0x07FF)>>4;
 		//sprintf(data,"-%d,%d\r",buf[1],buf[0]);
+		sprintf(temp_home_to_DB,"-%d.%d",home_temp_integer,home_temp_fraction);
 	}
 	//измерение влажности
 	/*long int hum = 0;
 	hum = HTU21D_get_humidity();
 	hum = (hum*125)/65536 - 6;
 	home_hum_integer = hum;*/
+	sprintf(hum_home_to_DB,"%d",home_hum_integer);
 	//измерение атмосферного давления
 	pressure_home = BMP180_calculation()*0.0075;
+	sprintf(Press_home_to_DB,"%d",pressure_home);
 	
 	wdt_reset();
+}
+//первичная инициализация параметров погоды
+void Weath_Param_ini()
+{
+	strcpy(temp_street_to_DB,"NULL");
+	strcpy(hum_street_to_DB,"NULL");
+	strcpy(WIND_speed_to_DB,"NULL");
+	strcpy(wind_direction_to_DB,"NULL");
+	strcpy(Vbat_to_DB,"NULL");
+	strcpy(Rain_to_DB,"NULL");
+	
+	home_temp_sign = 0;
+	home_temp_integer = 0;
+	home_temp_fraction = 0;
+	home_hum_integer = 0;
+
+	street_temp_sign = 0;
+	street_temp_integer = 0;
+	street_temp_fraction = 0;
+	street_hum_integer = 0;
+	wind_speed_integer = 0;
+	wind_speed_fraction = 0;
+	rain = 0;
+	V_Bat_integer = 0;
+	V_Bat_fraction = 0;
+	wind_direction[0] = '-';
 }
