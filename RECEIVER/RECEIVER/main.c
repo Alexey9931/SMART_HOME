@@ -82,6 +82,7 @@ char WiFi_SSID[20];
 char WiFi_PSWD[20];
 char WiFi_IP[20];
 
+extern uint8_t pipe;//номер канала
 
 //-------------------------------------------------------------
 /*void timer2_ini(void)//период 8мс
@@ -694,7 +695,7 @@ int main(void)
     while (1) 
     {
 		//прием данных от передатчика
-		if (rx_flag == 1)
+		if ((rx_flag == 1)&&(pipe == 0))
 		{
 			rx_count = 0;
 			time1 = millis;
@@ -732,6 +733,18 @@ int main(void)
 				Print_Home_Page_Out();
 			}
 			//_delay_ms(1000);
+		}
+		else if ((rx_flag == 1)&&(pipe == 1))
+		{
+			PORTL |= (1<<LED);
+			_delay_us(300);
+			PORTL &= ~(1<<LED);
+			uint8_t buf1[10] = {0};//буффер для отправки
+			uint8_t dt;
+			buf1[0] = 1;
+			_delay_ms(500);
+			dt = NRF24L01_Send(buf1);
+			rx_flag = 0;
 		}
 		else
 		{

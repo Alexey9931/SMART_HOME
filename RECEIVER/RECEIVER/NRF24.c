@@ -8,7 +8,11 @@
 //-------------------------------------------------------------
 #define TX_ADR_WIDTH 3//ширина адреса
 #define TX_PLOAD_WIDTH 5// величина пакета(кол-во байт в пакете)
-uint8_t TX_ADDRESS[TX_ADR_WIDTH] = {0xb3,0xb4,0x01};//адрес
+uint8_t TX_ADDRESS0[TX_ADR_WIDTH] = {0xb5,0xb5,0xa1};//адрес в режиме передатчика (т.е. это адрес приемного устройства)
+uint8_t TX_ADDRESS1[TX_ADR_WIDTH] = {0xb7,0xb5,0xa1};//адрес в режиме приемника (т.е. это адрес газового котла)
+uint8_t TX_ADDRESS2[TX_ADR_WIDTH] = {0xb3,0xb4,0x01};//адрес метеостанции 
+//uint8_t TX_ADDRESS0[TX_ADR_WIDTH] = {0xb3,0xb4,0x01};//адрес метеостанции 
+//uint8_t TX_ADDRESS1[TX_ADR_WIDTH] = {0xb7,0xb5,0xa1};//адрес газового котла	(одновременно и адрес в режиме приемника)
 uint8_t RX_BUF[TX_PLOAD_WIDTH] = {0};//буффер для пакетов
 extern char wind_direction[6];
 extern char temp_street_to_DB[6];
@@ -35,6 +39,7 @@ uint8_t rx_flag = 0;
 extern char receive_time[20];
 uint8_t receive_counter;
 extern uint8_t timer1_flag, timer2_flag;
+uint8_t pipe;//номер канала
 
 uint8_t street_temp_sign;//знак уличн темп
 uint8_t street_temp_integer;//целая часть уличн темп
@@ -53,8 +58,8 @@ void NRF24_ini(void)
 	_delay_ms(5);
 	nRF_write_register(CONFIG, 0x0a); // Set PWR_UP bit, enable CRC(1 byte) &Prim_RX:0 (Transmitter)
 	_delay_ms(5);
-	nRF_write_register(EN_AA, 0x02); // Enable Pipe1
-	nRF_write_register(EN_RXADDR, 0x02); // Enable Pipe1
+	nRF_write_register(EN_AA, 0x03); // Enable Pipe1 and Pipe0
+	nRF_write_register(EN_RXADDR, 0x03); // Enable Pipe1 and Pipe0
 	nRF_write_register(SETUP_AW, 0x01); // Setup address width=3 bytes
 	nRF_write_register(SETUP_RETR, 0x5F); // // 1500us, 15 retrans
 	NRF24_ToggleFeatures();
@@ -63,8 +68,10 @@ void NRF24_ini(void)
 	nRF_write_register(STATUS, 0x70);//Reset flags for IRQ
 	nRF_write_register(RF_CH, 76); // частота 2476 MHz
 	nRF_write_register(RF_SETUP, 0x06); //TX_PWR:0dBm, Datarate:1Mbps
-	NRF24_Write_Buf(TX_ADDR, TX_ADDRESS, TX_ADR_WIDTH);
-	NRF24_Write_Buf(RX_ADDR_P1, TX_ADDRESS, TX_ADR_WIDTH);
+	NRF24_Write_Buf(TX_ADDR, TX_ADDRESS1, TX_ADR_WIDTH);
+	NRF24_Write_Buf(RX_ADDR_P0, TX_ADDRESS2, TX_ADR_WIDTH);
+	NRF24_Write_Buf(RX_ADDR_P1, TX_ADDRESS1, TX_ADR_WIDTH);
+	nRF_write_register(RX_PW_P0, TX_PLOAD_WIDTH); //Number of bytes in RX payload in data pipe 0
 	nRF_write_register(RX_PW_P1, TX_PLOAD_WIDTH); //Number of bytes in RX payload in data pipe 1
 	//пока уходим в режим приёмника
 	NRF24L01_RX_Mode();
@@ -77,7 +84,7 @@ void NRF24L01_Receive(void)
 	
 	uint8_t byte1 = 0;
 	uint8_t byte2 = 0;
-	if(rx_flag==1)
+	if((rx_flag==1)&&(pipe == 0))
 	{
 		switch (RX_BUF[0])
 		{	
@@ -176,14 +183,15 @@ ISR(INT2_vect)
 	status = nRF_read_register(STATUS);
 	if(status & 0x40)
 	{
+		pipe = (status>>1)&0x07;
 		NRF24_Read_Buf(R_RX_PAYLOAD,RX_BUF,TX_PLOAD_WIDTH);
 		nRF_write_register(STATUS, 0x40);
 	}
-	 if(receive_counter == 6)
-	 {
-		 receive_counter = 0;
-	 }
-	 rx_flag = 1;
+	if((receive_counter == 6)&&(pipe == 0))
+	{
+		receive_counter = 0;
+	}
+	rx_flag = 1;
 }
 //-------------------------------------------------------------
 void NRF24_Transmit(uint8_t addr,uint8_t *pBuf,uint8_t bytes)
@@ -215,7 +223,7 @@ uint8_t NRF24L01_Send(uint8_t *pBuf)
 	HIGH_CE;
 	_delay_us(15); //minimum 10us high pulse (Page 21)
 	LOW_CE;
-	while(flag_irq == 1) {}
+	while( (PIND&(1<<IRQ)) != 0);
 	status = nRF_read_register(STATUS);
 	if(status&TX_DS) //tx_ds == 0x20
 	{
@@ -229,13 +237,16 @@ uint8_t NRF24L01_Send(uint8_t *pBuf)
 	regval = nRF_read_register(OBSERVE_TX);
 	//Уходим в режим приёмника
 	NRF24L01_RX_Mode();
-    flag_irq = 1;
+    nRF_write_register(STATUS, 0x70);//Reset flags for IRQ
 	return regval;
 }
 //-------------------------------------------------------------
 void NRF24L01_TX_Mode(uint8_t *pBuf)  //функция перехода в режим передатчика
 {
-	NRF24_Write_Buf(TX_ADDR, TX_ADDRESS, TX_ADR_WIDTH);
+	NRF24_Write_Buf(TX_ADDR, TX_ADDRESS0, TX_ADR_WIDTH);
+	NRF24_Write_Buf(RX_ADDR_P1, TX_ADDRESS0, TX_ADR_WIDTH);
+	NRF24_Write_Buf(RX_ADDR_P0, TX_ADDRESS0, TX_ADR_WIDTH);
+	//NRF24_Write_Buf(RX_ADDR_P0, TX_ADDRESS0, TX_ADR_WIDTH);
 	LOW_CE;
 	// Flush buffers
 	NRF24_FlushRX();
@@ -265,6 +276,10 @@ void NRF24L01_RX_Mode(void) // включение режима приема
 	//разбудим модуль и переведём его в режим приёмника, включив биты PWR_UP и PRIM_RX
 	regval |= (1<<PWR_UP)|(1<<PRIM_RX);
 	nRF_write_register(CONFIG,regval);
+	NRF24_Write_Buf(TX_ADDR, TX_ADDRESS1, TX_ADR_WIDTH);
+	NRF24_Write_Buf(RX_ADDR_P1, TX_ADDRESS1, TX_ADR_WIDTH);
+	NRF24_Write_Buf(RX_ADDR_P0, TX_ADDRESS2, TX_ADR_WIDTH);
+	//NRF24_Write_Buf(RX_ADDR_P0, TX_ADDRESS0, TX_ADR_WIDTH);
 	HIGH_CE;
 	_delay_us(150); //Задержка минимум 130 мкс
 	// Flush buffers
