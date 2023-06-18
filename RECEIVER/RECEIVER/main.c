@@ -56,6 +56,7 @@ menu_flag
 3 - о проекте
 4 - доп инфо
 5 - состояние wifi
+6 - газовый котел
 */
 uint8_t menu_flag;
 int up_down_count = 0;
@@ -71,6 +72,7 @@ uint8_t TimeSettingsPage_Flag;
 uint8_t PageAbout_Flag;
 uint8_t AddInfoPage_Flag;
 uint8_t WiFiInfoPage_Flag;
+uint8_t GasBoilerPage_Flag;
 
 uint8_t timer0_flag = 0;
 int timer0_counter = 0;
@@ -81,6 +83,12 @@ uint8_t wifi_enable_flag = 0;
 char WiFi_SSID[20];
 char WiFi_PSWD[20];
 char WiFi_IP[20];
+
+uint8_t gas_boiler_enable_flag = 0;
+uint8_t gas_boiler_setpoint_temp_integer = 20;
+uint8_t gas_boiler_setpoint_temp_fraction = 0;
+int gas_boiler_setpoint_temp_counter = 0;
+uint8_t gas_boiler_setpoint_change_flag = 0;
 
 extern uint8_t pipe;//номер канала
 
@@ -117,10 +125,10 @@ ISR (TIMER1_COMPA_vect)
 		millis = 0;
 	}*/
 	millis++;
-	if ((millis % 750) == 0)
-	{
-		sprintf_HOME_Weath_Param();
-	}
+	//if ((millis % 750) == 0)
+	//{
+		//sprintf_HOME_Weath_Param();
+	//}
 }
 //-------------------------------------------------------------
 //обработчик прерываний по таймеру 0 для отслеживания нажатий кнопок
@@ -237,7 +245,7 @@ ISR (TIMER0_COMPA_vect)
 ISR (INT4_vect)
 {
 	PORTL &= ~ (1 << BUZZER);
-	_delay_us(1000);
+	_delay_us(3000);
 	PORTL |= (1 << BUZZER);
 	if (menu_flag == 0)
 	{
@@ -246,7 +254,7 @@ ISR (INT4_vect)
 	}
 	else if (menu_flag == 1)
 	{
-		switch(up_down_count%5)
+		switch(up_down_count%6)
 		{
 			case 0:
 				up_down_count = 0;
@@ -267,6 +275,10 @@ ISR (INT4_vect)
 			case 4:
 				up_down_count = 0;
 				menu_flag = 5;
+				break;
+			case 5:
+				up_down_count = 0;
+				menu_flag = 6;
 				break;
 		}
 	}
@@ -387,11 +399,44 @@ ISR (INT4_vect)
 		up_down_count = 0;
 		menu_flag = 1;
 	}
+	else if (menu_flag == 6)
+	{
+		switch (up_down_count%3)
+		{
+			case 0:
+				if (gas_boiler_enable_flag == 0)
+				{
+					gas_boiler_enable_flag = 1;
+				}
+				else
+				{
+					gas_boiler_enable_flag = 0;
+				}
+				break;
+			case 1:
+				if (!gas_boiler_setpoint_change_flag) 
+				{
+					gas_boiler_setpoint_change_flag = 1;
+					gas_boiler_setpoint_temp_counter = gas_boiler_setpoint_temp_integer*10 + gas_boiler_setpoint_temp_fraction;
+				}
+				else
+				{
+					gas_boiler_setpoint_temp_integer = gas_boiler_setpoint_temp_counter / 10;
+					gas_boiler_setpoint_temp_fraction = gas_boiler_setpoint_temp_counter % 10;
+					gas_boiler_setpoint_change_flag = 0;
+				}
+				break;
+			case 2:
+				up_down_count = 0;
+				menu_flag = 1;
+				break;
+		}
+	}
 }
 ISR (INT5_vect)
 {
 	PORTL &= ~ (1 << BUZZER);
-	_delay_us(1000);
+	_delay_us(3000);
 	PORTL |= (1 << BUZZER);
 	up_down_count = 0;
 	clock_setting_count = 0;
@@ -400,15 +445,19 @@ ISR (INT5_vect)
 ISR (INT6_vect)
 {
 	PORTL &= ~ (1 << BUZZER);
-	_delay_us(1000);
+	_delay_us(3000);
 	PORTL |= (1 << BUZZER);
-	if (!clock_change_flag)
+	if (clock_change_flag == 1)
 	{
-		up_down_count--;
+		clock_setting_count--;
+	}
+	else if(gas_boiler_setpoint_change_flag == 1)
+	{
+		gas_boiler_setpoint_temp_counter -= 5;
 	}
 	else
 	{
-		clock_setting_count--;
+		up_down_count--;
 	}
 	if (clock_change_flag == 1)
 	{
@@ -465,26 +514,37 @@ ISR (INT6_vect)
 			break;
 		}
 	}
+	else if(gas_boiler_setpoint_change_flag == 1)
+	{
+		if (gas_boiler_setpoint_temp_counter < 0)
+		{
+			gas_boiler_setpoint_temp_counter = 400;
+		}
+	}
 	else
 	{
 		if (up_down_count < 0)
 		{
-			up_down_count = 159;
+			up_down_count = 167;
 		}
 	}
 }
 ISR (INT7_vect)
 {
 	PORTL &= ~ (1 << BUZZER);
-	_delay_us(1000);
+	_delay_us(3000);
 	PORTL |= (1 << BUZZER);
-	if (!clock_change_flag)
+	if (clock_change_flag == 1)
 	{
-		up_down_count++;
+		clock_setting_count++;
+	}
+	else if(gas_boiler_setpoint_change_flag == 1)
+	{
+		gas_boiler_setpoint_temp_counter += 5;
 	}
 	else
 	{
-		clock_setting_count++;
+		up_down_count++;
 	}
 	if (clock_change_flag == 1)
 	{
@@ -541,9 +601,16 @@ ISR (INT7_vect)
 				break;
 		}
 	}
+	else if(gas_boiler_setpoint_change_flag == 1)
+	{
+		if (gas_boiler_setpoint_temp_counter > 400)
+		{
+			gas_boiler_setpoint_temp_counter = 0;
+		}
+	}
 	else
 	{
-		if (up_down_count > 159)
+		if (up_down_count > 167)
 		{
 			up_down_count = 0;
 		}
@@ -658,7 +725,7 @@ int main(void)
 	//Инициализация оборудования
 	NRF24_ini();
 	RTC_init();
-	//dht22_init();
+	dht22_init();
 	BMP180_Calibration();
 	wdt_reset();
 	_delay_ms(1500);
@@ -667,7 +734,7 @@ int main(void)
 	//RTC_write_date(1, 13, 3, 23);
 	//Вывод окна загрузки
 	wdt_reset();
-	//Print_Download();
+	Print_Download();
 	wdt_reset();
 	PORTL &= ~(1<<LED);
 	//Инициализация таймеров и прерываний
@@ -684,7 +751,7 @@ int main(void)
 	//Фиксация времени начала работы
 	Clock ();
 	sprintf(start_time,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);	
-	//sprintf_HOME_Weath_Param();
+	sprintf_HOME_Weath_Param();
 	Print_Static_Home_Page();
 	Print_Home_Page_In();
 	Print_Home_Page_WeatherForecast();
@@ -694,7 +761,7 @@ int main(void)
 	sei();
     while (1) 
     {
-		//прием данных от передатчика
+		//прием данных от передатчика метеостанции
 		if ((rx_flag == 1)&&(pipe == 0))
 		{
 			rx_count = 0;
@@ -734,6 +801,7 @@ int main(void)
 			}
 			//_delay_ms(1000);
 		}
+		//прием данных от газового котла
 		else if ((rx_flag == 1)&&(pipe == 1))
 		{
 			PORTL |= (1<<LED);
@@ -741,8 +809,7 @@ int main(void)
 			PORTL &= ~(1<<LED);
 			uint8_t buf1[10] = {0};//буффер для отправки
 			uint8_t dt;
-			buf1[0] = 1;
-			_delay_ms(500);
+			buf1[0] = gas_boiler_enable_flag;
 			dt = NRF24L01_Send(buf1);
 			rx_flag = 0;
 		}
@@ -754,17 +821,17 @@ int main(void)
 				Clock ();
 				memset(send_time, 0, sizeof(char) * strlen(send_time));//очистка массива
 				sprintf(send_time,"%d:%d:%d,%d/%d/%d", hour, min, sec, date, month, year);
-				//sprintf_HOME_Weath_Param();
+				sprintf_HOME_Weath_Param();
 				sprintf(DATA_TO_UART,"%s %s %s %s %s %s %s %s %s %s ", temp_street_to_DB, temp_home_to_DB, hum_street_to_DB, hum_home_to_DB, Press_home_to_DB, Rain_to_DB, Vbat_to_DB, WIND_speed_to_DB, wind_direction_to_DB, send_time);
 				USART_Transmit(DATA_TO_UART);
 				memset(DATA_TO_UART, 0, sizeof(char) * strlen(DATA_TO_UART));//очистка массива
 				millis = 0;
 			}
 			//обновление домашних показаний
-			else if ((millis % 2010) == 0)
+			else if ((millis % 60000) == 0)
 			{
 				//int32_t millis1 = millis;
-				//sprintf_HOME_Weath_Param();
+				sprintf_HOME_Weath_Param();
 				//millis = millis1;
 			}
 			//обновление изображения на дисплее
@@ -786,6 +853,7 @@ int main(void)
 							PageAbout_Flag = 1;
 							AddInfoPage_Flag = 1;
 							WiFiInfoPage_Flag = 1;
+							GasBoilerPage_Flag = 1;
 						}
 						else
 						{
@@ -804,6 +872,7 @@ int main(void)
 							PageAbout_Flag = 1;
 							AddInfoPage_Flag = 1;
 							WiFiInfoPage_Flag = 1;
+							GasBoilerPage_Flag = 1;
 						}
 						else
 						{
@@ -821,6 +890,7 @@ int main(void)
 							PageAbout_Flag = 1;
 							AddInfoPage_Flag = 1;
 							WiFiInfoPage_Flag = 1;
+							GasBoilerPage_Flag = 1;
 						}
 						else
 						{
@@ -837,6 +907,7 @@ int main(void)
 							PageAbout_Flag = 0;
 							AddInfoPage_Flag = 1;
 							WiFiInfoPage_Flag = 1;
+							GasBoilerPage_Flag = 1;
 						}
 						
 						break;
@@ -851,6 +922,7 @@ int main(void)
 							PageAbout_Flag = 1;
 							AddInfoPage_Flag = 0;
 							WiFiInfoPage_Flag = 1;
+							GasBoilerPage_Flag = 1;
 						}
 						else
 						{
@@ -867,8 +939,26 @@ int main(void)
 							PageAbout_Flag = 1;
 							AddInfoPage_Flag = 1;
 							WiFiInfoPage_Flag = 0;
+							GasBoilerPage_Flag = 1;
+						}		
+						break;
+					case 6:
+						if(GasBoilerPage_Flag == 1)
+						{
+							Print_Gas_Boiler_Page_Static();
+							Print_Gas_Boiler_Page();
+							TimeSettingsPage_Flag = 1;
+							MainMenuPage_Flag = 1;
+							HomePage_Flag = 1;
+							PageAbout_Flag = 1;
+							AddInfoPage_Flag = 1;
+							WiFiInfoPage_Flag = 1;
+							GasBoilerPage_Flag = 0;
 						}
-						
+						else
+						{
+							Print_Gas_Boiler_Page();
+						}
 						break;
 				}
 				//millis = millis1;

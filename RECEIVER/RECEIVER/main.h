@@ -24,6 +24,7 @@
 #define ButtonUp PORTE6
 #define ButtonDown PORTE7
 #define LED PORTL7
+#define DHT22_PORT PORTK1
 //#define IK_RX PORTD3
 #define BUZZER PORTL6
 //#define	SW_ENC PORTD3

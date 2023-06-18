@@ -21,6 +21,7 @@ char Vbat[10] = {0};
 char RainAmount[10] = {0};		
 int adc_value1 = 0, adc_value2 = 0;	
 int INTER_COUNT;
+uint8_t gas_boiler_enable_flag = 0;
 
 unsigned int TIM2_COUNT = 0;
 void timer2_ini(void)//период 0.008с
@@ -68,6 +69,9 @@ port_init(void)
 	//светодиод
 	DDRD |= (1<<LED_RX);
 	PORTD &= ~(1<<LED_RX);
+	//инициализация мосфета
+	DDRB |= (1<<MOSFET);
+	PORTB &= ~(1<<MOSFET);
 }
 //-------------------------------------------------------------
 uint8_t spi_send_recv(uint8_t data) // Передаёт и принимает 1 байт по SPI, возвращает полученное значение
@@ -105,7 +109,7 @@ int main(void)
     {
 		//-------------------------------------------
 		//отправка температуры
-		buf1[0] = 1;
+		buf1[0] = gas_boiler_enable_flag;
 		int tt = 0;
 		/*tt = dt_check();
 		uint8_t temp_sign = tt>>11;//вычисление знака температуры

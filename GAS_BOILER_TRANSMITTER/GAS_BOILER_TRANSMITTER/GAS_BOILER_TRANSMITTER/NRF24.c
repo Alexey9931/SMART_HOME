@@ -14,6 +14,8 @@ uint8_t TX_ADDRESS1[TX_ADR_WIDTH] = {0xb5,0xb5,0xa1};//адрес в режиме приемника
 uint8_t RX_BUF[TX_PLOAD_WIDTH] = {0};//буффер для пакетов
 uint8_t pipe; //номер канала
 uint8_t rx_flag = 0, tx_flag = 0;
+
+extern uint8_t gas_boiler_enable_flag;
 //-------------------------------------------------------------
 void NRF24_ini(void)
 {
@@ -101,6 +103,16 @@ ISR(INT0_vect)
 		PORTD |= (1<<LED_RX);
 		_delay_ms(100);
 		PORTD &= ~(1<<LED_RX);
+		if (RX_BUF[0] == 1)
+		{
+			PORTB |= (1<<MOSFET);
+			gas_boiler_enable_flag = 1;
+		}
+		else
+		{
+			PORTB &= ~(1<<MOSFET);
+			gas_boiler_enable_flag = 0;
+		}
 	}
 }
 //-------------------------------------------------------------

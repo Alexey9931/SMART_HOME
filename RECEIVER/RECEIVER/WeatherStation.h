@@ -26,6 +26,8 @@ void Print_Page_About();
 void Print_Page_Dop_Info();
 void Print_Page_Dop_Info_Static();
 void Print_WIFI_Page();
+void Print_Gas_Boiler_Page();
+void Print_Gas_Boiler_Page_Static();
 void Clock (void);
 void Convert_to_string_Clock(void);
 int RAIN_AMOUNT(char *adc_value);

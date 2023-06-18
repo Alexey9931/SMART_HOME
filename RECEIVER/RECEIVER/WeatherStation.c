@@ -70,6 +70,12 @@ extern char WiFi_PSWD[20];
 extern char WiFi_IP[20];
 extern uint8_t rx_flag;
 
+extern uint8_t gas_boiler_enable_flag;
+extern uint8_t gas_boiler_setpoint_temp_integer;
+extern uint8_t gas_boiler_setpoint_temp_fraction;
+extern uint8_t gas_boiler_setpoint_change_flag;
+extern int gas_boiler_setpoint_temp_counter;
+
 //Окно приветсвия на экране дисплея
 void Print_Hello_World()
 {	
@@ -100,7 +106,7 @@ void Print_Download()
 	ILI9486_SetCursor(120,90);
 	ILI9486_Print_String32x32("подождите,",TFT_STRING_MODE_NO_BACKGROUND);
 	wdt_reset();
-	ILI9486_SetCursor(80,130);
+	ILI9486_SetCursor(20,130);
 	ILI9486_Print_String32x32("идёт загрузка...",TFT_STRING_MODE_NO_BACKGROUND);
 	wdt_reset();
 	ILI9486_DrawRect(50, 200,  383, 50,  WHITE);
@@ -738,11 +744,13 @@ void Print_Menu_Page_Static()
 	ILI9486_Print_String32x32("Доп сведения",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(70,230);
 	ILI9486_Print_String32x32(" Wi-Fi сеть",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(67,270);
+	ILI9486_Print_String32x32("Газовый котел",TFT_STRING_MODE_BACKGROUND);
 }
 //Окно меню динамич
 void Print_Menu_Page()
 {
-	switch (up_down_count%5)
+	switch (up_down_count%6)
 	{
 		case 0: 
 				ILI9486_fillTriangle(22,72,37,88,22,104,WHITE);
@@ -750,12 +758,14 @@ void Print_Menu_Page()
 				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
 				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
 				ILI9486_fillTriangle(22,232,37,248,22,264,BLACK);
+				ILI9486_fillTriangle(22,272,37,288,22,304,BLACK);
 				
 				ILI9486_fillTriangle(456,72,441,88,456,104,WHITE);
 				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
 				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
 				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
 				ILI9486_fillTriangle(456,232,441,248,456,264,BLACK);
+				ILI9486_fillTriangle(456,272,441,288,456,304,BLACK);
 				break;
 		case 1: 
 				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
@@ -763,12 +773,14 @@ void Print_Menu_Page()
 				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
 				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
 				ILI9486_fillTriangle(22,232,37,248,22,264,BLACK);
+				ILI9486_fillTriangle(22,272,37,288,22,304,BLACK);
 				
 				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
 				ILI9486_fillTriangle(456,112,441,128,456,144,WHITE);
 				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
 				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
 				ILI9486_fillTriangle(456,232,441,248,456,264,BLACK);
+				ILI9486_fillTriangle(456,272,441,288,456,304,BLACK);
 				break;
 		case 2: 
 				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
@@ -776,12 +788,14 @@ void Print_Menu_Page()
 				ILI9486_fillTriangle(22,152,37,168,22,184,WHITE);
 				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
 				ILI9486_fillTriangle(22,232,37,248,22,264,BLACK);
+				ILI9486_fillTriangle(22,272,37,288,22,304,BLACK);
 				
 				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
 				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
 				ILI9486_fillTriangle(456,152,441,168,456,184,WHITE);
 				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
 				ILI9486_fillTriangle(456,232,441,248,456,264,BLACK);
+				ILI9486_fillTriangle(456,272,441,288,456,304,BLACK);
 				break;
 		case 3: 
 				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
@@ -789,12 +803,14 @@ void Print_Menu_Page()
 				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
 				ILI9486_fillTriangle(22,192,37,208,22,224,WHITE);
 				ILI9486_fillTriangle(22,232,37,248,22,264,BLACK);
+				ILI9486_fillTriangle(22,272,37,288,22,304,BLACK);
 				
 				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
 				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
 				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
 				ILI9486_fillTriangle(456,192,441,208,456,224,WHITE);
 				ILI9486_fillTriangle(456,232,441,248,456,264,BLACK);
+				ILI9486_fillTriangle(456,272,441,288,456,304,BLACK);
 				break;
 		case 4:
 				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
@@ -802,12 +818,29 @@ void Print_Menu_Page()
 				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
 				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
 				ILI9486_fillTriangle(22,232,37,248,22,264,WHITE);
+				ILI9486_fillTriangle(22,272,37,288,22,304,BLACK);
 				
 				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
 				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
 				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
 				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
 				ILI9486_fillTriangle(456,232,441,248,456,264,WHITE);
+				ILI9486_fillTriangle(456,272,441,288,456,304,BLACK);
+				break;
+		case 5:
+				ILI9486_fillTriangle(22,72,37,88,22,104,BLACK);
+				ILI9486_fillTriangle(22,112,37,128,22,144,BLACK);
+				ILI9486_fillTriangle(22,152,37,168,22,184,BLACK);
+				ILI9486_fillTriangle(22,192,37,208,22,224,BLACK);
+				ILI9486_fillTriangle(22,232,37,248,22,264,BLACK);
+				ILI9486_fillTriangle(22,272,37,288,22,304,WHITE);
+		
+				ILI9486_fillTriangle(456,72,441,88,456,104,BLACK);
+				ILI9486_fillTriangle(456,112,441,128,456,144,BLACK);
+				ILI9486_fillTriangle(456,152,441,168,456,184,BLACK);
+				ILI9486_fillTriangle(456,192,441,208,456,224,BLACK);
+				ILI9486_fillTriangle(456,232,441,248,456,264,BLACK);
+				ILI9486_fillTriangle(456,272,441,288,456,304,WHITE);
 				break;
 	}
 }
@@ -1161,11 +1194,9 @@ void Print_WIFI_Page()
 {
 	ILI9486_FillScreen(BLACK);
 	ILI9486_SetRotation(1);
-	ILI9486_SetCursor(70,20);
+	ILI9486_SetCursor(0,20);
 	ILI9486_SetTextColor(BLACK,WHITE);
-	ILI9486_Print_String32x32("WI-FI",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(230,20);
-	ILI9486_Print_String40x40("СЕТЬ",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String32x32("БЕСПРОВОДНАЯ СЕТЬ",TFT_STRING_MODE_BACKGROUND);
 	
 	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(20,60);
@@ -1195,6 +1226,86 @@ void Print_WIFI_Page()
 	ILI9486_Print_String40x40("НАЗАД В МЕНЮ",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_DrawRect(37,273,414,42,WHITE);
 	ILI9486_DrawRect(38,274,412,40,WHITE);
+}
+//Окно Управления газовым котлом
+void Print_Gas_Boiler_Page_Static()
+{
+	ILI9486_FillScreen(BLACK);
+	ILI9486_SetRotation(1);
+	ILI9486_SetCursor(20,20);
+	ILI9486_SetTextColor(BLACK,WHITE);
+	ILI9486_Print_String40x40("Газовый котел",TFT_STRING_MODE_BACKGROUND);
+	
+	ILI9486_SetTextColor(WHITE,BLACK);
+	ILI9486_SetCursor(20,60);
+	ILI9486_Print_String32x32("Состояние:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(20,100);
+	ILI9486_Print_String32x32("Уставка Т:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(415,100);
+	ILI9486_Print_String32x32("°С",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(415,140);
+	ILI9486_Print_String32x32("°С",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(20,140);
+	ILI9486_Print_String32x32("Текущая Т:",TFT_STRING_MODE_BACKGROUND);
+	
+	
+	ILI9486_SetTextColor(WHITE,BLACK);
+	ILI9486_SetCursor(40,270);
+	ILI9486_Print_String40x40("НАЗАД В МЕНЮ",TFT_STRING_MODE_BACKGROUND);
+}
+void Print_Gas_Boiler_Page()
+{
+	char data[10];
+	ILI9486_SetCursor(300,63);
+	if(gas_boiler_enable_flag == 0)
+	{
+		ILI9486_Print_String32x32("ОТКЛ",TFT_STRING_MODE_BACKGROUND);
+	}
+	else
+	{
+		ILI9486_Print_String32x32("ВКЛ ",TFT_STRING_MODE_BACKGROUND);
+	}
+	ILI9486_SetCursor(307,140);
+	ILI9486_Print_String32x32("19.2",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(307,100);
+	if (gas_boiler_setpoint_change_flag == 1)
+	{
+		sprintf(data,"%d.%d",gas_boiler_setpoint_temp_counter/10,gas_boiler_setpoint_temp_counter%10);
+	} 
+	else
+	{
+		sprintf(data,"%d.%d",gas_boiler_setpoint_temp_integer,gas_boiler_setpoint_temp_fraction);
+	}
+	ILI9486_Print_String32x32(data,TFT_STRING_MODE_BACKGROUND);
+	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
+	switch (up_down_count%3)
+	{
+		case 0:
+			ILI9486_DrawRect(297,61,130,37,WHITE);
+			ILI9486_DrawRect(298,62,128,35,WHITE);
+			ILI9486_DrawRect(303,98,170,37,BLACK);
+			ILI9486_DrawRect(304,99,168,35,BLACK);
+			ILI9486_DrawRect(37,273,414,42,BLACK);
+			ILI9486_DrawRect(38,274,412,40,BLACK);
+			break;	
+		case 1:
+			ILI9486_DrawRect(297,61,130,37,BLACK);
+			ILI9486_DrawRect(298,62,128,35,BLACK);
+			ILI9486_DrawRect(303,98,170,37,WHITE);
+			ILI9486_DrawRect(304,99,168,35,WHITE);
+			ILI9486_DrawRect(37,273,414,42,BLACK);
+			ILI9486_DrawRect(38,274,412,40,BLACK);
+			break;
+		case 2:
+			ILI9486_DrawRect(297,61,130,37,BLACK);
+			ILI9486_DrawRect(298,62,128,35,BLACK);
+			ILI9486_DrawRect(303,98,170,37,BLACK);
+			ILI9486_DrawRect(304,99,168,35,BLACK);
+			ILI9486_DrawRect(37,273,414,42,WHITE);
+			ILI9486_DrawRect(38,274,412,40,WHITE);
+			break;	
+	}
+	
 }
 //-----------Графика вспомогательная для главного окна------//
 void DrawWeatherVane()
@@ -1561,10 +1672,17 @@ void sprintf_HOME_Weath_Param(void)
 		sprintf(temp_home_to_DB,"-%d.%d",home_temp_integer,home_temp_fraction);
 	}
 	//измерение влажности
-	/*long int hum = 0;
-	hum = HTU21D_get_humidity();
-	hum = (hum*125)/65536 - 6;
-	home_hum_integer = hum;*/
+	uint8_t data[5] = {0};
+	int home_hum;
+	if (dht22_GetData(data))
+	{
+		//data[1]-младший бит температуры
+		//data[2]-старший бит температуры
+		//data[3]-младший бит влажности
+		//data[4]-старший бит влажности
+		home_hum = ((data[4]<<8)|data[3]) / 10;
+	}
+	home_hum_integer = home_hum;
 	sprintf(hum_home_to_DB,"%d",home_hum_integer);
 	//измерение атмосферного давления
 	pressure_home = BMP180_calculation()*0.0075;

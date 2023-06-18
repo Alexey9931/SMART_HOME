@@ -9,8 +9,10 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#define LED_TX         PORTD6
-#define LED_RX         PORTD5
+#define LED_TX				PORTD6
+#define LED_RX				PORTD5
+#define LED_BOILER_STATUS   PORTD4
+#define MOSFET				PORTB0
 
 #define F_CPU 16000000UL
 #include <avr/io.h>

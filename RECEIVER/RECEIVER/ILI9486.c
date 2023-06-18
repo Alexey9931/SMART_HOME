@@ -81,6 +81,15 @@ void ILI9486_ini(void)
 	
 	CS_ACTIVE;
 	CD_COMMAND;
+	ILI9486_Write8(0xB1);
+	CD_DATA;
+	ILI9486_Write8(0xC0);
+	CD_DATA;
+	ILI9486_Write8(0x00);
+	CS_IDLE;
+	
+	CS_ACTIVE;
+	CD_COMMAND;
 	ILI9486_Write8(0xB4);
 	CD_DATA;
 	ILI9486_Write8(0x00);
