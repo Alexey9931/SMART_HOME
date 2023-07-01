@@ -43,9 +43,10 @@ extern struct Time_Parameters {
 } T_Param;
 unsigned char sec,min,hour,day,date,month,year,alarmhour,alarmmin;
 unsigned char clock_change_mode;
-char receive_time[20] = "No any receptions!";
+char receive_time[20] = "Ќет сигнала";
 char start_time[20] = {0};
-char send_time[30] = "There was no sending!";
+char send_time[30] = "ќтправки не было";
+char rx_time_gas_boiler[20] = "Ќет сигнала";
 char DATA_TO_UART[80] = {0};
 uint8_t rx_count;
 /*
@@ -89,8 +90,13 @@ uint8_t gas_boiler_setpoint_temp_integer = 20;
 uint8_t gas_boiler_setpoint_temp_fraction = 0;
 int gas_boiler_setpoint_temp_counter = 0;
 uint8_t gas_boiler_setpoint_change_flag = 0;
+int gas_boiler_rx_counter = 0;
+int gas_boiler_rx_counter_old = 0;
+uint8_t gas_boiler_rx_level = 0;
 
 extern uint8_t pipe;//номер канала
+
+int32_t millis_update_weather = 0;
 
 //-------------------------------------------------------------
 /*void timer2_ini(void)//период 8мс
@@ -759,6 +765,7 @@ int main(void)
 	HomePage_Flag = 0;
 	MainMenuPage_Flag = 1;
 	sei();
+	_delay_ms(500);
     while (1) 
     {
 		//прием данных от передатчика метеостанции
@@ -787,7 +794,7 @@ int main(void)
 				//обновление показаний на экране
 				if (menu_flag == 0)
 				{
-					DrawLevelNrf();
+					DrawLevelNrfWeather();
 				}
 				wdt_reset();
 				
@@ -804,14 +811,27 @@ int main(void)
 		//прием данных от газового котла
 		else if ((rx_flag == 1)&&(pipe == 1))
 		{
+			Clock ();
+			memset(rx_time_gas_boiler, 0, sizeof(char) * strlen(rx_time_gas_boiler));//очистка массива
+			sprintf(rx_time_gas_boiler,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);
 			PORTL |= (1<<LED);
 			_delay_us(300);
 			PORTL &= ~(1<<LED);
 			uint8_t buf1[10] = {0};//буффер дл€ отправки
 			uint8_t dt;
 			buf1[0] = gas_boiler_enable_flag;
+			buf1[1] = gas_boiler_setpoint_temp_integer;
+			buf1[2] = gas_boiler_setpoint_temp_fraction;
+			buf1[3] = home_temp_integer;
+			buf1[4] = home_temp_fraction;
 			dt = NRF24L01_Send(buf1);
 			rx_flag = 0;
+			gas_boiler_rx_counter++;
+			if (gas_boiler_rx_counter > 65000)
+			{
+				gas_boiler_rx_counter = 0;
+				gas_boiler_rx_counter_old = 0;
+			}
 		}
 		else
 		{
@@ -820,19 +840,22 @@ int main(void)
  			{
 				Clock ();
 				memset(send_time, 0, sizeof(char) * strlen(send_time));//очистка массива
-				sprintf(send_time,"%d:%d:%d,%d/%d/%d", hour, min, sec, date, month, year);
+				sprintf(send_time,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);
 				sprintf_HOME_Weath_Param();
 				sprintf(DATA_TO_UART,"%s %s %s %s %s %s %s %s %s %s ", temp_street_to_DB, temp_home_to_DB, hum_street_to_DB, hum_home_to_DB, Press_home_to_DB, Rain_to_DB, Vbat_to_DB, WIND_speed_to_DB, wind_direction_to_DB, send_time);
 				USART_Transmit(DATA_TO_UART);
 				memset(DATA_TO_UART, 0, sizeof(char) * strlen(DATA_TO_UART));//очистка массива
 				millis = 0;
+				millis_update_weather = 0;
 			}
-			//обновление домашних показаний
-			else if ((millis % 60000) == 0)
+			//обновление домашних показаний и обновление уровн€ приема от газового котла
+			else if ((millis - millis_update_weather) > 10000)
 			{
-				//int32_t millis1 = millis;
 				sprintf_HOME_Weath_Param();
-				//millis = millis1;
+				//вывод уровн€ сигнала NRF от газового котла
+				FindLevelNrfGasBoiler(gas_boiler_rx_counter, gas_boiler_rx_counter_old);
+				gas_boiler_rx_counter_old = gas_boiler_rx_counter;
+				millis_update_weather = millis;
 			}
 			//обновление изображени€ на дисплее
 			else if((millis % 100) == 0)
@@ -914,8 +937,8 @@ int main(void)
 					case 4:	
 						if(AddInfoPage_Flag == 1)
 						{
-							Print_Page_Dop_Info_Static();
-							Print_Page_Dop_Info();
+							Print_WeatherStation_Info_Static();
+							Print_WeatherStation_Info();
 							TimeSettingsPage_Flag = 1;
 							MainMenuPage_Flag = 1;
 							HomePage_Flag = 1;
@@ -926,7 +949,7 @@ int main(void)
 						}
 						else
 						{
-							Print_Page_Dop_Info();
+							Print_WeatherStation_Info();
 						}
 						break;
 					case 5:
@@ -961,7 +984,6 @@ int main(void)
 						}
 						break;
 				}
-				//millis = millis1;
 			}
 		}
 		wdt_reset();

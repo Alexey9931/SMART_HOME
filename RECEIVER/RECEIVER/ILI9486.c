@@ -1375,7 +1375,7 @@ void ILI9486_Print_String24x32(uint8_t *string,uint8_t TFT_STRING_MODE)
 void ILI9486_Print_String32x48(uint8_t *string,uint8_t TFT_STRING_MODE)
 {
 	uint8_t i=0;
-	uint8_t font_w=30;
+	uint8_t font_w=32;
 	uint8_t font_h=40;
 
 	while(*(string+i)!='\0')

@@ -21,7 +21,7 @@ NRF24.d NRF24.o: .././NRF24.c .././NRF24.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
- .././TWI.h .././DS18B20.h
+ .././TWI.h .././DS18B20.h .././MAX7219.h
 
 .././NRF24.h:
 
@@ -74,3 +74,5 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
 .././TWI.h:
 
 .././DS18B20.h:
+
+.././MAX7219.h:

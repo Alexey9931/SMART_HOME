@@ -1,4 +1,4 @@
-TWI.d TWI.o: .././TWI.c .././TWI.h .././main.h \
+MAX7219.d MAX7219.o: .././MAX7219.c .././MAX7219.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -21,9 +21,9 @@ TWI.d TWI.o: .././TWI.c .././TWI.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
- .././NRF24.h .././DS18B20.h .././MAX7219.h
+ .././NRF24.h .././TWI.h .././DS18B20.h
 
-.././TWI.h:
+.././MAX7219.h:
 
 .././main.h:
 
@@ -73,6 +73,6 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
 
 .././NRF24.h:
 
-.././DS18B20.h:
+.././TWI.h:
 
-.././MAX7219.h:
+.././DS18B20.h:

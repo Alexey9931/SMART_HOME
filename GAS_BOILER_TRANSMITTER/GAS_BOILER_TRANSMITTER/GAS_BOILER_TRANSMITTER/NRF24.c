@@ -14,6 +14,10 @@ uint8_t TX_ADDRESS1[TX_ADR_WIDTH] = {0xb5,0xb5,0xa1};//адрес в режиме приемника
 uint8_t RX_BUF[TX_PLOAD_WIDTH] = {0};//буффер для пакетов
 uint8_t pipe; //номер канала
 uint8_t rx_flag = 0, tx_flag = 0;
+uint8_t temp_setpoint_integer = 20;
+uint8_t temp_setpoint_fraction = 0;
+uint8_t home_temp_rx_integer = 0;
+uint8_t home_temp_rx_fraction = 0;
 
 extern uint8_t gas_boiler_enable_flag;
 //-------------------------------------------------------------
@@ -107,11 +111,21 @@ ISR(INT0_vect)
 		{
 			PORTB |= (1<<MOSFET);
 			gas_boiler_enable_flag = 1;
+			temp_setpoint_integer = RX_BUF[1];
+			temp_setpoint_fraction = RX_BUF[2];
+			home_temp_rx_integer = RX_BUF[3];
+			home_temp_rx_fraction = RX_BUF[4];
+			PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, temp_setpoint_integer*10+temp_setpoint_fraction);
 		}
 		else
 		{
 			PORTB &= ~(1<<MOSFET);
 			gas_boiler_enable_flag = 0;
+			temp_setpoint_integer = RX_BUF[1];
+			temp_setpoint_fraction = RX_BUF[2];
+			home_temp_rx_integer = RX_BUF[3];
+			home_temp_rx_fraction = RX_BUF[4];
+			PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, temp_setpoint_integer*10+temp_setpoint_fraction);
 		}
 	}
 }

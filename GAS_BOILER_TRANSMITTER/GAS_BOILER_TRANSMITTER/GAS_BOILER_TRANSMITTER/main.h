@@ -27,5 +27,6 @@
 #include "NRF24.h"
 #include "TWI.h"
 #include "DS18B20.h"
+#include "MAX7219.h"
 
 #endif /* MAIN_H_ */

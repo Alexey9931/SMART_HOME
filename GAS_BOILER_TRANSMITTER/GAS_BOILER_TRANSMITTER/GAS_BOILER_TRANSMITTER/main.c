@@ -22,6 +22,8 @@ char RainAmount[10] = {0};
 int adc_value1 = 0, adc_value2 = 0;	
 int INTER_COUNT;
 uint8_t gas_boiler_enable_flag = 0;
+extern uint8_t temp_setpoint_integer;
+extern uint8_t temp_setpoint_fraction;
 
 unsigned int TIM2_COUNT = 0;
 void timer2_ini(void)//период 0.008с
@@ -55,7 +57,7 @@ SPI_init(void) //инициализаци€ SPI
 	DDRB |= ((1<<SS)|(1<<MOSI)|(1<<CE)|(1<<SCK)); //ножки SPI на выход
 	PORTB &= ~((1<<SS)|(1<<MOSI)|(1<<SCK)); //низкий уровень
 	HIGH_CSN;
-	SPCR = ((1<<SPE)|(1<<MSTR));//включим шину, объ€вим ведущим
+	SPCR |= (1<<SPE)|(1<<MSTR);//включим шину, объ§вим ведущим, делитель 16
 }
 //-------------------------------------------------------------
 port_init(void)
@@ -72,6 +74,9 @@ port_init(void)
 	//инициализаци€ мосфета
 	DDRB |= (1<<MOSFET);
 	PORTB &= ~(1<<MOSFET);
+	//инициализаци€ индикатора
+	DDRC |= (1<<MAX7219_SS);
+	PORTC |= (1<<MAX7219_SS);
 }
 //-------------------------------------------------------------
 uint8_t spi_send_recv(uint8_t data) // ѕередаЄт и принимает 1 байт по SPI, возвращает полученное значение
@@ -90,6 +95,9 @@ int main(void)
 	PORTD |= (1<<LED_RX);
 	SPI_init();
     NRF24_ini();
+	_delay_ms(100);
+	MAX7219_init();
+	_delay_ms(1000);
 	// настраиваем параметры прерывани€
 	//----------------------
 	MCUCR |= (1<<ISC01) ;
@@ -104,10 +112,11 @@ int main(void)
 	timer_ini();
 	timer2_ini();
 	sei();
-	
+	//PrintTemp_MAX7219(200, temp_setpoint_integer*10+temp_setpoint_fraction);
     while (1) 
     {
-		//-------------------------------------------
+
+		//PrintTemp_MAX7219(200, temp_setpoint_integer*10+temp_setpoint_fraction);
 		//отправка температуры
 		buf1[0] = gas_boiler_enable_flag;
 		int tt = 0;

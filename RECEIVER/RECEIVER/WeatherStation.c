@@ -35,6 +35,7 @@ extern unsigned char sec,min,hour,day,date,month,year,alarmhour,alarmmin;
 extern char receive_time[20];
 extern char send_time[20];
 extern char start_time[20];
+extern char rx_time_gas_boiler[20];
 extern char adc_value1[6];
 extern char HALL_counter[5];
 extern char adc_value2[6];
@@ -75,6 +76,9 @@ extern uint8_t gas_boiler_setpoint_temp_integer;
 extern uint8_t gas_boiler_setpoint_temp_fraction;
 extern uint8_t gas_boiler_setpoint_change_flag;
 extern int gas_boiler_setpoint_temp_counter;
+extern uint8_t gas_boiler_rx_level;
+
+extern uint8_t pipe;//номер канала
 
 //Окно приветсвия на экране дисплея
 void Print_Hello_World()
@@ -139,7 +143,7 @@ void Print_Static_Home_Page()
 	ILI9486_Draw_Image("/pres.txt", 30, 30, 172, 285);//давление
 	ILI9486_Draw_Image("/rain.txt", 30, 30, 330, 90);//осадки
 	//вывод второго уровня сигнала NRF (в перспективе для котла)-тоже пока сюда
-	ILI9486_Draw_Image("/nrf0.txt", 30, 30, 229, 10);
+	//ILI9486_Draw_Image("/nrf0.txt", 30, 30, 229, 10);
 	
 	//вывод надписи для скорости ветра
 	/*ILI9486_SetTextColor(BLUE,BLACK);
@@ -193,7 +197,7 @@ void Print_Home_Page_Out()
 	ILI9486_SetTextColor(YELLOW,BLACK);
 	if (street_temp_sign != 0x00)
 	{
-		ILI9486_SetCursor(395,250);
+		ILI9486_SetCursor(397,250);
 		ILI9486_Print_String32x48(".",TFT_STRING_MODE_BACKGROUND);//точка
 		if(street_temp_integer < 10)
 		{
@@ -213,13 +217,13 @@ void Print_Home_Page_Out()
 		}
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",street_temp_fraction);
-		ILI9486_SetCursor(424,250);
+		ILI9486_SetCursor(425,250);
 		ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//дробная часть
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
 	else
 	{
-		ILI9486_SetCursor(395,250);
+		ILI9486_SetCursor(397,250);
 		ILI9486_Print_String32x48(".",TFT_STRING_MODE_BACKGROUND);//точка
 		if(street_temp_integer < 10)
 		{
@@ -235,7 +239,7 @@ void Print_Home_Page_Out()
 		}
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",street_temp_fraction);
-		ILI9486_SetCursor(424,250);
+		ILI9486_SetCursor(425,250);
 		ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//целая часть
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
@@ -272,8 +276,8 @@ void Print_Home_Page_Out()
 	ILI9486_SetCursor(395,95);
 	ILI9486_Print_StringConsolas16x24("%",TFT_STRING_MODE_BACKGROUND);
 	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
-	//вывод уровня сигнала NRF
-	DrawLevelNrf();
+	//вывод уровня сигнала NRF от метеостанции
+	DrawLevelNrfWeather();
 }
 //Прогноз погоды на главном окне
 void Print_Home_Page_WeatherForecast()
@@ -320,7 +324,7 @@ uint8_t Print_Home_Page_In()
 	Clock();
 	sprintf(TIME,"%s:%s",T_Param.hours, T_Param.minutes);
 	sprintf(DATE,"%s/%s/%s",T_Param.mounthday, T_Param.Mounth, T_Param.Year);
-	if (rx_flag == 1)
+	if ((rx_flag == 1)&&(pipe == 0))
 	{
 		return 0;
 	}
@@ -332,13 +336,19 @@ uint8_t Print_Home_Page_In()
 	ILI9486_SetCursor(9,80);
 	ILI9486_Print_String18x32(DATE,TFT_STRING_MODE_BACKGROUND);
 	wdt_reset();
-	if (rx_flag == 1)
+	if ((rx_flag == 1)&&(pipe == 0))
 	{
 		return 0;
 	}
 	//вывод уровня сигнала WiFi
 	DrawLevelWiFi();
-	if (rx_flag == 1)
+	if ((rx_flag == 1)&&(pipe == 0))
+	{
+		return 0;
+	}
+	//вывод уровня сигнала NRF от газового котла
+	DrawLevelNrfGasBoiler();
+	if ((rx_flag == 1)&&(pipe == 0))
 	{
 		return 0;
 	}
@@ -358,14 +368,14 @@ uint8_t Print_Home_Page_In()
 	ILI9486_SetCursor(115,165);
 	memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	ILI9486_Print_String18x32("%",TFT_STRING_MODE_BACKGROUND);//ед измерения
-	if (rx_flag == 1)
+	if ((rx_flag == 1)&&(pipe == 0))
 	{
 		return 0;
 	}
 	//температура
 	if (home_temp_sign != 0x00)
 	{
-		ILI9486_SetCursor(79,250);
+		ILI9486_SetCursor(81,250);
 		ILI9486_Print_String32x48(".",TFT_STRING_MODE_BACKGROUND);//точка
 		if(home_temp_integer < 10)
 		{
@@ -387,13 +397,13 @@ uint8_t Print_Home_Page_In()
 		}
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",home_temp_fraction);
-		ILI9486_SetCursor(110,250);
+		ILI9486_SetCursor(111,250);
 		ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//дробная часть
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
 	else
 	{
-		ILI9486_SetCursor(79,250);
+		ILI9486_SetCursor(81,250);
 		ILI9486_Print_String32x48(".",TFT_STRING_MODE_BACKGROUND);//точка
 		if(home_temp_integer < 10)
 		{
@@ -409,13 +419,13 @@ uint8_t Print_Home_Page_In()
 		}
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 		sprintf(data,"%d",home_temp_fraction);
-		ILI9486_SetCursor(110,250);
+		ILI9486_SetCursor(111,250);
 		ILI9486_Print_String32x48(data,TFT_STRING_MODE_BACKGROUND);//целая часть
 		memset(data, 0, sizeof(char) * strlen(data));//очистка массива
 	}
 	ILI9486_SetCursor(143,268);
 	ILI9486_Print_String18x32("C",TFT_STRING_MODE_BACKGROUND);//ед измерения
-	if (rx_flag == 1)
+	if ((rx_flag == 1)&&(pipe == 0))
 	{
 		return 0;
 	}
@@ -424,7 +434,7 @@ uint8_t Print_Home_Page_In()
 	ILI9486_SetCursor(206,290);
 	sprintf(data,"%d",pressure_home);
 	ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
-	if (rx_flag == 1)
+	if ((rx_flag == 1)&&(pipe == 0))
 	{
 		return 0;
 	}
@@ -741,11 +751,11 @@ void Print_Menu_Page_Static()
 	ILI9486_SetCursor(70,150);
 	ILI9486_Print_String32x32(" О проекте",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(70,190);
-	ILI9486_Print_String32x32("Доп сведения",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String32x32("Метеостанция",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(70,230);
 	ILI9486_Print_String32x32(" Wi-Fi сеть",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(67,270);
-	ILI9486_Print_String32x32("Газовый котел",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String32x32("Газовый котёл",TFT_STRING_MODE_BACKGROUND);
 }
 //Окно меню динамич
 void Print_Menu_Page()
@@ -849,9 +859,9 @@ void Print_Page_Clock_Settings_Static()
 {
 	ILI9486_FillScreen(BLACK);
 	ILI9486_SetRotation(1);
-	ILI9486_SetCursor(40,20);
+	ILI9486_SetCursor(0,20);
 	ILI9486_SetTextColor(BLACK,WHITE);
-	ILI9486_Print_String40x40("ДАТА и ВРЕМЯ",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String32x32("   ДАТА и ВРЕМЯ  ",TFT_STRING_MODE_BACKGROUND);
 	Clock();
 	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(112,120);
@@ -1131,9 +1141,9 @@ void Print_Page_About()
 {
 	ILI9486_FillScreen(BLACK);
 	ILI9486_SetRotation(1);
-	ILI9486_SetCursor(80,20);
+	ILI9486_SetCursor(0,20);
 	ILI9486_SetTextColor(BLACK,WHITE);
-	ILI9486_Print_String40x40("О ПРОЕКТЕ",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String32x32("    О ПРОЕКТЕ    ",TFT_STRING_MODE_BACKGROUND);
 	
 	
 	ILI9486_SetTextColor(WHITE,BLACK);
@@ -1157,24 +1167,26 @@ void Print_Page_About()
 	LCD_12864_Draw_bitmap(Frame_buffer);
 	LCD_12864_GrapnicMode(0);*/
 }
-//Окно доп инфо
-void Print_Page_Dop_Info_Static()
+//Окно инфо о метеостанции
+void Print_WeatherStation_Info_Static()
 {
 	ILI9486_FillScreen(BLACK);
 	ILI9486_SetRotation(1);
-	ILI9486_SetCursor(40,20);
+	ILI9486_SetCursor(0,20);
 	ILI9486_SetTextColor(BLACK,WHITE);
-	ILI9486_Print_String40x40("ДОП СВЕДЕНИЯ",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String32x32("   МЕТЕОСТАНЦИЯ  ",TFT_STRING_MODE_BACKGROUND);
 	
 	ILI9486_SetTextColor(WHITE,BLACK);
-	ILI9486_SetCursor(150,70);
+	ILI9486_SetCursor(20,60);
+	ILI9486_Print_String32x32("Последний прием:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(10,100);
+	ILI9486_Print_String32x32("(Ch1)",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(20,140);
+	ILI9486_Print_String32x32("Отправка в БД:",TFT_STRING_MODE_BACKGROUND);
+	/*ILI9486_SetCursor(150,70);
 	ILI9486_Print_String18x32("Start time:",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(90,100);
-	ILI9486_Print_String18x32(start_time,TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(40,130);
-	ILI9486_Print_String18x32("Outdoor transmitter:",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(40,190);
-	ILI9486_Print_String18x32("Time of sending to DB:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String18x32(start_time,TFT_STRING_MODE_BACKGROUND);*/
 	
 	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(40,270);
@@ -1182,12 +1194,28 @@ void Print_Page_Dop_Info_Static()
 	ILI9486_DrawRect(37,273,414,42,WHITE);
 	ILI9486_DrawRect(38,274,412,40,WHITE);
 }
-void Print_Page_Dop_Info()
+void Print_WeatherStation_Info()
 {
-	ILI9486_SetCursor(50,160);
-	ILI9486_Print_String18x32(receive_time,TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(50,220);
-	ILI9486_Print_String18x32(send_time,TFT_STRING_MODE_BACKGROUND);
+	if (strcmp(receive_time,"Нет сигнала") == 0)
+	{
+		ILI9486_SetCursor(155,100);
+		ILI9486_Print_String32x32(receive_time,TFT_STRING_MODE_BACKGROUND);
+	}
+	else
+	{
+		ILI9486_SetCursor(155,105);
+		ILI9486_Print_String18x32(receive_time,TFT_STRING_MODE_BACKGROUND);
+	}
+	if (strcmp(send_time,"Отправки не было") == 0)
+	{
+		ILI9486_SetCursor(20,180);
+		ILI9486_Print_String32x32(send_time,TFT_STRING_MODE_BACKGROUND);
+	}
+	else
+	{
+		ILI9486_SetCursor(20,185);
+		ILI9486_Print_String18x32(send_time,TFT_STRING_MODE_BACKGROUND);
+	}
 }
 //Окно статус wifi
 void Print_WIFI_Page()
@@ -1197,17 +1225,21 @@ void Print_WIFI_Page()
 	ILI9486_SetCursor(0,20);
 	ILI9486_SetTextColor(BLACK,WHITE);
 	ILI9486_Print_String32x32("БЕСПРОВОДНАЯ СЕТЬ",TFT_STRING_MODE_BACKGROUND);
-	
 	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(20,60);
+	ILI9486_Print_String32x32("Состояние:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(325,60);
 	if (wifi_enable_flag == 1)
 	{
-		ILI9486_Print_String32x32("Состояние: ВКЛ",TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetTextColor(GREEN,BLACK);
+		ILI9486_Print_String32x32("ВКЛ",TFT_STRING_MODE_BACKGROUND);
 	}
 	else
 	{
-		ILI9486_Print_String32x32("Состояние: ОТКЛ",TFT_STRING_MODE_BACKGROUND);
+		ILI9486_SetTextColor(RED,BLACK);
+		ILI9486_Print_String32x32("ОТКЛ",TFT_STRING_MODE_BACKGROUND);
 	}
+	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(20,100);
 	ILI9486_Print_String32x32("IP:",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(120,100);
@@ -1232,9 +1264,9 @@ void Print_Gas_Boiler_Page_Static()
 {
 	ILI9486_FillScreen(BLACK);
 	ILI9486_SetRotation(1);
-	ILI9486_SetCursor(20,20);
+	ILI9486_SetCursor(0,20);
 	ILI9486_SetTextColor(BLACK,WHITE);
-	ILI9486_Print_String40x40("Газовый котел",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_Print_String32x32("  ГАЗОВЫЙ КОТЁЛ  ",TFT_STRING_MODE_BACKGROUND);
 	
 	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(20,60);
@@ -1247,6 +1279,10 @@ void Print_Gas_Boiler_Page_Static()
 	ILI9486_Print_String32x32("°С",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(20,140);
 	ILI9486_Print_String32x32("Текущая Т:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(20,180);
+	ILI9486_Print_String32x32("Последний прием:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(10,220);
+	ILI9486_Print_String32x32("(Ch2)",TFT_STRING_MODE_BACKGROUND);
 	
 	
 	ILI9486_SetTextColor(WHITE,BLACK);
@@ -1259,12 +1295,15 @@ void Print_Gas_Boiler_Page()
 	ILI9486_SetCursor(300,63);
 	if(gas_boiler_enable_flag == 0)
 	{
+		ILI9486_SetTextColor(RED,BLACK);
 		ILI9486_Print_String32x32("ОТКЛ",TFT_STRING_MODE_BACKGROUND);
 	}
 	else
 	{
+		ILI9486_SetTextColor(GREEN,BLACK);
 		ILI9486_Print_String32x32("ВКЛ ",TFT_STRING_MODE_BACKGROUND);
 	}
+	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(307,140);
 	ILI9486_Print_String32x32("19.2",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(307,100);
@@ -1304,6 +1343,16 @@ void Print_Gas_Boiler_Page()
 			ILI9486_DrawRect(37,273,414,42,WHITE);
 			ILI9486_DrawRect(38,274,412,40,WHITE);
 			break;	
+	}
+	if (strcmp(rx_time_gas_boiler,"Нет сигнала") == 0)
+	{
+		ILI9486_SetCursor(155,220);
+		ILI9486_Print_String32x32(rx_time_gas_boiler,TFT_STRING_MODE_BACKGROUND);
+	}
+	else
+	{
+		ILI9486_SetCursor(155,225);
+		ILI9486_Print_String18x32(rx_time_gas_boiler,TFT_STRING_MODE_BACKGROUND);
 	}
 	
 }
@@ -1390,7 +1439,7 @@ void DrawLevelWiFi()
 			break;
 	}
 }
-void DrawLevelNrf()
+void DrawLevelNrfWeather()
 {
 	switch (rx_count)
 	{
@@ -1415,6 +1464,50 @@ void DrawLevelNrf()
 		case 6:
 			ILI9486_Draw_Image("/nrf4.txt", 30, 30, 280, 10);
 			break;
+	}
+}
+void FindLevelNrfGasBoiler(int gas_boiler_rx_counter, int gas_boiler_rx_counter_old)
+{
+	if ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) >= 7)
+	{
+		gas_boiler_rx_level = 4;
+	}
+	else if (((gas_boiler_rx_counter - gas_boiler_rx_counter_old) < 7) && ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) >= 5))
+	{
+		gas_boiler_rx_level = 3;
+	}
+	else if (((gas_boiler_rx_counter - gas_boiler_rx_counter_old) < 5) && ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) >= 3))
+	{
+		gas_boiler_rx_level = 2;
+	}
+	else if (((gas_boiler_rx_counter - gas_boiler_rx_counter_old) < 3) && ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) >= 1))
+	{
+		gas_boiler_rx_level = 1;
+	}
+	else if ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) < 1)
+	{
+		gas_boiler_rx_level = 0;
+	}
+}
+void DrawLevelNrfGasBoiler()
+{
+	switch (gas_boiler_rx_level)
+	{
+		case 0:
+		ILI9486_Draw_Image("/nrf0.txt", 30, 30, 229, 10);
+		break;
+		case 1:
+		ILI9486_Draw_Image("/nrf1.txt", 30, 30, 229, 10);
+		break;
+		case 2:
+		ILI9486_Draw_Image("/nrf2.txt", 30, 30, 229, 10);
+		break;
+		case 3:
+		ILI9486_Draw_Image("/nrf3.txt", 30, 30, 229, 10);
+		break;
+		case 4:
+		ILI9486_Draw_Image("/nrf4.txt", 30, 30, 229, 10);
+		break;
 	}
 }
 void DrawWindDirect()
@@ -1682,8 +1775,11 @@ void sprintf_HOME_Weath_Param(void)
 		//data[4]-старший бит влажности
 		home_hum = ((data[4]<<8)|data[3]) / 10;
 	}
-	home_hum_integer = home_hum;
-	sprintf(hum_home_to_DB,"%d",home_hum_integer);
+	if (home_hum < 100)
+	{
+		home_hum_integer = home_hum;
+		sprintf(hum_home_to_DB,"%d",home_hum_integer);
+	}
 	//измерение атмосферного давления
 	pressure_home = BMP180_calculation()*0.0075;
 	sprintf(Press_home_to_DB,"%d",pressure_home);

@@ -9,7 +9,7 @@
 #ifndef DHT22_H_
 #define DHT22_H_
 
-#define DHT22_PORT PORTB0
+#define DHT22_PORT PORTK1
 
 #include "main.h"
 

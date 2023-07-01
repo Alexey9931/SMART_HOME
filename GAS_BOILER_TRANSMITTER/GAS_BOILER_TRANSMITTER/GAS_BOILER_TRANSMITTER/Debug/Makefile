@@ -39,6 +39,7 @@ SUBDIRS :=
 C_SRCS +=  \
 ../DS18B20.c \
 ../main.c \
+../MAX7219.c \
 ../NRF24.c \
 ../TWI.c
 
@@ -52,24 +53,28 @@ ASM_SRCS +=
 OBJS +=  \
 DS18B20.o \
 main.o \
+MAX7219.o \
 NRF24.o \
 TWI.o
 
 OBJS_AS_ARGS +=  \
 DS18B20.o \
 main.o \
+MAX7219.o \
 NRF24.o \
 TWI.o
 
 C_DEPS +=  \
 DS18B20.d \
 main.d \
+MAX7219.d \
 NRF24.d \
 TWI.d
 
 C_DEPS_AS_ARGS +=  \
 DS18B20.d \
 main.d \
+MAX7219.d \
 NRF24.d \
 TWI.d
 
@@ -95,6 +100,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./main.o: .././main.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega8a -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega8a" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./MAX7219.o: .././MAX7219.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega8a -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega8a" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
