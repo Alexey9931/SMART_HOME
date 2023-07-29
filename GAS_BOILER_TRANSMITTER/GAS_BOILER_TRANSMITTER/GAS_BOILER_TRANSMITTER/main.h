@@ -12,7 +12,11 @@
 #define LED_TX				PORTD6
 #define LED_RX				PORTD5
 #define LED_BOILER_STATUS   PORTD4
+#define LED_WIFI			PORTC1
 #define MOSFET				PORTB0
+#define BUTTON_OK		    PORTD3
+#define BUTTON_UP		    PORTC2
+#define BUTTON_DOWN		    PORTC3
 
 #define F_CPU 16000000UL
 #include <avr/io.h>

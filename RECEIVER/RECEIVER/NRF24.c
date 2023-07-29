@@ -51,6 +51,11 @@ uint8_t rain; //целая часть осадков
 uint8_t V_Bat_integer;//целая часть заряда акб
 uint8_t V_Bat_fraction;//дробная часть заряда акб
 
+extern uint8_t gas_boiler_enable_flag ;
+extern uint8_t gas_boiler_setpoint_temp_integer;
+extern uint8_t gas_boiler_setpoint_temp_fraction;
+extern uint8_t setpoint_change_flag;
+
 //-------------------------------------------------------------
 void NRF24_ini(void)
 {
@@ -91,7 +96,7 @@ void NRF24L01_Receive(void)
 			//--------------------------------------
 			//получение температуры
 			case 1:	receive_counter++;
-					memset(temp_street_to_DB, 0, sizeof(char) * strlen(temp_street_to_DB));//очистка массива
+					memset(temp_street_to_DB, '\0', sizeof(char) * strlen(temp_street_to_DB));//очистка массива
 					street_temp_sign = RX_BUF[1];
 					street_temp_integer = RX_BUF[2];
 					street_temp_fraction = RX_BUF[3];
@@ -108,15 +113,15 @@ void NRF24L01_Receive(void)
 			//--------------------------------------
 			//получение влажности
 			case 5:	receive_counter++;
-					memset(hum_street_to_DB, 0, sizeof(char) * strlen(hum_street_to_DB));//очистка массива
+					memset(hum_street_to_DB, '\0', sizeof(char) * strlen(hum_street_to_DB));//очистка массива
 					street_hum_integer = RX_BUF[1];
 					sprintf(hum_street_to_DB,"%d",RX_BUF[1]);
 					break;
 			//--------------------------------------
 			//получение скорости ветра
 			case 2:	receive_counter++;
-					memset(HALL_counter, 0, sizeof(char) * strlen(HALL_counter));//очистка массива
-					memset(WIND_speed_to_DB, 0, sizeof(char) * strlen(WIND_speed_to_DB));//очистка массива
+					memset(HALL_counter, '\0', sizeof(char) * strlen(HALL_counter));//очистка массива
+					memset(WIND_speed_to_DB, '\0', sizeof(char) * strlen(WIND_speed_to_DB));//очистка массива
 					for ( n = 0; n < (strlen(RX_BUF)-1); n++)
 					{
 						HALL_counter[n] = RX_BUF[n+1];
@@ -137,8 +142,8 @@ void NRF24L01_Receive(void)
 			//--------------------------------------
 			//получение направления ветра
 			case 3:	receive_counter++;
-					memset(wind_direction, 0, sizeof(char) * strlen(wind_direction));//очистка массива
-					memset(wind_direction_to_DB, 0, sizeof(char) * strlen(wind_direction_to_DB));//очистка массива
+					memset(wind_direction, '\0', sizeof(char) * strlen(wind_direction));//очистка массива
+					memset(wind_direction_to_DB, '\0', sizeof(char) * strlen(wind_direction_to_DB));//очистка массива
 					for ( n = 0; n < (strlen(RX_BUF)-1); n++)
 					{
 						wind_direction[n] = RX_BUF[n+1];
@@ -148,8 +153,8 @@ void NRF24L01_Receive(void)
 			//--------------------------------------
 			//получение заряда аккумулятора
 			case 4:	receive_counter++;
-					memset(adc_value1, 0, sizeof(char) * strlen(adc_value1));//очистка массива
-					memset(Vbat_to_DB, 0, sizeof(char) * strlen(Vbat_to_DB));//очистка массива
+					memset(adc_value1, '\0', sizeof(char) * strlen(adc_value1));//очистка массива
+					memset(Vbat_to_DB, '\0', sizeof(char) * strlen(Vbat_to_DB));//очистка массива
 					for ( n = 0; n < (strlen(RX_BUF)-1); n++)
 					{
 						adc_value1[n] = RX_BUF[n+1];
@@ -161,8 +166,8 @@ void NRF24L01_Receive(void)
 			//--------------------------------------
 			//получение кол-ва осадков
 			case 6:	receive_counter++;
-					memset(adc_value2, 0, sizeof(char) * strlen(adc_value2));//очистка массива
-					memset(Rain_to_DB, 0, sizeof(char) * strlen(Rain_to_DB));//очистка массива
+					memset(adc_value2, '\0', sizeof(char) * strlen(adc_value2));//очистка массива
+					memset(Rain_to_DB, '\0', sizeof(char) * strlen(Rain_to_DB));//очистка массива
 					for ( n = 0; n < (strlen(RX_BUF)-1); n++)
 					{
 						adc_value2[n] = RX_BUF[n+1];
@@ -173,6 +178,37 @@ void NRF24L01_Receive(void)
 		}
 		//--------------------------------------
 		//memset(RX_BUF, 0, sizeof(int) * strlen(RX_BUF));//очистка массива
+		rx_flag = 0;
+	}
+	if((rx_flag==1)&&(pipe == 1))
+	{	
+		//если получили сигнал от котла (флаг>100) что надо поменять уставку то меняем ее
+		if (RX_BUF[0] >= 100)
+		{
+			gas_boiler_setpoint_temp_integer = RX_BUF[1];
+			gas_boiler_setpoint_temp_fraction = RX_BUF[2];
+			//gas_boiler_enable_flag -= 100;
+		}
+		//если сами хотим ее поменять то меняем
+		else if ((gas_boiler_setpoint_temp_integer != RX_BUF[1]) || (gas_boiler_setpoint_temp_fraction != RX_BUF[2])) 
+		{
+			setpoint_change_flag = 1;
+		}
+		
+		//в авто режиме просто читаем флаг состояния
+		if ((gas_boiler_enable_flag / 10) == 0) 
+		{
+			if (RX_BUF[0] >= 100)
+			{
+				RX_BUF[0] -= 100;
+			}
+			if ((RX_BUF[0] / 10) == 0)
+			{
+				gas_boiler_enable_flag = RX_BUF[0];
+			}
+		}
+		//в ручном не читаем флаг
+		else {}
 		rx_flag = 0;
 	}
 }

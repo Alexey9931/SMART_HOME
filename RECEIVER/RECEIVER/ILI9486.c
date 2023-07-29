@@ -1552,7 +1552,7 @@ void ILI9486_Draw_Image(char *filename, uint32_t width, uint32_t height, uint32_
 	int l, p = 0;
 	for (int k = 0; k < 10; k++)
 	{
-		memset(array, 0, sizeof(uint8_t) * strlen(array));//очистка массива
+		memset(array, '\0', sizeof(uint8_t) * strlen(array));//очистка массива
 		char arr[10] = {};
 		p = 0;
 		pf_read(array,6*width*height/10,&s1);

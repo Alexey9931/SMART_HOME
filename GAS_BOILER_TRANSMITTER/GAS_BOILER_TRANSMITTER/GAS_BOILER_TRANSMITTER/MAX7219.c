@@ -6,6 +6,11 @@
  */ 
 #include "MAX7219.h"
 
+extern uint8_t temp_setpoint_integer;
+extern uint8_t temp_setpoint_fraction;
+extern uint8_t home_temp_rx_integer;
+extern uint8_t home_temp_rx_fraction;
+
 void Send_MAX7219(char rg, char dt)
 {
 	PORTC &= ~(1<<MAX7219_SS);
@@ -21,23 +26,22 @@ void MAX7219_init()
 	_delay_ms(10);
 	Send_MAX7219(0x0B, 7); //сколько разр€дов используем
 	_delay_ms(10);
-	Send_MAX7219(0x0A, 0x05); //€ркость
+	Send_MAX7219(0x0A, 0x01); //€ркость
 	_delay_ms(10);
 	Send_MAX7219(0x0C, 1); //включим индикатор
 	_delay_ms(10);
 	MAX7219_clear();
 	
-	Send_MAX7219(0x01, 1);
-	Send_MAX7219(0x02, 2);
-	Send_MAX7219(0x03, 3);
-	Send_MAX7219(0x04, 4);
-	Send_MAX7219(0x05, 5);
-	Send_MAX7219(0x06, 6);
-	Send_MAX7219(0x07, 7);
-	Send_MAX7219(0x08, 8);
+	Send_MAX7219(0x09, 0x00); //включим режим декодировани€ дл€ всех разр€дов
+	Send_MAX7219(1, 0xFF);
+	Send_MAX7219(2, 0xFF);
+	Send_MAX7219(3, 0xFF);
+	Send_MAX7219(4, 0xFF);
+	Send_MAX7219(5, 0xFF);
+	Send_MAX7219(6, 0xFF);
+	Send_MAX7219(7, 0xFF);
+	Send_MAX7219(8, 0xFF);
 	_delay_ms(1000);
-
-	PrintTemp_MAX7219(200, 261);
 }
 void MAX7219_clear()
 {

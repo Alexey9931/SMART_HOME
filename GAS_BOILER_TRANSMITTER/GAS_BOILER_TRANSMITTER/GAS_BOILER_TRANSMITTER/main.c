@@ -7,6 +7,8 @@
 
 #include "main.h"
 
+#define TX_PLOAD_WIDTH 5// величина пакета(кол-во байт в пакете)
+extern uint8_t RX_BUF[TX_PLOAD_WIDTH];
 uint8_t buf1[10] = {0};//буффер для отправки
 uint8_t  reg = 0x00;
 uint8_t retr_cnt, dt;
@@ -22,35 +24,79 @@ char RainAmount[10] = {0};
 int adc_value1 = 0, adc_value2 = 0;	
 int INTER_COUNT;
 uint8_t gas_boiler_enable_flag = 0;
+uint16_t temp_setpoint;
 extern uint8_t temp_setpoint_integer;
 extern uint8_t temp_setpoint_fraction;
+extern uint8_t home_temp_rx_integer;
+extern uint8_t home_temp_rx_fraction;
+
+int32_t millis = 0;
+int32_t millis_hometemp_update = 0;
+
+uint8_t OK_BUTTON_FLAG = 0;
+uint8_t UP_BUTTON_FLAG = 0;
+uint8_t DOWN_BUTTON_FLAG = 0;
 
 unsigned int TIM2_COUNT = 0;
-void timer2_ini(void)//период 0.008с
+void timer2_ini(void)//период 100мкс
 {
 	TCCR2 |= (1<<WGM21); // устанавливаем режим СТС (сброс по совпадению)
-	OCR2 = 0b11111010; //записываем в регистр число для сравнения 250
-	TCCR2 |= ((1<<CS21)|(1<<CS22));//установим делитель 256.
-    TIMSK |= (1<<OCIE2); //устанавливаем бит разрешения прерывания 2ого счетчика по совпадению с OCR2	
+	TIMSK |= (1<<OCIE2); //устанавливаем бит разрешения прерывания 1ого счетчика по совпадению с OCR1A(H и L)
+	OCR2 = 0b11001000; //записываем в регистр число для сравнения 200
+	TCCR2 |= (1<<CS21);//установим делитель 8.
 }
-//——————————————–
-ISR(TIMER2_COMP_vect)
+ISR (TIMER2_COMP_vect)
 {
-  if (TIM2_COUNT == 39750) TIM2_COUNT = 0;
-  else TIM2_COUNT++;
+	if(OK_BUTTON_FLAG == 1)
+	{
+		if(((PINC&(1<<BUTTON_UP)) == 0) && (UP_BUTTON_FLAG == 0))
+		{
+			temp_setpoint = temp_setpoint_integer * 10 + temp_setpoint_fraction;
+			temp_setpoint += 5;
+			temp_setpoint_integer = temp_setpoint/10;
+			temp_setpoint_fraction = temp_setpoint%10;
+			UP_BUTTON_FLAG = 1;
+		}
+		else if(((PINC&(1<<BUTTON_DOWN)) == 0) && (DOWN_BUTTON_FLAG == 0))
+		{
+			temp_setpoint = temp_setpoint_integer * 10 + temp_setpoint_fraction;
+			temp_setpoint -= 5;
+			temp_setpoint_integer = temp_setpoint/10;
+			temp_setpoint_fraction = temp_setpoint%10;
+			DOWN_BUTTON_FLAG = 1;
+		}
+		if ((PINC&(1<<BUTTON_UP)) != 0)
+		{
+			UP_BUTTON_FLAG = 0;
+		}
+		if ((PINC&(1<<BUTTON_DOWN)) != 0)
+		{
+			DOWN_BUTTON_FLAG = 0;
+		}
+	}
 }
-void timer_ini(void)//период 2сек
+void timer1_ini(void)//период 1мс
 {
 	TCCR1B |= (1<<WGM12); // устанавливаем режим СТС (сброс по совпадению)
 	TIMSK |= (1<<OCIE1A); //устанавливаем бит разрешения прерывания 1ого счетчика по совпадению с OCR1A(H и L)
-	OCR1AH = 0b00111101; //записываем в регистр число для сравнения
-	OCR1AL = 0b00001001;
-	TCCR1B |= (1<<CS12)|(1<<CS10);//установим делитель 1024.
+	OCR1AH = 0b00000111; //записываем в регистр число для сравнения 2000
+	OCR1AL = 0b11010000;
+	TCCR1B |= (1<<CS11);//установим делитель 8.
 }
 ISR (TIMER1_COMPA_vect)
+{	
+	millis++;
+	if(millis > INT32_MAX)
+	{
+		millis = 0;
+		millis_hometemp_update = 0;
+	}
+}
+//прерывание по нажатию кнопки OK
+ISR (INT1_vect)
 {
-   speed = hall_counter;
-   hall_counter = 0;
+	if (OK_BUTTON_FLAG == 1) OK_BUTTON_FLAG = 0;
+	else OK_BUTTON_FLAG = 1;
 }
 SPI_init(void) //инициализация SPI
 {
@@ -59,7 +105,6 @@ SPI_init(void) //инициализация SPI
 	HIGH_CSN;
 	SPCR |= (1<<SPE)|(1<<MSTR);//включим шину, объ¤вим ведущим, делитель 16
 }
-//-------------------------------------------------------------
 port_init(void)
 {
 	//инициализация ножки IRQ для внеш прерывания
@@ -71,21 +116,32 @@ port_init(void)
 	//светодиод
 	DDRD |= (1<<LED_RX);
 	PORTD &= ~(1<<LED_RX);
+	//светодиод
+	DDRD |= (1<<LED_BOILER_STATUS);
+	PORTD &= ~(1<<LED_BOILER_STATUS);
+	//светодиод
+	DDRC |= (1<<LED_WIFI);
+	PORTC &= ~(1<<LED_WIFI);
 	//инициализация мосфета
 	DDRB |= (1<<MOSFET);
 	PORTB &= ~(1<<MOSFET);
 	//инициализация индикатора
 	DDRC |= (1<<MAX7219_SS);
 	PORTC |= (1<<MAX7219_SS);
+	//настройка кнопок
+	DDRD &= ~(1<<BUTTON_OK);
+	PORTD |= (1<<BUTTON_OK);
+	DDRC &= ~(1<<BUTTON_UP);
+	PORTC |= (1<<BUTTON_UP);
+	DDRC &= ~(1<<BUTTON_DOWN);
+	PORTC |= (1<<BUTTON_DOWN);
 }
-//-------------------------------------------------------------
 uint8_t spi_send_recv(uint8_t data) // Передаёт и принимает 1 байт по SPI, возвращает полученное значение
 {
 	SPDR = data;
 	while (!(SPSR & (1 << SPIF)));
 	return SPDR;
 }
-
 int main(void)
 {
 	int k = 0;
@@ -93,6 +149,8 @@ int main(void)
 	port_init();
 	PORTD |= (1<<LED_TX);
 	PORTD |= (1<<LED_RX);
+	PORTD |= (1<<LED_BOILER_STATUS);
+	PORTC |= (1<<LED_WIFI);
 	SPI_init();
     NRF24_ini();
 	_delay_ms(100);
@@ -100,53 +158,67 @@ int main(void)
 	_delay_ms(1000);
 	// настраиваем параметры прерывания
 	//----------------------
-	MCUCR |= (1<<ISC01) ;
-	GICR |= (1<<INT0);
+	MCUCR |= (1<<ISC01)|((1<<ISC11));
+	GICR |= (1<<INT0)|(1<<INT1);
 	//----------------------
 	_delay_ms(1000);
 	PORTD &= ~(1<<LED_TX);
 	PORTD &= ~(1<<LED_RX);
+	PORTD &= ~(1<<LED_BOILER_STATUS);
+	PORTC &= ~(1<<LED_WIFI);
 	WDTCR &= ~(1<<WDE);//откл WDT
 	ACSR |= (1<<ACD);//откл компаратор
-    //INTER_COUNT == 0;
-	timer_ini();
+	timer1_ini();
 	timer2_ini();
 	sei();
-	//PrintTemp_MAX7219(200, temp_setpoint_integer*10+temp_setpoint_fraction);
     while (1) 
     {
-
-		//PrintTemp_MAX7219(200, temp_setpoint_integer*10+temp_setpoint_fraction);
-		//отправка температуры
-		buf1[0] = gas_boiler_enable_flag;
-		int tt = 0;
-		/*tt = dt_check();
-		uint8_t temp_sign = tt>>11;//вычисление знака температуры
-		uint8_t temp_integer;//целая часть темп
-		uint8_t temp_fraction;//дробная часть темп
-		if (temp_sign == 0x00)
+		//если нет связи более 6 сек, то берем температуру от собственного датчика
+		if (abs(millis - millis_hometemp_update) > 6000)
 		{
-			temp_fraction = tt & 0xF;
-			temp_fraction = (temp_fraction<<1) + (temp_fraction<<3);// ”множаем на 10
-			temp_fraction = (temp_fraction>>4);//делим на 16 или умножаем на 0.0625
-			temp_integer = (tt&0x07FF)>>4;
+			int tt = 0;
+			tt = dt_check();
+			uint8_t temp_sign = tt>>11;//вычисление знака температуры
+			uint8_t temp_integer;//целая часть темп
+			uint8_t temp_fraction;//дробная часть темп
+			if (temp_sign == 0x00)
+			{
+				home_temp_rx_fraction = tt & 0xF;
+				home_temp_rx_fraction = (home_temp_rx_fraction<<1) + (home_temp_rx_fraction<<3);// умножаем на 10
+				home_temp_rx_fraction = (home_temp_rx_fraction>>4);//делим на 16 или умножаем на 0.0625
+				home_temp_rx_integer = (tt&0x07FF)>>4;
+			}
+			else
+			{
+				home_temp_rx_fraction = ((~tt) & 0xF);
+				home_temp_rx_fraction = (home_temp_rx_fraction<<1) + (home_temp_rx_fraction<<3);// ”множаем на 10
+				home_temp_rx_fraction = (home_temp_rx_fraction>>4);//делим на 16 или умножаем на 0.0625
+				home_temp_rx_integer = ((~(tt))&0x07FF)>>4;
+			}
+			//PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, temp_setpoint_integer*10+temp_setpoint_fraction);
+			millis_hometemp_update = millis;
 		}
-		else
+		//каждые 3сек отправляем данные
+		if ((millis%3000) == 0)
 		{
-			temp_fraction = ((~tt) & 0xF);
-			temp_fraction = (temp_fraction<<1) + (temp_fraction<<3);// ”множаем на 10
-			temp_fraction = (temp_fraction>>4);//делим на 16 или умножаем на 0.0625
-			temp_integer = ((~(tt))&0x07FF)>>4;
+			buf1[0] = gas_boiler_enable_flag;
+			//если хотим поменять уставку
+			if ((temp_setpoint_integer != RX_BUF[1]) || (temp_setpoint_fraction != RX_BUF[2]))
+			{
+				buf1[0] += 100;
+			}
+			buf1[1] = temp_setpoint_integer;
+			buf1[2] = temp_setpoint_fraction;
+			buf1[3] = home_temp_rx_integer;
+			buf1[4] = home_temp_rx_fraction;
+			dt = NRF24L01_Send(buf1);
+			memset(buf1, 0, sizeof(int) * strlen(buf1));//очистка массива
 		}
-		buf1[1] = temp_sign;
-		buf1[2] = temp_integer;
-		buf1[3] = temp_fraction;*/
-		dt = NRF24L01_Send(buf1);
-		/*PORTD |= (1<<LED_TX);
-		_delay_ms(100);
-		PORTD &= ~(1<<LED_TX);*/
-		memset(buf1, 0, sizeof(int) * strlen(buf1));//очистка массива
-		_delay_ms(2000);
+		//вывод инфы на индикатор
+		if ((millis%400) == 0)
+		{
+			PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, temp_setpoint_integer*10+temp_setpoint_fraction);
+		}
     }
 }
 

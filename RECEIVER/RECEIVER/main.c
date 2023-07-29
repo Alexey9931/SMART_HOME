@@ -85,6 +85,12 @@ char WiFi_SSID[20];
 char WiFi_PSWD[20];
 char WiFi_IP[20];
 
+/*
+gas_boiler_enable_flag = 0 выкл авто
+gas_boiler_enable_flag = 1 вкл авто
+gas_boiler_enable_flag = 10 выкл ручн
+gas_boiler_enable_flag = 11 вкл ручн
+*/
 uint8_t gas_boiler_enable_flag = 0;
 uint8_t gas_boiler_setpoint_temp_integer = 20;
 uint8_t gas_boiler_setpoint_temp_fraction = 0;
@@ -93,6 +99,7 @@ uint8_t gas_boiler_setpoint_change_flag = 0;
 int gas_boiler_rx_counter = 0;
 int gas_boiler_rx_counter_old = 0;
 uint8_t gas_boiler_rx_level = 0;
+uint8_t setpoint_change_flag = 0;
 
 extern uint8_t pipe;//номер канала
 
@@ -407,19 +414,33 @@ ISR (INT4_vect)
 	}
 	else if (menu_flag == 6)
 	{
-		switch (up_down_count%3)
+		switch (up_down_count%4)
 		{
 			case 0:
-				if (gas_boiler_enable_flag == 0)
+				if ((gas_boiler_enable_flag / 10) == 0)
 				{
-					gas_boiler_enable_flag = 1;
+					gas_boiler_enable_flag += 10;
 				}
 				else
 				{
-					gas_boiler_enable_flag = 0;
+					gas_boiler_enable_flag -= 10;
 				}
 				break;
 			case 1:
+				//вход сюда только в ручном режиме
+				if ((gas_boiler_enable_flag / 10) == 1)
+				{
+					if ((gas_boiler_enable_flag % 10) == 0)
+					{
+						gas_boiler_enable_flag += 1;
+					}
+					else
+					{
+						gas_boiler_enable_flag -= 1;
+					}
+				}
+				break;
+			case 2:
 				if (!gas_boiler_setpoint_change_flag) 
 				{
 					gas_boiler_setpoint_change_flag = 1;
@@ -432,7 +453,7 @@ ISR (INT4_vect)
 					gas_boiler_setpoint_change_flag = 0;
 				}
 				break;
-			case 2:
+			case 3:
 				up_down_count = 0;
 				menu_flag = 1;
 				break;
@@ -632,7 +653,7 @@ ISR(USART0_RX_vect)
 	if (uart_rx_buffer[uart_rx_count] == '/')
 	{
 		memcpy(uart_message,uart_rx_buffer,strlen(uart_rx_buffer)-1);
-		memset(uart_rx_buffer,0,strlen(uart_rx_buffer));
+		memset(uart_rx_buffer,'\0',strlen(uart_rx_buffer));
 		uart_rx_count = 0;
 		//ѕолучение данные о wifi по uart
 		if (strstr(uart_message,"WiFi-OK")!=0)
@@ -645,21 +666,21 @@ ISR(USART0_RX_vect)
 		}
 		if (strstr(uart_message,"SSID")!=0)
 		{
-			memset(WiFi_SSID,0,strlen(WiFi_SSID));
+			memset(WiFi_SSID,'\0',strlen(WiFi_SSID));
 			memcpy(WiFi_SSID,uart_message+5,strlen(uart_message)-6);
-			memset(uart_message,0,sizeof(char)*strlen(uart_message));
+			memset(uart_message,'\0',sizeof(char)*strlen(uart_message));
 		}
 		if (strstr(uart_message,"PSWD")!=0)
 		{
-			memset(WiFi_PSWD,0,strlen(WiFi_PSWD));
+			memset(WiFi_PSWD,'\0',strlen(WiFi_PSWD));
 			memcpy(WiFi_PSWD,uart_message+5,strlen(uart_message)-5);
-			memset(uart_message,0,sizeof(char)*strlen(uart_message));
+			memset(uart_message,'\0',sizeof(char)*strlen(uart_message));
 		}
 		if (strstr(uart_message,"IP")!=0)
 		{
-			memset(WiFi_IP,0,strlen(WiFi_IP));
+			memset(WiFi_IP,'\0',strlen(WiFi_IP));
 			memcpy(WiFi_IP,uart_message+3,strlen(uart_message)-3);
-			memset(uart_message,0,sizeof(char)*strlen(uart_message));
+			memset(uart_message,'\0',sizeof(char)*strlen(uart_message));
 		}
 	}
 	else
@@ -812,14 +833,20 @@ int main(void)
 		else if ((rx_flag == 1)&&(pipe == 1))
 		{
 			Clock ();
-			memset(rx_time_gas_boiler, 0, sizeof(char) * strlen(rx_time_gas_boiler));//очистка массива
+			memset(rx_time_gas_boiler, '\0', sizeof(char) * strlen(rx_time_gas_boiler));//очистка массива
 			sprintf(rx_time_gas_boiler,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);
 			PORTL |= (1<<LED);
 			_delay_us(300);
 			PORTL &= ~(1<<LED);
+			NRF24L01_Receive();
 			uint8_t buf1[10] = {0};//буффер дл€ отправки
 			uint8_t dt;
 			buf1[0] = gas_boiler_enable_flag;
+			if (setpoint_change_flag == 1)
+			{
+				buf1[0] += 100;
+				setpoint_change_flag = 0;
+			}
 			buf1[1] = gas_boiler_setpoint_temp_integer;
 			buf1[2] = gas_boiler_setpoint_temp_fraction;
 			buf1[3] = home_temp_integer;
@@ -839,12 +866,12 @@ int main(void)
 			if(millis >= 300000)
  			{
 				Clock ();
-				memset(send_time, 0, sizeof(char) * strlen(send_time));//очистка массива
+				memset(send_time, '\0', sizeof(char) * strlen(send_time));//очистка массива
 				sprintf(send_time,"%s:%s:%s,%s/%s/%s", T_Param.hours, T_Param.minutes, T_Param.seconds, T_Param.mounthday, T_Param.Mounth, T_Param.Year);
 				sprintf_HOME_Weath_Param();
 				sprintf(DATA_TO_UART,"%s %s %s %s %s %s %s %s %s %s ", temp_street_to_DB, temp_home_to_DB, hum_street_to_DB, hum_home_to_DB, Press_home_to_DB, Rain_to_DB, Vbat_to_DB, WIND_speed_to_DB, wind_direction_to_DB, send_time);
 				USART_Transmit(DATA_TO_UART);
-				memset(DATA_TO_UART, 0, sizeof(char) * strlen(DATA_TO_UART));//очистка массива
+				memset(DATA_TO_UART, '\0', sizeof(char) * strlen(DATA_TO_UART));//очистка массива
 				millis = 0;
 				millis_update_weather = 0;
 			}

@@ -19,6 +19,9 @@ uint8_t temp_setpoint_fraction = 0;
 uint8_t home_temp_rx_integer = 0;
 uint8_t home_temp_rx_fraction = 0;
 
+extern int32_t millis;
+extern int32_t millis_hometemp_update;
+
 extern uint8_t gas_boiler_enable_flag;
 //-------------------------------------------------------------
 void NRF24_ini(void)
@@ -107,26 +110,38 @@ ISR(INT0_vect)
 		PORTD |= (1<<LED_RX);
 		_delay_ms(100);
 		PORTD &= ~(1<<LED_RX);
-		if (RX_BUF[0] == 1)
+		millis_hometemp_update = millis;
+		
+		gas_boiler_enable_flag = RX_BUF[0];
+		//если получили сигнал от станции (флаг>100) что надо поменять уставку то меняем ее
+		if (gas_boiler_enable_flag >= 100)
 		{
-			PORTB |= (1<<MOSFET);
-			gas_boiler_enable_flag = 1;
 			temp_setpoint_integer = RX_BUF[1];
 			temp_setpoint_fraction = RX_BUF[2];
-			home_temp_rx_integer = RX_BUF[3];
-			home_temp_rx_fraction = RX_BUF[4];
-			PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, temp_setpoint_integer*10+temp_setpoint_fraction);
+			gas_boiler_enable_flag -= 100;
 		}
-		else
+		
+		//в авто режиме пока ничего не делаем
+		if ((gas_boiler_enable_flag / 10) == 0)
 		{
-			PORTB &= ~(1<<MOSFET);
-			gas_boiler_enable_flag = 0;
-			temp_setpoint_integer = RX_BUF[1];
-			temp_setpoint_fraction = RX_BUF[2];
-			home_temp_rx_integer = RX_BUF[3];
-			home_temp_rx_fraction = RX_BUF[4];
-			PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, temp_setpoint_integer*10+temp_setpoint_fraction);
+			
 		}
+		//в ручном делаем что сказали
+		else 
+		{
+			if ((gas_boiler_enable_flag % 10) == 0)
+			{
+				PORTB &= ~(1<<MOSFET);
+				PORTD &= ~(1<<LED_BOILER_STATUS);
+			}
+			else
+			{
+				PORTB |= (1<<MOSFET);
+				PORTD |= (1<<LED_BOILER_STATUS);
+			}
+		}
+		home_temp_rx_integer = RX_BUF[3];
+		home_temp_rx_fraction = RX_BUF[4];
 	}
 }
 //-------------------------------------------------------------
