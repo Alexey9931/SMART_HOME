@@ -80,6 +80,9 @@ extern uint8_t gas_boiler_rx_level;
 
 extern uint8_t pipe;//номер канала
 
+extern int gas_boiler_rx_counter;
+extern int gas_boiler_rx_counter_old;
+
 //Окно приветсвия на экране дисплея
 void Print_Hello_World()
 {	
@@ -186,7 +189,8 @@ void Print_Home_Page_Out()
 	ILI9486_Print_StringConsolas16x24(".",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(244,260);
 	memset(data, '\0', sizeof(char) * strlen(data));//очистка массива
-	sprintf(data,"%d",wind_speed_fraction);
+	if (wind_speed_fraction == 0) sprintf(data,"%d%d",wind_speed_fraction,wind_speed_fraction);
+	else sprintf(data,"%d",wind_speed_fraction);
 	ILI9486_Print_StringConsolas16x24(data,TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(270,260);
 	ILI9486_Print_StringConsolas16x24("m/",TFT_STRING_MODE_BACKGROUND);
@@ -1273,10 +1277,6 @@ void Print_Gas_Boiler_Page_Static()
 	ILI9486_Print_String32x32("Управление:",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(20,100);
 	ILI9486_Print_String32x32("Состояние:",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(415,140);
-	ILI9486_Print_String32x32("°С",TFT_STRING_MODE_BACKGROUND);
-	ILI9486_SetCursor(415,180);
-	ILI9486_Print_String32x32("°С",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(20,140);
 	ILI9486_Print_String32x32("Уставка Т:",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(20,180);
@@ -1316,7 +1316,11 @@ void Print_Gas_Boiler_Page()
 	}
 	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(307,180);
-	ILI9486_Print_String32x32("19.2",TFT_STRING_MODE_BACKGROUND);
+	sprintf(data,"%d.%d",home_temp_integer,home_temp_fraction);
+	ILI9486_Print_String32x32(data,TFT_STRING_MODE_BACKGROUND);
+	memset(data, '\0', sizeof(char) * strlen(data));//очистка массива
+	ILI9486_SetCursor(415,180);
+	ILI9486_Print_String32x32("°С",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_SetCursor(307,140);
 	if (gas_boiler_setpoint_change_flag == 1)
 	{
@@ -1327,6 +1331,8 @@ void Print_Gas_Boiler_Page()
 		sprintf(data,"%d.%d",gas_boiler_setpoint_temp_integer,gas_boiler_setpoint_temp_fraction);
 	}
 	ILI9486_Print_String32x32(data,TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(415,140);
+	ILI9486_Print_String32x32("°С",TFT_STRING_MODE_BACKGROUND);
 	memset(data, '\0', sizeof(char) * strlen(data));//очистка массива
 	switch (up_down_count%4)
 	{
@@ -1493,27 +1499,34 @@ void DrawLevelNrfWeather()
 			break;
 	}
 }
-void FindLevelNrfGasBoiler(int gas_boiler_rx_counter, int gas_boiler_rx_counter_old)
+void FindLevelNrfGasBoiler()
 {
-	if ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) >= 7)
+	switch (gas_boiler_rx_counter - gas_boiler_rx_counter_old)
 	{
-		gas_boiler_rx_level = 4;
-	}
-	else if (((gas_boiler_rx_counter - gas_boiler_rx_counter_old) < 7) && ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) >= 5))
-	{
-		gas_boiler_rx_level = 3;
-	}
-	else if (((gas_boiler_rx_counter - gas_boiler_rx_counter_old) < 5) && ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) >= 3))
-	{
-		gas_boiler_rx_level = 2;
-	}
-	else if (((gas_boiler_rx_counter - gas_boiler_rx_counter_old) < 3) && ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) >= 1))
-	{
-		gas_boiler_rx_level = 1;
-	}
-	else if ((gas_boiler_rx_counter - gas_boiler_rx_counter_old) < 1)
-	{
+		case 0:
 		gas_boiler_rx_level = 0;
+		break;
+		case 1:
+		gas_boiler_rx_level = 1;
+		break;
+		case 2:
+		gas_boiler_rx_level = 2;
+		break;
+		case 3:
+		gas_boiler_rx_level = 3;
+		break;
+		case 4:
+		gas_boiler_rx_level = 4;
+		break;
+		case 5:
+		gas_boiler_rx_level = 4;
+		break;
+		case 6:
+		gas_boiler_rx_level = 4;
+		break;
+		case 7:
+		gas_boiler_rx_level = 4;
+		break;
 	}
 }
 void DrawLevelNrfGasBoiler()
@@ -1544,39 +1557,151 @@ void DrawWindDirect()
 	{
 		ILI9486_fillTriangle(239, 99, 233, 124, 239, 115, GREEN);
 		ILI9486_fillTriangle(239, 99, 239, 115, 245, 124, GREEN);
+		ILI9486_fillTriangle(233, 196, 239, 221, 239, 205, BLACK);
+		ILI9486_fillTriangle(239, 221, 239, 205, 245, 196, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 153, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 165, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 153, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 165, BLACK);
+		ILI9486_fillTriangle(281, 117, 259, 130, 270, 128, BLACK);
+		ILI9486_fillTriangle(281, 117, 268, 139, 270, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 210, 139, 208, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 208, 128, 219, 130, BLACK);
+		ILI9486_fillTriangle(281, 201, 259, 188, 270, 190, BLACK);
+		ILI9486_fillTriangle(281, 201, 270, 190, 268, 179, BLACK);
+		ILI9486_fillTriangle(197, 201, 219, 188, 208, 190, BLACK);
+		ILI9486_fillTriangle(197, 201, 210, 179, 208, 190, BLACK);
 	}
 	else if (!strcmp(wind_direction, "S"))
 	{
+		ILI9486_fillTriangle(239, 99, 233, 124, 239, 115, BLACK);
+		ILI9486_fillTriangle(239, 99, 239, 115, 245, 124, BLACK);
 		ILI9486_fillTriangle(233, 196, 239, 221, 239, 205, GREEN);
 		ILI9486_fillTriangle(239, 221, 239, 205, 245, 196, GREEN);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 153, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 165, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 153, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 165, BLACK);
+		ILI9486_fillTriangle(281, 117, 259, 130, 270, 128, BLACK);
+		ILI9486_fillTriangle(281, 117, 268, 139, 270, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 210, 139, 208, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 208, 128, 219, 130, BLACK);
+		ILI9486_fillTriangle(281, 201, 259, 188, 270, 190, BLACK);
+		ILI9486_fillTriangle(281, 201, 270, 190, 268, 179, BLACK);
+		ILI9486_fillTriangle(197, 201, 219, 188, 208, 190, BLACK);
+		ILI9486_fillTriangle(197, 201, 210, 179, 208, 190, BLACK);
 	}
 	else if (!strcmp(wind_direction, "E"))
 	{
+		ILI9486_fillTriangle(239, 99, 233, 124, 239, 115, BLACK);
+		ILI9486_fillTriangle(239, 99, 239, 115, 245, 124, BLACK);
+		ILI9486_fillTriangle(233, 196, 239, 221, 239, 205, BLACK);
+		ILI9486_fillTriangle(239, 221, 239, 205, 245, 196, BLACK);
 		ILI9486_fillTriangle(300, 159, 284, 159, 275, 153, GREEN);
 		ILI9486_fillTriangle(300, 159, 284, 159, 275, 165, GREEN);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 153, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 165, BLACK);
+		ILI9486_fillTriangle(281, 117, 259, 130, 270, 128, BLACK);
+		ILI9486_fillTriangle(281, 117, 268, 139, 270, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 210, 139, 208, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 208, 128, 219, 130, BLACK);
+		ILI9486_fillTriangle(281, 201, 259, 188, 270, 190, BLACK);
+		ILI9486_fillTriangle(281, 201, 270, 190, 268, 179, BLACK);
+		ILI9486_fillTriangle(197, 201, 219, 188, 208, 190, BLACK);
+		ILI9486_fillTriangle(197, 201, 210, 179, 208, 190, BLACK);
 	}
 	else if (!strcmp(wind_direction, "W"))
 	{
+		ILI9486_fillTriangle(239, 99, 233, 124, 239, 115, BLACK);
+		ILI9486_fillTriangle(239, 99, 239, 115, 245, 124, BLACK);
+		ILI9486_fillTriangle(233, 196, 239, 221, 239, 205, BLACK);
+		ILI9486_fillTriangle(239, 221, 239, 205, 245, 196, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 153, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 165, BLACK);
 		ILI9486_fillTriangle(179, 159, 195, 159, 204, 153, GREEN);
 		ILI9486_fillTriangle(179, 159, 195, 159, 204, 165, GREEN);
+		ILI9486_fillTriangle(281, 117, 259, 130, 270, 128, BLACK);
+		ILI9486_fillTriangle(281, 117, 268, 139, 270, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 210, 139, 208, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 208, 128, 219, 130, BLACK);
+		ILI9486_fillTriangle(281, 201, 259, 188, 270, 190, BLACK);
+		ILI9486_fillTriangle(281, 201, 270, 190, 268, 179, BLACK);
+		ILI9486_fillTriangle(197, 201, 219, 188, 208, 190, BLACK);
+		ILI9486_fillTriangle(197, 201, 210, 179, 208, 190, BLACK);
 	}
 	else if (!strcmp(wind_direction, "N-E"))
 	{
+		ILI9486_fillTriangle(239, 99, 233, 124, 239, 115, BLACK);
+		ILI9486_fillTriangle(239, 99, 239, 115, 245, 124, BLACK);
+		ILI9486_fillTriangle(233, 196, 239, 221, 239, 205, BLACK);
+		ILI9486_fillTriangle(239, 221, 239, 205, 245, 196, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 153, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 165, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 153, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 165, BLACK);
 		ILI9486_fillTriangle(281, 117, 259, 130, 270, 128, GREEN);
 		ILI9486_fillTriangle(281, 117, 268, 139, 270, 128, GREEN);
+		ILI9486_fillTriangle(197, 117, 210, 139, 208, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 208, 128, 219, 130, BLACK);
+		ILI9486_fillTriangle(281, 201, 259, 188, 270, 190, BLACK);
+		ILI9486_fillTriangle(281, 201, 270, 190, 268, 179, BLACK);
+		ILI9486_fillTriangle(197, 201, 219, 188, 208, 190, BLACK);
+		ILI9486_fillTriangle(197, 201, 210, 179, 208, 190, BLACK);
 	}
 	else if (!strcmp(wind_direction, "N-W"))
 	{
+		ILI9486_fillTriangle(239, 99, 233, 124, 239, 115, BLACK);
+		ILI9486_fillTriangle(239, 99, 239, 115, 245, 124, BLACK);
+		ILI9486_fillTriangle(233, 196, 239, 221, 239, 205, BLACK);
+		ILI9486_fillTriangle(239, 221, 239, 205, 245, 196, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 153, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 165, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 153, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 165, BLACK);
+		ILI9486_fillTriangle(281, 117, 259, 130, 270, 128, BLACK);
+		ILI9486_fillTriangle(281, 117, 268, 139, 270, 128, BLACK);
 		ILI9486_fillTriangle(197, 117, 210, 139, 208, 128, GREEN);
 		ILI9486_fillTriangle(197, 117, 208, 128, 219, 130, GREEN);
+		ILI9486_fillTriangle(281, 201, 259, 188, 270, 190, BLACK);
+		ILI9486_fillTriangle(281, 201, 270, 190, 268, 179, BLACK);
+		ILI9486_fillTriangle(197, 201, 219, 188, 208, 190, BLACK);
+		ILI9486_fillTriangle(197, 201, 210, 179, 208, 190, BLACK);
 	}
 	else if (!strcmp(wind_direction, "S-E"))
 	{
+		ILI9486_fillTriangle(239, 99, 233, 124, 239, 115, BLACK);
+		ILI9486_fillTriangle(239, 99, 239, 115, 245, 124, BLACK);
+		ILI9486_fillTriangle(233, 196, 239, 221, 239, 205, BLACK);
+		ILI9486_fillTriangle(239, 221, 239, 205, 245, 196, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 153, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 165, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 153, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 165, BLACK);
+		ILI9486_fillTriangle(281, 117, 259, 130, 270, 128, BLACK);
+		ILI9486_fillTriangle(281, 117, 268, 139, 270, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 210, 139, 208, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 208, 128, 219, 130, BLACK);
 		ILI9486_fillTriangle(281, 201, 259, 188, 270, 190, GREEN);
 		ILI9486_fillTriangle(281, 201, 270, 190, 268, 179, GREEN);
+		ILI9486_fillTriangle(197, 201, 219, 188, 208, 190, BLACK);
+		ILI9486_fillTriangle(197, 201, 210, 179, 208, 190, BLACK);
 	}
 	else if (!strcmp(wind_direction, "S-W"))
 	{
+		ILI9486_fillTriangle(239, 99, 233, 124, 239, 115, BLACK);
+		ILI9486_fillTriangle(239, 99, 239, 115, 245, 124, BLACK);
+		ILI9486_fillTriangle(233, 196, 239, 221, 239, 205, BLACK);
+		ILI9486_fillTriangle(239, 221, 239, 205, 245, 196, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 153, BLACK);
+		ILI9486_fillTriangle(300, 159, 284, 159, 275, 165, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 153, BLACK);
+		ILI9486_fillTriangle(179, 159, 195, 159, 204, 165, BLACK);
+		ILI9486_fillTriangle(281, 117, 259, 130, 270, 128, BLACK);
+		ILI9486_fillTriangle(281, 117, 268, 139, 270, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 210, 139, 208, 128, BLACK);
+		ILI9486_fillTriangle(197, 117, 208, 128, 219, 130, BLACK);
+		ILI9486_fillTriangle(281, 201, 259, 188, 270, 190, BLACK);
+		ILI9486_fillTriangle(281, 201, 270, 190, 268, 179, BLACK);
 		ILI9486_fillTriangle(197, 201, 219, 188, 208, 190, GREEN);
 		ILI9486_fillTriangle(197, 201, 210, 179, 208, 190, GREEN);
 	}
@@ -1771,27 +1896,30 @@ void sprintf_HOME_Weath_Param(void)
 	//измерение температуры
 	int tt = 0; 
 	tt = dt_check(); 
-	home_temp_sign = tt>>11;//вычисление знака температуры
-	if (home_temp_sign == 0x00)
+	if (tt != (-1))
 	{
-		home_temp_fraction = tt & 0xF;
-		home_temp_fraction = (home_temp_fraction<<1) + (home_temp_fraction<<3);// ”множаем на 10
-		home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
-		home_temp_integer = (tt&0x07FF)>>4;
-		//sprintf(data,"%d,%d\r",buf[1],buf[0]);
-		sprintf(temp_home_to_DB,"%d.%d",home_temp_integer,home_temp_fraction);
+		home_temp_sign = tt>>11;//вычисление знака температуры
+		if (home_temp_sign == 0x00)
+		{
+			home_temp_fraction = tt & 0xF;
+			home_temp_fraction = (home_temp_fraction<<1) + (home_temp_fraction<<3);// ”множаем на 10
+			home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
+			home_temp_integer = (tt&0x07FF)>>4;
+			//sprintf(data,"%d,%d\r",buf[1],buf[0]);
+			sprintf(temp_home_to_DB,"%d.%d",home_temp_integer,home_temp_fraction);
 		
+		}
+		else
+		{
+			home_temp_fraction = ((~tt) & 0xF);
+			home_temp_fraction = (home_temp_fraction<<1) + (home_temp_fraction<<3);// ”множаем на 10
+			home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
+			home_temp_integer = ((~(tt))&0x07FF)>>4;
+			//sprintf(data,"-%d,%d\r",buf[1],buf[0]);
+			sprintf(temp_home_to_DB,"-%d.%d",home_temp_integer,home_temp_fraction);
+		}
 	}
-	else
-	{
-		home_temp_fraction = ((~tt) & 0xF);
-		home_temp_fraction = (home_temp_fraction<<1) + (home_temp_fraction<<3);// ”множаем на 10
-		home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
-		home_temp_integer = ((~(tt))&0x07FF)>>4;
-		//sprintf(data,"-%d,%d\r",buf[1],buf[0]);
-		sprintf(temp_home_to_DB,"-%d.%d",home_temp_integer,home_temp_fraction);
-	}
-	//измерение влажности
+	//измерение влажности и температуры от dht22 при необходимости
 	uint8_t data[5] = {0};
 	int home_hum;
 	if (dht22_GetData(data))
@@ -1801,6 +1929,12 @@ void sprintf_HOME_Weath_Param(void)
 		//data[3]-младший бит влажности
 		//data[4]-старший бит влажности
 		home_hum = ((data[4]<<8)|data[3]) / 10;
+		if (tt == (-1))
+		{
+			home_temp_integer = ((data[2]<<8)|data[1]) / 10;
+			home_temp_fraction = ((data[2]<<8)|data[1]) % 10;
+			sprintf(temp_home_to_DB,"%d.%d",home_temp_integer,home_temp_fraction);
+		}
 	}
 	if (home_hum < 100)
 	{

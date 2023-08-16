@@ -30,6 +30,9 @@ extern uint8_t temp_setpoint_fraction;
 extern uint8_t home_temp_rx_integer;
 extern uint8_t home_temp_rx_fraction;
 
+uint8_t home_temp_own_integer = 0;
+uint8_t home_temp_own_fraction = 0;
+
 int32_t millis = 0;
 int32_t millis_hometemp_update = 0;
 
@@ -91,6 +94,11 @@ ISR (TIMER1_COMPA_vect)
 		millis = 0;
 		millis_hometemp_update = 0;
 	}
+	//каждые 10 сек работает контроллер
+	if ((millis % 10000)==0)
+	{
+		gas_boiler_controller();
+	}
 }
 //прерывание по нажатию кнопки OK
 ISR (INT1_vect)
@@ -103,7 +111,7 @@ SPI_init(void) //инициализация SPI
 	DDRB |= ((1<<SS)|(1<<MOSI)|(1<<CE)|(1<<SCK)); //ножки SPI на выход
 	PORTB &= ~((1<<SS)|(1<<MOSI)|(1<<SCK)); //низкий уровень
 	HIGH_CSN;
-	SPCR |= (1<<SPE)|(1<<MSTR);//включим шину, объ¤вим ведущим, делитель 16
+	SPCR |= (1<<SPE)|(1<<MSTR);//включим шину, объ¤вим ведущим
 }
 port_init(void)
 {
@@ -135,6 +143,9 @@ port_init(void)
 	PORTC |= (1<<BUTTON_UP);
 	DDRC &= ~(1<<BUTTON_DOWN);
 	PORTC |= (1<<BUTTON_DOWN);
+	//датчик температуры
+	DDRTEMP &= ~(1<<BITTEMP);
+	PORTTEMP &= ~(1<<BITTEMP);
 }
 uint8_t spi_send_recv(uint8_t data) // Передаёт и принимает 1 байт по SPI, возвращает полученное значение
 {
@@ -144,6 +155,7 @@ uint8_t spi_send_recv(uint8_t data) // Передаёт и принимает 1 байт по SPI, возвр
 }
 int main(void)
 {
+	_delay_ms(1000);
 	int k = 0;
 	uint8_t data[5] = {0};
 	port_init();
@@ -166,39 +178,30 @@ int main(void)
 	PORTD &= ~(1<<LED_RX);
 	PORTD &= ~(1<<LED_BOILER_STATUS);
 	PORTC &= ~(1<<LED_WIFI);
-	WDTCR &= ~(1<<WDE);//откл WDT
+	//настрока WDT
+	WDTCR &= ~(1<<WDE);
+	//включаем Watchdog на 2 с
+	wdt_enable(WDTO_2S);
 	ACSR |= (1<<ACD);//откл компаратор
 	timer1_ini();
 	timer2_ini();
 	sei();
+	wdt_reset();
     while (1) 
     {
-		//если нет связи более 6 сек, то берем температуру от собственного датчика
-		if (abs(millis - millis_hometemp_update) > 6000)
+		
+		//если нет связи более 15 сек, то берем температуру от собственного датчика и переходим в режим авто
+		if (abs(millis - millis_hometemp_update) > 15000)
 		{
-			int tt = 0;
-			tt = dt_check();
-			uint8_t temp_sign = tt>>11;//вычисление знака температуры
-			uint8_t temp_integer;//целая часть темп
-			uint8_t temp_fraction;//дробная часть темп
-			if (temp_sign == 0x00)
+			if ((gas_boiler_enable_flag / 10) == 1)
 			{
-				home_temp_rx_fraction = tt & 0xF;
-				home_temp_rx_fraction = (home_temp_rx_fraction<<1) + (home_temp_rx_fraction<<3);// умножаем на 10
-				home_temp_rx_fraction = (home_temp_rx_fraction>>4);//делим на 16 или умножаем на 0.0625
-				home_temp_rx_integer = (tt&0x07FF)>>4;
+				gas_boiler_enable_flag -= 10;
 			}
-			else
-			{
-				home_temp_rx_fraction = ((~tt) & 0xF);
-				home_temp_rx_fraction = (home_temp_rx_fraction<<1) + (home_temp_rx_fraction<<3);// ”множаем на 10
-				home_temp_rx_fraction = (home_temp_rx_fraction>>4);//делим на 16 или умножаем на 0.0625
-				home_temp_rx_integer = ((~(tt))&0x07FF)>>4;
-			}
-			//PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, temp_setpoint_integer*10+temp_setpoint_fraction);
+			home_temp_rx_integer = home_temp_own_integer;
+			home_temp_rx_fraction = home_temp_own_fraction;
 			millis_hometemp_update = millis;
 		}
-		//каждые 3сек отправляем данные
+		//каждые 3сек отправляем данные и измеряем температуру
 		if ((millis%3000) == 0)
 		{
 			buf1[0] = gas_boiler_enable_flag;
@@ -213,12 +216,14 @@ int main(void)
 			buf1[4] = home_temp_rx_fraction;
 			dt = NRF24L01_Send(buf1);
 			memset(buf1, 0, sizeof(int) * strlen(buf1));//очистка массива
+			DS18b0_find_temp();
 		}
 		//вывод инфы на индикатор
-		if ((millis%400) == 0)
+		if ((millis%500) == 0)
 		{
 			PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, temp_setpoint_integer*10+temp_setpoint_fraction);
 		}
+		wdt_reset();
     }
 }
 

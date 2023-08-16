@@ -1,4 +1,5 @@
-MAX7219.d MAX7219.o: .././MAX7219.c .././MAX7219.h .././main.h \
+Controller.d Controller.o: .././Controller.c .././Controller.h \
+ .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -21,9 +22,9 @@ MAX7219.d MAX7219.o: .././MAX7219.c .././MAX7219.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
- .././NRF24.h .././TWI.h .././DS18B20.h .././Controller.h
+ .././NRF24.h .././TWI.h .././DS18B20.h .././MAX7219.h
 
-.././MAX7219.h:
+.././Controller.h:
 
 .././main.h:
 
@@ -77,4 +78,4 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
 
 .././DS18B20.h:
 
-.././Controller.h:
+.././MAX7219.h:

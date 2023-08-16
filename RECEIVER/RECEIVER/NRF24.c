@@ -114,6 +114,10 @@ void NRF24L01_Receive(void)
 			//получение влажности
 			case 5:	receive_counter++;
 					memset(hum_street_to_DB, '\0', sizeof(char) * strlen(hum_street_to_DB));//очистка массива
+					if (RX_BUF[1] > 99) 
+					{
+						RX_BUF[1] = 99;
+					}
 					street_hum_integer = RX_BUF[1];
 					sprintf(hum_street_to_DB,"%d",RX_BUF[1]);
 					break;
@@ -208,7 +212,7 @@ void NRF24L01_Receive(void)
 			}
 		}
 		//в ручном не читаем флаг
-		else {}
+		
 		rx_flag = 0;
 	}
 }
@@ -222,12 +226,12 @@ ISR(INT2_vect)
 		pipe = (status>>1)&0x07;
 		NRF24_Read_Buf(R_RX_PAYLOAD,RX_BUF,TX_PLOAD_WIDTH);
 		nRF_write_register(STATUS, 0x40);
+		rx_flag = 1;
 	}
 	if((receive_counter == 6)&&(pipe == 0))
 	{
 		receive_counter = 0;
 	}
-	rx_flag = 1;
 }
 //-------------------------------------------------------------
 void NRF24_Transmit(uint8_t addr,uint8_t *pBuf,uint8_t bytes)

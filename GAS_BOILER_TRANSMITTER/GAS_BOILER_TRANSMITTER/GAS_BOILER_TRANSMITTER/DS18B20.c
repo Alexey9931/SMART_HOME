@@ -7,6 +7,31 @@
 
 #include "DS18B20.h"
 
+extern uint8_t home_temp_own_integer;
+extern uint8_t home_temp_own_fraction;
+
+void DS18b0_find_temp(void)
+{
+	int tt = 0;
+	tt = dt_check();
+	uint8_t temp_sign = tt>>11;//вычисление знака температуры
+	uint8_t temp_integer;//целая часть темп
+	uint8_t temp_fraction;//дробная часть темп
+	if (temp_sign == 0x00)
+	{
+		home_temp_own_fraction = tt & 0xF;
+		home_temp_own_fraction = (home_temp_own_fraction<<1) + (home_temp_own_fraction<<3);// умножаем на 10
+		home_temp_own_fraction = (home_temp_own_fraction>>4);//делим на 16 или умножаем на 0.0625
+		home_temp_own_integer = (tt&0x07FF)>>4;
+	}
+	else
+	{
+		home_temp_own_fraction = ((~tt) & 0xF);
+		home_temp_own_fraction = (home_temp_own_fraction<<1) + (home_temp_own_fraction<<3);// ”множаем на 10
+		home_temp_own_fraction = (home_temp_own_fraction>>4);//делим на 16 или умножаем на 0.0625
+		home_temp_own_integer = ((~(tt))&0x07FF)>>4;
+	}
+}
 //функция преобразования показаний датчика в температуру
 int dt_check(void)
 {

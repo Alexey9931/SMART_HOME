@@ -36,7 +36,7 @@ int wind_speed (char *counter);
 void DrawWeatherVane();
 void DrawLevelWiFi();
 void DrawLevelNrfWeather();
-void FindLevelNrfGasBoiler(int gas_boiler_rx_counter, int gas_boiler_rx_counter_old);
+void FindLevelNrfGasBoiler();
 void DrawLevelNrfGasBoiler();
 void DrawWindDirect();
 void sprintf_Home_Weath_Param(void);

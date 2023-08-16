@@ -35,6 +35,9 @@ Discarded input sections
 
  .data          0x00000000        0x0 D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega8a/avr4/crtatmega8a.o
  .bss           0x00000000        0x0 D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega8a/avr4/crtatmega8a.o
+ .text          0x00000000        0x0 Controller.o
+ .data          0x00000000        0x0 Controller.o
+ .bss           0x00000000        0x0 Controller.o
  .text          0x00000000        0x0 DS18B20.o
  .data          0x00000000        0x0 DS18B20.o
  .bss           0x00000000        0x0 DS18B20.o
@@ -251,6 +254,7 @@ user_signatures  0x00850000         0x00000400         rw !x
 Linker script and memory map
 
 LOAD D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega8a/avr4/crtatmega8a.o
+LOAD Controller.o
 LOAD DS18B20.o
 LOAD main.o
 LOAD MAX7219.o
@@ -365,7 +369,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0xd20
+.text           0x00000000      0xeb2
  *(.vectors)
  .vectors       0x00000000       0x26 D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega8a/avr4/crtatmega8a.o
                 0x00000000                __vector_default
@@ -441,128 +445,134 @@ END GROUP
                 0x0000005c                __vector_18
                 0x0000005e                . = ALIGN (0x2)
  *(.text.*)
+ .text.gas_boiler_controller
+                0x0000005e       0x82 Controller.o
+                0x0000005e                gas_boiler_controller
  .text.dt_testdevice
-                0x0000005e       0x42 DS18B20.o
-                0x0000005e                dt_testdevice
+                0x000000e0       0x42 DS18B20.o
+                0x000000e0                dt_testdevice
  .text.dt_readbit
-                0x000000a0       0x32 DS18B20.o
-                0x000000a0                dt_readbit
+                0x00000122       0x32 DS18B20.o
+                0x00000122                dt_readbit
  .text.dt_readbyte
-                0x000000d2       0x2a DS18B20.o
-                0x000000d2                dt_readbyte
+                0x00000154       0x2a DS18B20.o
+                0x00000154                dt_readbyte
  .text.dt_sendbit
-                0x000000fc       0x32 DS18B20.o
-                0x000000fc                dt_sendbit
+                0x0000017e       0x32 DS18B20.o
+                0x0000017e                dt_sendbit
  .text.dt_sendbyte
-                0x0000012e       0x3e DS18B20.o
-                0x0000012e                dt_sendbyte
+                0x000001b0       0x3e DS18B20.o
+                0x000001b0                dt_sendbyte
  .text.dt_check
-                0x0000016c       0x44 DS18B20.o
-                0x0000016c                dt_check
+                0x000001ee       0x44 DS18B20.o
+                0x000001ee                dt_check
+ .text.DS18b0_find_temp
+                0x00000232       0x72 DS18B20.o
+                0x00000232                DS18b0_find_temp
  .text.timer2_ini
-                0x000001b0       0x18 main.o
-                0x000001b0                timer2_ini
+                0x000002a4       0x18 main.o
+                0x000002a4                timer2_ini
  .text.__vector_3
-                0x000001c8      0x144 main.o
-                0x000001c8                __vector_3
+                0x000002bc      0x144 main.o
+                0x000002bc                __vector_3
  .text.timer1_ini
-                0x0000030c       0x1c main.o
-                0x0000030c                timer1_ini
+                0x00000400       0x1c main.o
+                0x00000400                timer1_ini
  .text.__vector_6
-                0x00000328       0x4a main.o
-                0x00000328                __vector_6
+                0x0000041c       0x84 main.o
+                0x0000041c                __vector_6
  .text.__vector_2
-                0x00000372       0x2c main.o
-                0x00000372                __vector_2
+                0x000004a0       0x2c main.o
+                0x000004a0                __vector_2
  .text.SPI_init
-                0x0000039e       0x1a main.o
-                0x0000039e                SPI_init
+                0x000004cc       0x1a main.o
+                0x000004cc                SPI_init
  .text.port_init
-                0x000003b8       0x7a main.o
-                0x000003b8                port_init
+                0x000004e6       0x86 main.o
+                0x000004e6                port_init
  .text.spi_send_recv
-                0x00000432        0xa main.o
-                0x00000432                spi_send_recv
- .text.main     0x0000043c      0x238 main.o
-                0x0000043c                main
+                0x0000056c        0xa main.o
+                0x0000056c                spi_send_recv
+ .text.main     0x00000576      0x1f4 main.o
+                0x00000576                main
  .text.Send_MAX7219
-                0x00000674       0x22 MAX7219.o
-                0x00000674                Send_MAX7219
+                0x0000076a       0x22 MAX7219.o
+                0x0000076a                Send_MAX7219
  .text.MAX7219_clear
-                0x00000696       0x12 MAX7219.o
-                0x00000696                MAX7219_clear
+                0x0000078c       0x2a MAX7219.o
+                0x0000078c                MAX7219_clear
  .text.MAX7219_init
-                0x000006a8       0x94 MAX7219.o
-                0x000006a8                MAX7219_init
+                0x000007b6       0xb2 MAX7219.o
+                0x000007b6                MAX7219_init
  .text.PrintTemp_MAX7219
-                0x0000073c       0xd2 MAX7219.o
-                0x0000073c                PrintTemp_MAX7219
+                0x00000868       0xf8 MAX7219.o
+                0x00000868                PrintTemp_MAX7219
  .text.NRF24_Transmit
-                0x0000080e       0x60 NRF24.o
-                0x0000080e                NRF24_Transmit
+                0x00000960       0x60 NRF24.o
+                0x00000960                NRF24_Transmit
  .text.NRF24_FlushRX
-                0x0000086e       0x1c NRF24.o
-                0x0000086e                NRF24_FlushRX
+                0x000009c0       0x1c NRF24.o
+                0x000009c0                NRF24_FlushRX
  .text.NRF24_FlushTX
-                0x0000088a       0x1c NRF24.o
-                0x0000088a                NRF24_FlushTX
+                0x000009dc       0x1c NRF24.o
+                0x000009dc                NRF24_FlushTX
  .text.NRF24_ToggleFeatures
-                0x000008a6       0x22 NRF24.o
-                0x000008a6                NRF24_ToggleFeatures
+                0x000009f8       0x22 NRF24.o
+                0x000009f8                NRF24_ToggleFeatures
  .text.NRF24_Read_Buf
-                0x000008c8       0x4e NRF24.o
-                0x000008c8                NRF24_Read_Buf
+                0x00000a1a       0x4e NRF24.o
+                0x00000a1a                NRF24_Read_Buf
  .text.NRF24_Write_Buf
-                0x00000916       0x56 NRF24.o
-                0x00000916                NRF24_Write_Buf
+                0x00000a68       0x56 NRF24.o
+                0x00000a68                NRF24_Write_Buf
  .text.NRF24L01_TX_Mode
-                0x0000096c       0x20 NRF24.o
-                0x0000096c                NRF24L01_TX_Mode
+                0x00000abe       0x20 NRF24.o
+                0x00000abe                NRF24L01_TX_Mode
  .text.nRF_write_register
-                0x0000098c       0x20 NRF24.o
-                0x0000098c                nRF_write_register
+                0x00000ade       0x20 NRF24.o
+                0x00000ade                nRF_write_register
  .text.nRF_read_register
-                0x000009ac       0x24 NRF24.o
-                0x000009ac                nRF_read_register
+                0x00000afe       0x24 NRF24.o
+                0x00000afe                nRF_read_register
  .text.__vector_1
-                0x000009d0      0x118 NRF24.o
-                0x000009d0                __vector_1
+                0x00000b22      0x158 NRF24.o
+                0x00000b22                __vector_1
  .text.NRF24L01_RX_Mode
-                0x00000ae8       0x38 NRF24.o
-                0x00000ae8                NRF24L01_RX_Mode
+                0x00000c7a       0x38 NRF24.o
+                0x00000c7a                NRF24L01_RX_Mode
  .text.NRF24_ini
-                0x00000b20       0x7a NRF24.o
-                0x00000b20                NRF24_ini
+                0x00000cb2       0x7a NRF24.o
+                0x00000cb2                NRF24_ini
  .text.NRF24L01_Send
-                0x00000b9a       0x92 NRF24.o
-                0x00000b9a                NRF24L01_Send
+                0x00000d2c       0x92 NRF24.o
+                0x00000d2c                NRF24L01_Send
  .text.libgcc.div
-                0x00000c2c       0x26 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_divmodhi4.o)
-                0x00000c2c                _div
-                0x00000c2c                __divmodhi4
+                0x00000dbe       0x26 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_divmodhi4.o)
+                0x00000dbe                _div
+                0x00000dbe                __divmodhi4
  .text.libgcc.div
-                0x00000c52       0x28 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_divmodsi4.o)
-                0x00000c52                __divmodsi4
+                0x00000de4       0x28 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_divmodsi4.o)
+                0x00000de4                __divmodsi4
  .text.libgcc.div
-                0x00000c7a       0x10 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_negsi2.o)
-                0x00000c7a                __negsi2
+                0x00000e0c       0x10 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_negsi2.o)
+                0x00000e0c                __negsi2
  .text.libgcc.mul
-                0x00000c8a       0x18 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_umulhisi3.o)
-                0x00000c8a                __umulhisi3
+                0x00000e1c       0x18 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_umulhisi3.o)
+                0x00000e1c                __umulhisi3
  .text.libgcc.div
-                0x00000ca2       0x28 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_udivmodhi4.o)
-                0x00000ca2                __udivmodhi4
+                0x00000e34       0x28 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_udivmodhi4.o)
+                0x00000e34                __udivmodhi4
  .text.libgcc.div
-                0x00000cca       0x44 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_udivmodsi4.o)
-                0x00000cca                __udivmodsi4
+                0x00000e5c       0x44 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_udivmodsi4.o)
+                0x00000e5c                __udivmodsi4
  .text.avr-libc
-                0x00000d0e        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr4\libc.a(memset.o)
-                0x00000d0e                memset
-                0x00000d1c                . = ALIGN (0x2)
+                0x00000ea0        0xe d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr4\libc.a(memset.o)
+                0x00000ea0                memset
+                0x00000eae                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00000d1c        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_exit.o)
-                0x00000d1c                _exit
-                0x00000d1c                exit
+ .fini9         0x00000eae        0x0 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_exit.o)
+                0x00000eae                _exit
+                0x00000eae                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -581,33 +591,35 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00000d1c        0x4 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_exit.o)
+ .fini0         0x00000eae        0x4 d:/atmelstudio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr4\libgcc.a(_exit.o)
  *(.fini0)
-                0x00000d20                _etext = .
+                0x00000eb2                _etext = .
 
-.data           0x00800060        0x8 load address 0x00000d20
+.data           0x00800060        0x8 load address 0x00000eb2
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
- .data.temp_setpoint_integer
+ .data.home_temp_rx_integer
                 0x00800060        0x1 NRF24.o
-                0x00800060                temp_setpoint_integer
+                0x00800060                home_temp_rx_integer
+ .data.temp_setpoint_integer
+                0x00800061        0x1 NRF24.o
+                0x00800061                temp_setpoint_integer
  .data.TX_ADDRESS1
-                0x00800061        0x3 NRF24.o
-                0x00800061                TX_ADDRESS1
+                0x00800062        0x3 NRF24.o
+                0x00800062                TX_ADDRESS1
  .data.TX_ADDRESS0
-                0x00800064        0x3 NRF24.o
-                0x00800064                TX_ADDRESS0
+                0x00800065        0x3 NRF24.o
+                0x00800065                TX_ADDRESS0
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.r*)
                 0x00800068                . = ALIGN (0x2)
- *fill*         0x00800067        0x1 
                 0x00800068                _edata = .
                 0x00800068                PROVIDE (__data_end, .)
 
-.bss            0x00800068       0x28
+.bss            0x00800068       0x29
                 0x00800068                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
@@ -625,42 +637,45 @@ END GROUP
                 0x0080006b                millis_hometemp_update
  .bss.millis    0x0080006f        0x4 main.o
                 0x0080006f                millis
- .bss.gas_boiler_enable_flag
+ .bss.home_temp_own_fraction
                 0x00800073        0x1 main.o
-                0x00800073                gas_boiler_enable_flag
- .bss.buf1      0x00800074        0xa main.o
-                0x00800074                buf1
+                0x00800073                home_temp_own_fraction
+ .bss.home_temp_own_integer
+                0x00800074        0x1 main.o
+                0x00800074                home_temp_own_integer
+ .bss.gas_boiler_enable_flag
+                0x00800075        0x1 main.o
+                0x00800075                gas_boiler_enable_flag
+ .bss.buf1      0x00800076        0xa main.o
+                0x00800076                buf1
  .bss.home_temp_rx_fraction
-                0x0080007e        0x1 NRF24.o
-                0x0080007e                home_temp_rx_fraction
- .bss.home_temp_rx_integer
-                0x0080007f        0x1 NRF24.o
-                0x0080007f                home_temp_rx_integer
- .bss.temp_setpoint_fraction
                 0x00800080        0x1 NRF24.o
-                0x00800080                temp_setpoint_fraction
- .bss.rx_flag   0x00800081        0x1 NRF24.o
-                0x00800081                rx_flag
- .bss.RX_BUF    0x00800082        0x5 NRF24.o
-                0x00800082                RX_BUF
+                0x00800080                home_temp_rx_fraction
+ .bss.temp_setpoint_fraction
+                0x00800081        0x1 NRF24.o
+                0x00800081                temp_setpoint_fraction
+ .bss.rx_flag   0x00800082        0x1 NRF24.o
+                0x00800082                rx_flag
+ .bss.RX_BUF    0x00800083        0x5 NRF24.o
+                0x00800083                RX_BUF
  *(COMMON)
- COMMON         0x00800087        0x8 main.o
-                0x00800087                temp_setpoint
-                0x00800089                retr_cnt
-                0x0080008a                retr_cnt_full
-                0x0080008c                dt
-                0x0080008d                INTER_COUNT
- COMMON         0x0080008f        0x1 NRF24.o
-                0x0080008f                pipe
-                0x00800090                PROVIDE (__bss_end, .)
-                0x00000d20                __data_load_start = LOADADDR (.data)
-                0x00000d28                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800088        0x8 main.o
+                0x00800088                temp_setpoint
+                0x0080008a                retr_cnt
+                0x0080008b                retr_cnt_full
+                0x0080008d                dt
+                0x0080008e                INTER_COUNT
+ COMMON         0x00800090        0x1 NRF24.o
+                0x00800090                pipe
+                0x00800091                PROVIDE (__bss_end, .)
+                0x00000eb2                __data_load_start = LOADADDR (.data)
+                0x00000eba                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800090        0x0
+.noinit         0x00800091        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800090                _end = .
+                0x00800091                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
@@ -702,8 +717,9 @@ END GROUP
 
 .comment        0x00000000       0x30
  *(.comment)
- .comment       0x00000000       0x30 DS18B20.o
+ .comment       0x00000000       0x30 Controller.o
                                  0x31 (size before relaxing)
+ .comment       0x00000030       0x31 DS18B20.o
  .comment       0x00000030       0x31 main.o
  .comment       0x00000030       0x31 MAX7219.o
  .comment       0x00000030       0x31 NRF24.o
@@ -728,69 +744,77 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x178
+.debug_aranges  0x00000000      0x1a0
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x50 DS18B20.o
+                0x00000000       0x20 Controller.o
  .debug_aranges
-                0x00000050       0x60 main.o
+                0x00000020       0x58 DS18B20.o
  .debug_aranges
-                0x000000b0       0x40 MAX7219.o
+                0x00000078       0x60 main.o
  .debug_aranges
-                0x000000f0       0x88 NRF24.o
+                0x000000d8       0x40 MAX7219.o
+ .debug_aranges
+                0x00000118       0x88 NRF24.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x2186
+.debug_info     0x00000000     0x2468
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x48c D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega8a/avr4/crtatmega8a.o
- .debug_info    0x0000048c      0x516 DS18B20.o
- .debug_info    0x000009a2      0x5bb main.o
- .debug_info    0x00000f5d      0x5bd MAX7219.o
- .debug_info    0x0000151a      0xc6c NRF24.o
+ .debug_info    0x0000048c       0xcb Controller.o
+ .debug_info    0x00000557      0x58b DS18B20.o
+ .debug_info    0x00000ae2      0x64c main.o
+ .debug_info    0x0000112e      0x6ac MAX7219.o
+ .debug_info    0x000017da      0xc8e NRF24.o
 
-.debug_abbrev   0x00000000      0xb86
+.debug_abbrev   0x00000000      0xcb7
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x44e D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega8a/avr4/crtatmega8a.o
- .debug_abbrev  0x0000044e      0x1ce DS18B20.o
- .debug_abbrev  0x0000061c      0x1f6 main.o
- .debug_abbrev  0x00000812      0x187 MAX7219.o
- .debug_abbrev  0x00000999      0x1ed NRF24.o
+ .debug_abbrev  0x0000044e       0x62 Controller.o
+ .debug_abbrev  0x000004b0      0x1d4 DS18B20.o
+ .debug_abbrev  0x00000684      0x224 main.o
+ .debug_abbrev  0x000008a8      0x1a3 MAX7219.o
+ .debug_abbrev  0x00000a4b      0x26c NRF24.o
 
-.debug_line     0x00000000     0x1072
+.debug_line     0x00000000     0x129b
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x10a D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega8a/avr4/crtatmega8a.o
- .debug_line    0x0000010a      0x2e7 DS18B20.o
- .debug_line    0x000003f1      0x451 main.o
- .debug_line    0x00000842      0x2fc MAX7219.o
- .debug_line    0x00000b3e      0x534 NRF24.o
+ .debug_line    0x0000010a       0xc2 Controller.o
+ .debug_line    0x000001cc      0x33b DS18B20.o
+ .debug_line    0x00000507      0x4bb main.o
+ .debug_line    0x000009c2      0x362 MAX7219.o
+ .debug_line    0x00000d24      0x577 NRF24.o
 
-.debug_frame    0x00000000      0x430
+.debug_frame    0x00000000      0x490
  *(.debug_frame)
- .debug_frame   0x00000000       0xa4 DS18B20.o
- .debug_frame   0x000000a4      0x110 main.o
- .debug_frame   0x000001b4       0xc4 MAX7219.o
- .debug_frame   0x00000278      0x1b8 NRF24.o
+ .debug_frame   0x00000000       0x24 Controller.o
+ .debug_frame   0x00000024       0xb4 DS18B20.o
+ .debug_frame   0x000000d8      0x138 main.o
+ .debug_frame   0x00000210       0xc4 MAX7219.o
+ .debug_frame   0x000002d4      0x1bc NRF24.o
 
-.debug_str      0x00000000      0x75e
+.debug_str      0x00000000      0x7d5
  *(.debug_str)
  .debug_str     0x00000000      0x17a D:/AtmelStudio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega8a/avr4/crtatmega8a.o
- .debug_str     0x0000017a      0x20a DS18B20.o
-                                0x243 (size before relaxing)
- .debug_str     0x00000384      0x256 main.o
-                                0x432 (size before relaxing)
- .debug_str     0x000005da       0x5e MAX7219.o
+ .debug_str     0x0000017a      0x1de Controller.o
+                                0x217 (size before relaxing)
+ .debug_str     0x00000358      0x126 DS18B20.o
+                                0x2a6 (size before relaxing)
+ .debug_str     0x0000047e      0x1d3 main.o
+                                0x469 (size before relaxing)
+ .debug_str     0x00000651       0x5e MAX7219.o
                                 0x256 (size before relaxing)
- .debug_str     0x00000638      0x126 NRF24.o
+ .debug_str     0x000006af      0x126 NRF24.o
                                 0x3d3 (size before relaxing)
 
-.debug_loc      0x00000000     0x1463
+.debug_loc      0x00000000     0x160f
  *(.debug_loc)
- .debug_loc     0x00000000      0x418 DS18B20.o
- .debug_loc     0x00000418      0x2c5 main.o
- .debug_loc     0x000006dd      0x451 MAX7219.o
- .debug_loc     0x00000b2e      0x935 NRF24.o
+ .debug_loc     0x00000000      0x496 DS18B20.o
+ .debug_loc     0x00000496      0x30b main.o
+ .debug_loc     0x000007a1      0x521 MAX7219.o
+ .debug_loc     0x00000cc2      0x94d NRF24.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -810,12 +834,13 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x138
+.debug_ranges   0x00000000      0x150
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x40 DS18B20.o
- .debug_ranges  0x00000040       0x50 main.o
- .debug_ranges  0x00000090       0x30 MAX7219.o
- .debug_ranges  0x000000c0       0x78 NRF24.o
+ .debug_ranges  0x00000000       0x10 Controller.o
+ .debug_ranges  0x00000010       0x48 DS18B20.o
+ .debug_ranges  0x00000058       0x50 main.o
+ .debug_ranges  0x000000a8       0x30 MAX7219.o
+ .debug_ranges  0x000000d8       0x78 NRF24.o
 
 .debug_macro
  *(.debug_macro)

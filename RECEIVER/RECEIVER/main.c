@@ -755,6 +755,7 @@ int main(void)
 	dht22_init();
 	BMP180_Calibration();
 	wdt_reset();
+	sprintf_HOME_Weath_Param();
 	_delay_ms(1500);
 	// Установка времени для DS3231(делается 1 разv)
 	//RTC_write_time(22, 17, 0);
@@ -852,7 +853,6 @@ int main(void)
 			buf1[3] = home_temp_integer;
 			buf1[4] = home_temp_fraction;
 			dt = NRF24L01_Send(buf1);
-			rx_flag = 0;
 			gas_boiler_rx_counter++;
 			if (gas_boiler_rx_counter > 65000)
 			{
@@ -876,11 +876,11 @@ int main(void)
 				millis_update_weather = 0;
 			}
 			//обновление домашних показаний и обновление уровня приема от газового котла
-			else if ((millis - millis_update_weather) > 10000)
+			else if (abs(millis - millis_update_weather) > 14000)
 			{
 				sprintf_HOME_Weath_Param();
 				//вывод уровня сигнала NRF от газового котла
-				FindLevelNrfGasBoiler(gas_boiler_rx_counter, gas_boiler_rx_counter_old);
+				FindLevelNrfGasBoiler();
 				gas_boiler_rx_counter_old = gas_boiler_rx_counter;
 				millis_update_weather = millis;
 			}

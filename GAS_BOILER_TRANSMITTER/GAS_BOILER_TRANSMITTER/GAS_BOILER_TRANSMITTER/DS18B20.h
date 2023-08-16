@@ -18,6 +18,7 @@
 #define T_CONVERT 0x44 //Код измерения температуры
 #define READ_DATA 0xBE //Передача байтов ведущему
 
+void DS18b0_find_temp(void);
 int dt_check(void); //функция преобразования показаний датчика в температуру
 char dt_testdevice(void); //dt — digital termomether | определим, есть ли устройство на шине
 unsigned char dt_readbyte(void);//функция чтения байта с устройства

@@ -22,17 +22,20 @@ void Send_MAX7219(char rg, char dt)
 }
 void MAX7219_init()
 {
-	Send_MAX7219(0x09, 0xFF); //включим режим декодирования для всех разрядов 
+	Send_MAX7219(0x0F, 0x00); //Тест индикатора выключен
+	_delay_ms(10);
+	Send_MAX7219(0x0C, 1); //включим индикатор
 	_delay_ms(10);
 	Send_MAX7219(0x0B, 7); //сколько разрядов используем
 	_delay_ms(10);
-	Send_MAX7219(0x0A, 0x01); //яркость
+	Send_MAX7219(0x09, 0xFF); //включим режим декодирования для всех разрядов 
 	_delay_ms(10);
-	Send_MAX7219(0x0C, 1); //включим индикатор
+	Send_MAX7219(0x0A, 0x02); //яркость
 	_delay_ms(10);
 	MAX7219_clear();
 	
 	Send_MAX7219(0x09, 0x00); //включим режим декодирования для всех разрядов
+	_delay_ms(10);
 	Send_MAX7219(1, 0xFF);
 	Send_MAX7219(2, 0xFF);
 	Send_MAX7219(3, 0xFF);
@@ -45,6 +48,11 @@ void MAX7219_init()
 }
 void MAX7219_clear()
 {
+	Send_MAX7219(0x0F, 0x00); //Тест индикатора выключен
+	Send_MAX7219(0x0C, 1); //включим индикатор
+	Send_MAX7219(0x0B, 7); //сколько разрядов используем
+	Send_MAX7219(0x09, 0xFF); //включим режим декодирования для всех разрядов
+	//_delay_ms(10);
 	uint8_t i=8;
 	 do
 	 {
@@ -74,14 +82,15 @@ void Number_MAX7219(volatile long n)
 		Send_MAX7219(i+1, 0xA); //символ —
 	}
 }
-void PrintTemp_MAX7219(int current_temp, int setpoint_temp)
+uint8_t PrintTemp_MAX7219(int current_temp, int setpoint_temp)
 {
-	
+	if ((current_temp > 999) || (setpoint_temp > 999)) return 1;
 	uint8_t start_pos;
 	start_pos = 2;
 
 	MAX7219_clear();
 	Send_MAX7219(0x09, 0xEE); //включим режим декодирования для всех разрядов кроме позиций 2 и 6
+	//_delay_ms(10);
 	Send_MAX7219(1, 0x4E);//вывод букв С
 	Send_MAX7219(5, 0x4E);//вывод букв С
 	if (current_temp == 0)
@@ -103,6 +112,7 @@ void PrintTemp_MAX7219(int current_temp, int setpoint_temp)
 			}
 			start_pos++;
 			current_temp /= 10;
+			asm("nop");
 		}
 	}
 	start_pos = 6;
@@ -125,6 +135,8 @@ void PrintTemp_MAX7219(int current_temp, int setpoint_temp)
 			}
 			start_pos++;
 			setpoint_temp /= 10;
+			asm("nop");
 		}
 	}
+	return 0;
 }

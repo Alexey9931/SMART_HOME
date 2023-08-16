@@ -120,6 +120,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Controller.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Controller.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DS18B20.c">
       <SubType>compile</SubType>
     </Compile>

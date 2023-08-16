@@ -62,10 +62,10 @@ void setup()
   delay(20000);
   Serial.write("WiFi-OK/");
   delay(2000);
-  Serial.print((String)"SSID-"+ssid+(String)"/");
+  Serial.print((String)"SSID-"+ssid+"/");
   //Serial.write("SSID-ASUS/");
   delay(2000);
-  Serial.print((String)"PSWD-"+password+(String)"/");
+  Serial.print((String)"PSWD-"+password+"/");
   //Serial.write("PSWD-head2020/");
   delay(2000);
   Serial.print("IP-"+local_IP.toString()+"/");
@@ -168,7 +168,7 @@ void loop()
         while(WiFi.status() != WL_CONNECTED) 
         {
           delay(500);
-          //Serial.print(".");  
+          Serial.print(".");  
         }
         Serial.write("WiFi-OK/");
       }

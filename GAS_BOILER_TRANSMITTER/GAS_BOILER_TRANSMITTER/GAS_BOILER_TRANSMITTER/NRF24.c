@@ -16,7 +16,7 @@ uint8_t pipe; //номер канала
 uint8_t rx_flag = 0, tx_flag = 0;
 uint8_t temp_setpoint_integer = 20;
 uint8_t temp_setpoint_fraction = 0;
-uint8_t home_temp_rx_integer = 0;
+uint8_t home_temp_rx_integer = 20;
 uint8_t home_temp_rx_fraction = 0;
 
 extern int32_t millis;
@@ -113,8 +113,44 @@ ISR(INT0_vect)
 		millis_hometemp_update = millis;
 		
 		gas_boiler_enable_flag = RX_BUF[0];
+		switch (gas_boiler_enable_flag)
+		{
+			case 0:	
+					break;
+			case 1:
+					break;
+			case 10:
+					PORTB &= ~(1<<MOSFET);
+					PORTD &= ~(1<<LED_BOILER_STATUS);
+					break;
+			case 11:
+					PORTB |= (1<<MOSFET);
+					PORTD |= (1<<LED_BOILER_STATUS);
+					break;
+			case 100:
+					temp_setpoint_integer = RX_BUF[1];
+					temp_setpoint_fraction = RX_BUF[2];
+					break;
+			case 101:
+					temp_setpoint_integer = RX_BUF[1];
+					temp_setpoint_fraction = RX_BUF[2];
+					break;
+			case 110:
+					temp_setpoint_integer = RX_BUF[1];
+					temp_setpoint_fraction = RX_BUF[2];
+					PORTB &= ~(1<<MOSFET);
+					PORTD &= ~(1<<LED_BOILER_STATUS);
+					break;
+			case 111:
+					temp_setpoint_integer = RX_BUF[1];
+					temp_setpoint_fraction = RX_BUF[2];
+					PORTB |= (1<<MOSFET);
+					PORTD |= (1<<LED_BOILER_STATUS);
+					break;
+		}
+		/*
 		//если получили сигнал от станции (флаг>100) что надо поменять уставку то меняем ее
-		if (gas_boiler_enable_flag >= 100)
+		if ((gas_boiler_enable_flag == 100) || (gas_boiler_enable_flag == 101) || (gas_boiler_enable_flag == 110) || (gas_boiler_enable_flag == 111))
 		{
 			temp_setpoint_integer = RX_BUF[1];
 			temp_setpoint_fraction = RX_BUF[2];
@@ -129,12 +165,12 @@ ISR(INT0_vect)
 		//в ручном делаем что сказали
 		else 
 		{
-			if ((gas_boiler_enable_flag % 10) == 0)
+			if (gas_boiler_enable_flag == 10)
 			{
 				PORTB &= ~(1<<MOSFET);
 				PORTD &= ~(1<<LED_BOILER_STATUS);
 			}
-			else
+			else if (gas_boiler_enable_flag == 11)
 			{
 				PORTB |= (1<<MOSFET);
 				PORTD |= (1<<LED_BOILER_STATUS);
@@ -142,6 +178,11 @@ ISR(INT0_vect)
 		}
 		home_temp_rx_integer = RX_BUF[3];
 		home_temp_rx_fraction = RX_BUF[4];
+		*/
+	}
+	if(status&TX_DS) //tx_ds == 0x20
+	{
+		nRF_write_register(STATUS, 0x20);
 	}
 }
 //-------------------------------------------------------------

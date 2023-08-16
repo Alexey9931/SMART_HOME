@@ -22,8 +22,12 @@ int dt_check(void)
    bt = dt_readbyte(); //читаем младший бит
    tt = dt_readbyte(); //читаем старший бит MS
    tt = (tt<<8)|bt;//сдвигаем старший влево, младший пишем на его место, тем самым получаем общий результат
+   return tt;
   }
-  return tt;
+  else 
+  {
+	  return -1;
+  }
 }
 //функци€ определени€ датчика на шине
 char dt_testdevice(void) //dt Ч digital termomether | определим, есть ли устройство на шине
