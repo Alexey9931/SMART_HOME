@@ -33,12 +33,19 @@ extern uint8_t home_temp_rx_fraction;
 uint8_t home_temp_own_integer = 0;
 uint8_t home_temp_own_fraction = 0;
 
+/*
+режим работы: 0-авто 1-ручной
+*/
+uint8_t work_mode = 0;
+
 int32_t millis = 0;
 int32_t millis_hometemp_update = 0;
 
 uint8_t OK_BUTTON_FLAG = 0;
 uint8_t UP_BUTTON_FLAG = 0;
 uint8_t DOWN_BUTTON_FLAG = 0;
+
+char DATA_TO_UART[80] = {0};
 
 unsigned int TIM2_COUNT = 0;
 void timer2_ini(void)//период 100мкс
@@ -94,10 +101,14 @@ ISR (TIMER1_COMPA_vect)
 		millis = 0;
 		millis_hometemp_update = 0;
 	}
-	//каждые 10 сек работает контроллер
+	//каждые 10 сек работает контроллер и отправка актуальных данных в БД
 	if ((millis % 10000)==0)
 	{
 		gas_boiler_controller();
+		//отправляем в БД данные с новой инфо
+		sprintf(DATA_TO_UART,"%d %d.%d %d.%d %d ", gas_boiler_enable_flag, home_temp_rx_integer, home_temp_rx_fraction, temp_setpoint_integer, temp_setpoint_fraction, work_mode);
+		USART_Transmit(DATA_TO_UART);
+		memset(DATA_TO_UART, '\0', sizeof(char) * strlen(DATA_TO_UART));//очистка массива
 	}
 }
 //прерывание по нажатию кнопки OK
@@ -147,6 +158,33 @@ port_init(void)
 	DDRTEMP &= ~(1<<BITTEMP);
 	PORTTEMP &= ~(1<<BITTEMP);
 }
+//обработчик прерывания по UART
+int uart_rx_count = 0;
+char uart_rx_buffer[100];
+char uart_message[100];
+ISR(USART_RXC_vect)
+{
+	uart_rx_buffer[uart_rx_count] = UDR;
+	if (uart_rx_buffer[uart_rx_count] == '/')
+	{
+		memcpy(uart_message,uart_rx_buffer,strlen(uart_rx_buffer)-1);
+		memset(uart_rx_buffer,'\0',strlen(uart_rx_buffer));
+		uart_rx_count = 0;
+		//Получение данные о wifi по uart
+		if (strstr(uart_message,"WiFi-OK")!=0)
+		{
+			PORTC |= (1<<LED_WIFI);
+		}
+		if (strstr(uart_message,"WiFi-ERROR")!=0)
+		{
+			PORTC &= ~(1<<LED_WIFI);
+		}
+	}
+	else
+	{
+		uart_rx_count++;
+	}
+}
 uint8_t spi_send_recv(uint8_t data) // Передаёт и принимает 1 байт по SPI, возвращает полученное значение
 {
 	SPDR = data;
@@ -164,6 +202,7 @@ int main(void)
 	PORTD |= (1<<LED_BOILER_STATUS);
 	PORTC |= (1<<LED_WIFI);
 	SPI_init();
+	USART_Init(16);    //Инициализация модуля USART скорость 115200	
     NRF24_ini();
 	_delay_ms(100);
 	MAX7219_init();
@@ -173,30 +212,35 @@ int main(void)
 	MCUCR |= (1<<ISC01)|((1<<ISC11));
 	GICR |= (1<<INT0)|(1<<INT1);
 	//----------------------
-	_delay_ms(1000);
+	_delay_ms(2000);
 	PORTD &= ~(1<<LED_TX);
 	PORTD &= ~(1<<LED_RX);
 	PORTD &= ~(1<<LED_BOILER_STATUS);
 	PORTC &= ~(1<<LED_WIFI);
-	//настрока WDT
-	WDTCR &= ~(1<<WDE);
-	//включаем Watchdog на 2 с
-	wdt_enable(WDTO_2S);
-	ACSR |= (1<<ACD);//откл компаратор
 	timer1_ini();
 	timer2_ini();
+	gas_boiler_controller();
+    //настрока WDT
+    WDTCR &= ~(1<<WDE);
+    //включаем Watchdog на 2 с
+    wdt_enable(WDTO_2S);
+    ACSR |= (1<<ACD);//откл компаратор
 	sei();
+	_delay_ms(1500);
 	wdt_reset();
-    while (1) 
+	_delay_ms(1500);
+	wdt_reset();
+	//отправляем в БД первичные данные после включения
+	sprintf(DATA_TO_UART,"%d %d.%d %d.%d %d ", gas_boiler_enable_flag, home_temp_rx_integer, home_temp_rx_fraction, temp_setpoint_integer, temp_setpoint_fraction, work_mode);
+	USART_Transmit(DATA_TO_UART);
+	memset(DATA_TO_UART, '\0', sizeof(char) * strlen(DATA_TO_UART));//очистка массива
+	while (1) 
     {
 		
 		//если нет связи более 15 сек, то берем температуру от собственного датчика и переходим в режим авто
 		if (abs(millis - millis_hometemp_update) > 15000)
 		{
-			if ((gas_boiler_enable_flag / 10) == 1)
-			{
-				gas_boiler_enable_flag -= 10;
-			}
+			work_mode = 0;
 			home_temp_rx_integer = home_temp_own_integer;
 			home_temp_rx_fraction = home_temp_own_fraction;
 			millis_hometemp_update = millis;

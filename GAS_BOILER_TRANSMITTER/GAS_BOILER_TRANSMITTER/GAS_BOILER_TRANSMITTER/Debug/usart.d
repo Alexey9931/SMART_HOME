@@ -1,4 +1,4 @@
-NRF24.d NRF24.o: .././NRF24.c .././NRF24.h .././main.h \
+usart.d usart.o: .././usart.c .././usart.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -21,9 +21,9 @@ NRF24.d NRF24.o: .././NRF24.c .././NRF24.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
- .././TWI.h .././DS18B20.h .././MAX7219.h .././Controller.h .././usart.h
+ .././NRF24.h .././TWI.h .././DS18B20.h .././MAX7219.h .././Controller.h
 
-.././NRF24.h:
+.././usart.h:
 
 .././main.h:
 
@@ -71,6 +71,8 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h:
 
 d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
 
+.././NRF24.h:
+
 .././TWI.h:
 
 .././DS18B20.h:
@@ -78,5 +80,3 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
 .././MAX7219.h:
 
 .././Controller.h:
-
-.././usart.h:

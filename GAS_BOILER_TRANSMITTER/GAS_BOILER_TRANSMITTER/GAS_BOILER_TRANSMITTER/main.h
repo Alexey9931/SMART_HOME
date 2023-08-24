@@ -33,5 +33,6 @@
 #include "DS18B20.h"
 #include "MAX7219.h"
 #include "Controller.h"
+#include "usart.h"
 
 #endif /* MAIN_H_ */

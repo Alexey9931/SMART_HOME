@@ -23,6 +23,7 @@ extern int32_t millis;
 extern int32_t millis_hometemp_update;
 
 extern uint8_t gas_boiler_enable_flag;
+extern uint8_t work_mode;
 //-------------------------------------------------------------
 void NRF24_ini(void)
 {
@@ -115,36 +116,58 @@ ISR(INT0_vect)
 		gas_boiler_enable_flag = RX_BUF[0];
 		switch (gas_boiler_enable_flag)
 		{
-			case 0:	
+			case 0:	work_mode = 0;
+					home_temp_rx_integer = RX_BUF[3];
+					home_temp_rx_fraction = RX_BUF[4];
 					break;
-			case 1:
+			case 1:	work_mode = 0;
+					home_temp_rx_integer = RX_BUF[3];
+					home_temp_rx_fraction = RX_BUF[4];
 					break;
-			case 10:
-					PORTB &= ~(1<<MOSFET);
+			case 10:gas_boiler_enable_flag = 0;
+					work_mode = 1;
+					home_temp_rx_integer = RX_BUF[3];
+					home_temp_rx_fraction = RX_BUF[4];
+					PORTB |= (1<<MOSFET);
 					PORTD &= ~(1<<LED_BOILER_STATUS);
 					break;
-			case 11:
-					PORTB |= (1<<MOSFET);
+			case 11:gas_boiler_enable_flag = 1;
+					work_mode = 1;
+					home_temp_rx_integer = RX_BUF[3];
+					home_temp_rx_fraction = RX_BUF[4];
+					PORTB &= ~(1<<MOSFET);
 					PORTD |= (1<<LED_BOILER_STATUS);
 					break;
-			case 100:
+			case 100:gas_boiler_enable_flag = 0;
+					work_mode = 0;
+					home_temp_rx_integer = RX_BUF[3];
+					home_temp_rx_fraction = RX_BUF[4];
 					temp_setpoint_integer = RX_BUF[1];
 					temp_setpoint_fraction = RX_BUF[2];
 					break;
-			case 101:
+			case 101:gas_boiler_enable_flag = 1;
+					work_mode = 0;
+					home_temp_rx_integer = RX_BUF[3];
+					home_temp_rx_fraction = RX_BUF[4];
 					temp_setpoint_integer = RX_BUF[1];
 					temp_setpoint_fraction = RX_BUF[2];
 					break;
-			case 110:
-					temp_setpoint_integer = RX_BUF[1];
-					temp_setpoint_fraction = RX_BUF[2];
-					PORTB &= ~(1<<MOSFET);
-					PORTD &= ~(1<<LED_BOILER_STATUS);
-					break;
-			case 111:
+			case 110:gas_boiler_enable_flag = 0;
+					work_mode = 1;
+					home_temp_rx_integer = RX_BUF[3];
+					home_temp_rx_fraction = RX_BUF[4];
 					temp_setpoint_integer = RX_BUF[1];
 					temp_setpoint_fraction = RX_BUF[2];
 					PORTB |= (1<<MOSFET);
+					PORTD &= ~(1<<LED_BOILER_STATUS);
+					break;
+			case 111:gas_boiler_enable_flag = 1;
+					work_mode = 1;
+					home_temp_rx_integer = RX_BUF[3];
+					home_temp_rx_fraction = RX_BUF[4];
+					temp_setpoint_integer = RX_BUF[1];
+					temp_setpoint_fraction = RX_BUF[2];
+					PORTB &= ~(1<<MOSFET);
 					PORTD |= (1<<LED_BOILER_STATUS);
 					break;
 		}

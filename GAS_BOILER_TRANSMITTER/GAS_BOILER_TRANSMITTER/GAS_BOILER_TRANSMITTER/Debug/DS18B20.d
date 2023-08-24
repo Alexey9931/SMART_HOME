@@ -21,7 +21,7 @@ DS18B20.d DS18B20.o: .././DS18B20.c .././DS18B20.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
- .././NRF24.h .././TWI.h .././MAX7219.h .././Controller.h
+ .././NRF24.h .././TWI.h .././MAX7219.h .././Controller.h .././usart.h
 
 .././DS18B20.h:
 
@@ -78,3 +78,5 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
 .././MAX7219.h:
 
 .././Controller.h:
+
+.././usart.h:

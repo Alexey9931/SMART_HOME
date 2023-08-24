@@ -1149,12 +1149,18 @@ void Print_Page_About()
 	ILI9486_SetTextColor(BLACK,WHITE);
 	ILI9486_Print_String32x32("    Î ÏÐÎÅÊÒÅ    ",TFT_STRING_MODE_BACKGROUND);
 	
+	ILI9486_SetTextColor(WHITE,BLACK);
+	ILI9486_SetCursor(20,60);
+	ILI9486_Print_String32x32("Âðåìÿ çàïóñêà:",TFT_STRING_MODE_BACKGROUND);
+	ILI9486_SetCursor(0,100);
+	ILI9486_Print_String32x32(start_time,TFT_STRING_MODE_BACKGROUND);
 	
 	ILI9486_SetTextColor(WHITE,BLACK);
 	ILI9486_SetCursor(40,270);
 	ILI9486_Print_String40x40("ÍÀÇÀÄ Â ÌÅÍÞ",TFT_STRING_MODE_BACKGROUND);
 	ILI9486_DrawRect(37,273,414,42,WHITE);
 	ILI9486_DrawRect(38,274,412,40,WHITE);
+	
 	/*uint8_t Frame_buffer[1024] = { 0 }; //Áóôåð êàäðà
 	LCD_12864_GrapnicMode(1);
 	LCD_12864_Clean_Frame_buffer(Frame_buffer);
@@ -1341,8 +1347,8 @@ void Print_Gas_Boiler_Page()
 			ILI9486_DrawRect(328,62,128,35,WHITE);
 			ILI9486_DrawRect(297,101,130,37,BLACK);
 			ILI9486_DrawRect(298,102,128,35,BLACK);
-			ILI9486_DrawRect(303,138,170,37,BLACK);
-			ILI9486_DrawRect(304,139,168,35,BLACK);
+			ILI9486_DrawRect(303,138,172,37,BLACK);
+			ILI9486_DrawRect(304,139,170,35,BLACK);
 			ILI9486_DrawRect(37,273,414,42,BLACK);
 			ILI9486_DrawRect(38,274,412,40,BLACK);
 			break;
@@ -1351,8 +1357,8 @@ void Print_Gas_Boiler_Page()
 			ILI9486_DrawRect(328,62,128,35,BLACK);
 			ILI9486_DrawRect(297,101,130,37,WHITE);
 			ILI9486_DrawRect(298,102,128,35,WHITE);
-			ILI9486_DrawRect(303,138,170,37,BLACK);
-			ILI9486_DrawRect(304,139,168,35,BLACK);
+			ILI9486_DrawRect(303,138,172,37,BLACK);
+			ILI9486_DrawRect(304,139,170,35,BLACK);
 			ILI9486_DrawRect(37,273,414,42,BLACK);
 			ILI9486_DrawRect(38,274,412,40,BLACK);
 			break;	
@@ -1361,8 +1367,8 @@ void Print_Gas_Boiler_Page()
 			ILI9486_DrawRect(328,62,128,35,BLACK);
 			ILI9486_DrawRect(297,101,130,37,BLACK);
 			ILI9486_DrawRect(298,102,128,35,BLACK);
-			ILI9486_DrawRect(303,138,170,37,WHITE);
-			ILI9486_DrawRect(304,139,168,35,WHITE);
+			ILI9486_DrawRect(303,138,172,37,WHITE);
+			ILI9486_DrawRect(304,139,170,35,WHITE);
 			ILI9486_DrawRect(37,273,414,42,BLACK);
 			ILI9486_DrawRect(38,274,412,40,BLACK);
 			break;
@@ -1371,8 +1377,8 @@ void Print_Gas_Boiler_Page()
 			ILI9486_DrawRect(328,62,128,35,BLACK);
 			ILI9486_DrawRect(297,101,130,37,BLACK);
 			ILI9486_DrawRect(298,102,128,35,BLACK);
-			ILI9486_DrawRect(303,138,170,37,BLACK);
-			ILI9486_DrawRect(304,139,168,35,BLACK);
+			ILI9486_DrawRect(303,138,172,37,BLACK);
+			ILI9486_DrawRect(304,139,170,35,BLACK);
 			ILI9486_DrawRect(37,273,414,42,WHITE);
 			ILI9486_DrawRect(38,274,412,40,WHITE);
 			break;	
