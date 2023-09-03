@@ -163,6 +163,8 @@ ISR(INT0_vect)
 						home_temp_rx_fraction = RX_BUF[4];
 						temp_setpoint_integer = RX_BUF[1];
 						temp_setpoint_fraction = RX_BUF[2];
+						EEPROM_write(1, temp_setpoint_integer);
+						EEPROM_write(2, temp_setpoint_fraction);
 					}
 					break;
 			case 101:
@@ -174,6 +176,8 @@ ISR(INT0_vect)
 						home_temp_rx_fraction = RX_BUF[4];
 						temp_setpoint_integer = RX_BUF[1];
 						temp_setpoint_fraction = RX_BUF[2];
+						EEPROM_write(1, temp_setpoint_integer);
+						EEPROM_write(2, temp_setpoint_fraction);
 					}
 					break;
 			case 110:
@@ -187,6 +191,8 @@ ISR(INT0_vect)
 						temp_setpoint_fraction = RX_BUF[2];
 						PORTB |= (1<<MOSFET);
 						PORTD &= ~(1<<LED_BOILER_STATUS);
+						EEPROM_write(1, temp_setpoint_integer);
+						EEPROM_write(2, temp_setpoint_fraction);
 					}
 					break;
 			case 111:
@@ -200,6 +206,8 @@ ISR(INT0_vect)
 						temp_setpoint_fraction = RX_BUF[2];
 						PORTB &= ~(1<<MOSFET);
 						PORTD |= (1<<LED_BOILER_STATUS);
+						EEPROM_write(1, temp_setpoint_integer);
+						EEPROM_write(2, temp_setpoint_fraction);
 					}
 					break;
 		}

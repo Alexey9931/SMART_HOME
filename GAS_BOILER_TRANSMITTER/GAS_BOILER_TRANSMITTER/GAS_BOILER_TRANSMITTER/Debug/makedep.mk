@@ -6,6 +6,8 @@ Controller.c
 
 DS18B20.c
 
+eeprom.c
+
 main.c
 
 MAX7219.c

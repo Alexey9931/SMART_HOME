@@ -22,7 +22,7 @@ TWI.d TWI.o: .././TWI.c .././TWI.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
  .././NRF24.h .././DS18B20.h .././MAX7219.h .././Controller.h \
- .././usart.h
+ .././usart.h .././eeprom.h
 
 .././TWI.h:
 
@@ -81,3 +81,5 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
 .././Controller.h:
 
 .././usart.h:
+
+.././eeprom.h:

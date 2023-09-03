@@ -66,6 +66,8 @@ ISR (TIMER2_COMP_vect)
 			temp_setpoint_integer = temp_setpoint/10;
 			temp_setpoint_fraction = temp_setpoint%10;
 			UP_BUTTON_FLAG = 1;
+			EEPROM_write(1, temp_setpoint_integer);
+			EEPROM_write(2, temp_setpoint_fraction);
 		}
 		else if(((PINC&(1<<BUTTON_DOWN)) == 0) && (DOWN_BUTTON_FLAG == 0))
 		{
@@ -74,6 +76,8 @@ ISR (TIMER2_COMP_vect)
 			temp_setpoint_integer = temp_setpoint/10;
 			temp_setpoint_fraction = temp_setpoint%10;
 			DOWN_BUTTON_FLAG = 1;
+		    EEPROM_write(1, temp_setpoint_integer);
+			EEPROM_write(2, temp_setpoint_fraction);
 		}
 		if ((PINC&(1<<BUTTON_UP)) != 0)
 		{
@@ -230,6 +234,11 @@ int main(void)
 	wdt_reset();
 	_delay_ms(1500);
 	wdt_reset();
+	//считываем из eeprom значение уставки
+	if(EEPROM_read(1) > 100) EEPROM_write(1,20);
+	if(EEPROM_read(2) > 100) EEPROM_write(2,0);
+	temp_setpoint_integer = EEPROM_read(1);
+	temp_setpoint_fraction = EEPROM_read(2);
 	//отправляем в БД первичные данные после включения
 	sprintf(DATA_TO_UART,"%d %d.%d %d.%d %d ", gas_boiler_enable_flag, home_temp_rx_integer, home_temp_rx_fraction, temp_setpoint_integer, temp_setpoint_fraction, work_mode);
 	USART_Transmit(DATA_TO_UART);

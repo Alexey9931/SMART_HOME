@@ -34,5 +34,6 @@
 #include "MAX7219.h"
 #include "Controller.h"
 #include "usart.h"
+#include "eeprom.h"
 
 #endif /* MAIN_H_ */

@@ -39,6 +39,7 @@ SUBDIRS :=
 C_SRCS +=  \
 ../Controller.c \
 ../DS18B20.c \
+../eeprom.c \
 ../main.c \
 ../MAX7219.c \
 ../NRF24.c \
@@ -55,6 +56,7 @@ ASM_SRCS +=
 OBJS +=  \
 Controller.o \
 DS18B20.o \
+eeprom.o \
 main.o \
 MAX7219.o \
 NRF24.o \
@@ -64,6 +66,7 @@ usart.o
 OBJS_AS_ARGS +=  \
 Controller.o \
 DS18B20.o \
+eeprom.o \
 main.o \
 MAX7219.o \
 NRF24.o \
@@ -73,6 +76,7 @@ usart.o
 C_DEPS +=  \
 Controller.d \
 DS18B20.d \
+eeprom.d \
 main.d \
 MAX7219.d \
 NRF24.d \
@@ -82,6 +86,7 @@ usart.d
 C_DEPS_AS_ARGS +=  \
 Controller.d \
 DS18B20.d \
+eeprom.d \
 main.d \
 MAX7219.d \
 NRF24.d \
@@ -110,6 +115,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./DS18B20.o: .././DS18B20.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega8a -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega8a" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./eeprom.o: .././eeprom.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega8a -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega8a" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

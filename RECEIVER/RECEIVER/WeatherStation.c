@@ -1907,22 +1907,28 @@ void sprintf_HOME_Weath_Param(void)
 		home_temp_sign = tt>>11;//вычисление знака температуры
 		if (home_temp_sign == 0x00)
 		{
-			home_temp_fraction = tt & 0xF;
-			home_temp_fraction = (home_temp_fraction<<1) + (home_temp_fraction<<3);// ”множаем на 10
-			home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
-			home_temp_integer = (tt&0x07FF)>>4;
-			//sprintf(data,"%d,%d\r",buf[1],buf[0]);
-			sprintf(temp_home_to_DB,"%d.%d",home_temp_integer,home_temp_fraction);
+			if (((tt&0x07FF)>>4) != 85)
+			{
+				home_temp_fraction = tt & 0xF;
+				home_temp_fraction = (home_temp_fraction<<1) + (home_temp_fraction<<3);// ”множаем на 10
+				home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
+				home_temp_integer = (tt&0x07FF)>>4;
+				//sprintf(data,"%d,%d\r",buf[1],buf[0]);
+				sprintf(temp_home_to_DB,"%d.%d",home_temp_integer,home_temp_fraction);
+			}
 		
 		}
 		else
 		{
-			home_temp_fraction = ((~tt) & 0xF);
-			home_temp_fraction = (home_temp_fraction<<1) + (home_temp_fraction<<3);// ”множаем на 10
-			home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
-			home_temp_integer = ((~(tt))&0x07FF)>>4;
-			//sprintf(data,"-%d,%d\r",buf[1],buf[0]);
-			sprintf(temp_home_to_DB,"-%d.%d",home_temp_integer,home_temp_fraction);
+			if ((((~(tt))&0x07FF)>>4) != 85)
+			{
+				home_temp_fraction = ((~tt) & 0xF);
+				home_temp_fraction = (home_temp_fraction<<1) + (home_temp_fraction<<3);// ”множаем на 10
+				home_temp_fraction = (home_temp_fraction>>4);//делим на 16 или умножаем на 0.0625
+				home_temp_integer = ((~(tt))&0x07FF)>>4;
+				//sprintf(data,"-%d,%d\r",buf[1],buf[0]);
+				sprintf(temp_home_to_DB,"-%d.%d",home_temp_integer,home_temp_fraction);
+			}
 		}
 	}
 	//измерение влажности и температуры от dht22 при необходимости
@@ -1942,7 +1948,7 @@ void sprintf_HOME_Weath_Param(void)
 			sprintf(temp_home_to_DB,"%d.%d",home_temp_integer,home_temp_fraction);
 		}
 	}
-	if (home_hum < 100)
+	if ((home_hum < 100)&&(home_hum > 0))
 	{
 		home_hum_integer = home_hum;
 		sprintf(hum_home_to_DB,"%d",home_hum_integer);

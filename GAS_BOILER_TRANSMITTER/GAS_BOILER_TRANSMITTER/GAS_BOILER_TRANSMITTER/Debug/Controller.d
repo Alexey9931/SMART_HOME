@@ -22,7 +22,8 @@ Controller.d Controller.o: .././Controller.c .././Controller.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
- .././NRF24.h .././TWI.h .././DS18B20.h .././MAX7219.h .././usart.h
+ .././NRF24.h .././TWI.h .././DS18B20.h .././MAX7219.h .././usart.h \
+ .././eeprom.h
 
 .././Controller.h:
 
@@ -81,3 +82,5 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h:
 .././MAX7219.h:
 
 .././usart.h:
+
+.././eeprom.h:
