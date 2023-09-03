@@ -13,7 +13,8 @@ const char* password = "head2020";
 
 // REPLACE with your Domain name and URL path or IP address with path
 //const char* serverName_public = "http://alexgorlov99.ru/post-esp-data.php";
-const char* serverName_localRaspberry = "http://192.168.1.7/post-gasboiler-data.php";
+const char* serverName_gasboiler_send_data_localRaspberry = "http://192.168.1.7/post-gasboiler-data.php";
+const char* serverName_gasboiler_get_data_localRaspberry = "http://192.168.1.7/get-gasboiler-lastdata.php";
 
 // Keep this API Key value to be compatible with the PHP code provided in the project page. 
 // If you change the apiKeyValue value, the PHP file /post-esp-data.php also needs to have the same key 
@@ -21,7 +22,7 @@ String apiKeyValue = "tPmAT5Ab3j7F9";
 
 void clean_part_array(char * array);
 void clean_all_array(char * array);
-int read_measurements();
+int read_gasboiler_measurements();
 
 
 int counter = 0;
@@ -34,7 +35,7 @@ char work_mode[10] = {0};
 char count[10] = {0};
 int k = 0;
 int i = 0;
-uint32_t timer = 0;
+uint32_t timer_millis = 0;
 int FLAG = 1;
 
 
@@ -57,59 +58,30 @@ void setup()
   }
   delay(6000);
   Serial.write("WiFi-OK/");
-
 }
 void loop()
 {
     FLAG = 1;
+    //отправка данных метеостанции в БД только при получении их от мк по UART(~каждые 5 мин) 
     if( Serial.available() > 0 ) 
     {   
       sprintf(data,"%s",Serial.readString().c_str());
-      //Serial.println(data);
-      FLAG = read_measurements();
+      FLAG = read_gasboiler_measurements();
       counter++;
       delay(0);
-      if (WiFi.status() != WL_CONNECTED)
-      {
-        Serial.write("WiFi-ERROR/");
-        WiFi.disconnect();
-        delay(1000);
-        WiFi.begin(ssid, password);
-        WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);
-        while(WiFi.status() != WL_CONNECTED) 
-        {
-          delay(500);
-          //Serial.print(".");  
-        }
-        Serial.write("WiFi-OK/");
-      }
-      //Check WiFi connection status
       if(WiFi.status()== WL_CONNECTED)
       {
         WiFiClient client;
         HTTPClient http_Raspberry;
         if (FLAG == 1)
         {
-          // Your Domain name with URL path or IP address with path
-          http_Raspberry.begin(client, serverName_localRaspberry);
-        
-          // Specify content-type header
-          //http_public.addHeader("Content-Type", "application/x-www-form-urlencoded");
+          http_Raspberry.begin(client, serverName_gasboiler_send_data_localRaspberry);
           http_Raspberry.addHeader("Content-Type", "application/x-www-form-urlencoded");
-          // Prepare your HTTP POST request data
           String httpRequestData_Raspberry = "api_key=" + apiKeyValue + "&Mode=" + work_mode
                               + "&Status=" + boiler_status + "&Temp_Current=" + current_temp +"&Temp_Setpoint=" + temp_setpoint + "";                    
-          //String httpRequestData_Raspberry = "api_key=tPmAT5Ab3j7F9&HomeTemp=12.0&StreetTemp=9.0&HomeHum=35.0&StreetHum=40.0&Pressuare=750&WindSpeed=12&WindDirect=N&Rain=10&BatteryCharge=3.7&MeasureTime=12:18:22,12/РќРћРЇ/22";
-      
-          // Send HTTP POST request
           int httpResponseCode_Raspberry = http_Raspberry.POST(httpRequestData_Raspberry);   
-          // Free resources
           http_Raspberry.end();
         }
-      }
-      else 
-      {
-        //Serial.println("WiFi Disconnected");
       }
       delay(0);
       clean_all_array(boiler_status);
@@ -120,6 +92,26 @@ void loop()
       clean_all_array(count);
       delay(0);
     }
+    //отправка данных в МК о состоянии котла
+    else if (abs(timer_millis - millis()) == 10000)
+    {
+      if(WiFi.status()== WL_CONNECTED)
+      {
+        WiFiClient client;
+        HTTPClient http_Raspberry;
+        http_Raspberry.begin(client, serverName_gasboiler_get_data_localRaspberry);
+        http_Raspberry.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        String httpRequestData_Raspberry = "api_key=" + apiKeyValue + "";                    
+        int httpResponseCode_Raspberry = http_Raspberry.POST(httpRequestData_Raspberry);  
+        String answer =  http_Raspberry.getString();
+        
+        Serial.print("BD"+answer+"/");
+        http_Raspberry.end();
+      }
+      timer_millis = millis();
+      delay(0);
+    }
+    //проверка состояния wi-fi соединения
     else
     {
       if (WiFi.status() != WL_CONNECTED)
@@ -131,8 +123,7 @@ void loop()
         WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);
         while(WiFi.status() != WL_CONNECTED) 
         {
-          delay(500);
-          //Serial.print(".");  
+          
         }
         Serial.write("WiFi-OK/");
       }
@@ -153,7 +144,7 @@ void clean_all_array(char * array)
   memset(array, 0, sizeof(char) * strlen(array));//РѕС‡РёСЃС‚РєР° РјР°СЃСЃРёРІР°
 }
 
-int read_measurements()
+int read_gasboiler_measurements()
 {
       uint32_t timer;         // РїРµСЂРµРјРµРЅРЅР°СЏ С‚Р°Р№РјРµСЂР°
       timer = millis();

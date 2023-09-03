@@ -627,6 +627,7 @@ ISR (INT7_vect)
 				day = clock_setting_count;
 				break;
 		}
+		ModifyRTC();
 	}
 	else if(gas_boiler_setpoint_change_flag == 1)
 	{
@@ -787,6 +788,8 @@ int main(void)
 	HomePage_Flag = 0;
 	MainMenuPage_Flag = 1;
 	sei();
+	//отправка запроса к wifi модулю на получение инфо о wifi
+	USART_Transmit("GETWIFI");
 	_delay_ms(500);
     while (1) 
     {
@@ -805,7 +808,7 @@ int main(void)
 					rx_count = 0;
 					break;
 				}
-				if(rx_flag == 1)
+				if((rx_flag == 1)&&(pipe == 0))
 				{
 					PORTL |= (1<<LED);
 					_delay_us(300);

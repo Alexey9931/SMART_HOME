@@ -116,59 +116,91 @@ ISR(INT0_vect)
 		gas_boiler_enable_flag = RX_BUF[0];
 		switch (gas_boiler_enable_flag)
 		{
-			case 0:	work_mode = 0;
-					home_temp_rx_integer = RX_BUF[3];
-					home_temp_rx_fraction = RX_BUF[4];
+			case 0:	
+					if((RX_BUF[3] <= 50) && (RX_BUF[4] <= 9) && (RX_BUF[1] <= 50) && (RX_BUF[2] <= 9))
+					{
+						work_mode = 0;
+						home_temp_rx_integer = RX_BUF[3];
+						home_temp_rx_fraction = RX_BUF[4];
+					}
 					break;
-			case 1:	work_mode = 0;
-					home_temp_rx_integer = RX_BUF[3];
-					home_temp_rx_fraction = RX_BUF[4];
+			case 1:	
+					if((RX_BUF[3] <= 50) && (RX_BUF[4] <= 9) && (RX_BUF[1] <= 50) && (RX_BUF[2] <= 9))
+					{
+						work_mode = 0;
+						home_temp_rx_integer = RX_BUF[3];
+						home_temp_rx_fraction = RX_BUF[4];
+					}
 					break;
-			case 10:gas_boiler_enable_flag = 0;
-					work_mode = 1;
-					home_temp_rx_integer = RX_BUF[3];
-					home_temp_rx_fraction = RX_BUF[4];
-					PORTB |= (1<<MOSFET);
-					PORTD &= ~(1<<LED_BOILER_STATUS);
+			case 10:
+					if((RX_BUF[3] <= 50) && (RX_BUF[4] <= 9) && (RX_BUF[1] <= 50) && (RX_BUF[2] <= 9))
+					{
+						gas_boiler_enable_flag = 0;
+						work_mode = 1;
+						home_temp_rx_integer = RX_BUF[3];
+						home_temp_rx_fraction = RX_BUF[4];
+						PORTB |= (1<<MOSFET);
+						PORTD &= ~(1<<LED_BOILER_STATUS);
+					}
 					break;
-			case 11:gas_boiler_enable_flag = 1;
-					work_mode = 1;
-					home_temp_rx_integer = RX_BUF[3];
-					home_temp_rx_fraction = RX_BUF[4];
-					PORTB &= ~(1<<MOSFET);
-					PORTD |= (1<<LED_BOILER_STATUS);
+			case 11:
+					if((RX_BUF[3] <= 50) && (RX_BUF[4] <= 9) && (RX_BUF[1] <= 50) && (RX_BUF[2] <= 9))
+					{
+						gas_boiler_enable_flag = 1;
+						work_mode = 1;
+						home_temp_rx_integer = RX_BUF[3];
+						home_temp_rx_fraction = RX_BUF[4];
+						PORTB &= ~(1<<MOSFET);
+						PORTD |= (1<<LED_BOILER_STATUS);
+					}
 					break;
-			case 100:gas_boiler_enable_flag = 0;
-					work_mode = 0;
-					home_temp_rx_integer = RX_BUF[3];
-					home_temp_rx_fraction = RX_BUF[4];
-					temp_setpoint_integer = RX_BUF[1];
-					temp_setpoint_fraction = RX_BUF[2];
+			case 100:
+					if((RX_BUF[3] <= 50) && (RX_BUF[4] <= 9) && (RX_BUF[1] <= 50) && (RX_BUF[2] <= 9))
+					{
+						gas_boiler_enable_flag = 0;
+						work_mode = 0;
+						home_temp_rx_integer = RX_BUF[3];
+						home_temp_rx_fraction = RX_BUF[4];
+						temp_setpoint_integer = RX_BUF[1];
+						temp_setpoint_fraction = RX_BUF[2];
+					}
 					break;
-			case 101:gas_boiler_enable_flag = 1;
-					work_mode = 0;
-					home_temp_rx_integer = RX_BUF[3];
-					home_temp_rx_fraction = RX_BUF[4];
-					temp_setpoint_integer = RX_BUF[1];
-					temp_setpoint_fraction = RX_BUF[2];
+			case 101:
+					if((RX_BUF[3] <= 50) && (RX_BUF[4] <= 9) && (RX_BUF[1] <= 50) && (RX_BUF[2] <= 9))
+					{
+						gas_boiler_enable_flag = 1;
+						work_mode = 0;
+						home_temp_rx_integer = RX_BUF[3];
+						home_temp_rx_fraction = RX_BUF[4];
+						temp_setpoint_integer = RX_BUF[1];
+						temp_setpoint_fraction = RX_BUF[2];
+					}
 					break;
-			case 110:gas_boiler_enable_flag = 0;
-					work_mode = 1;
-					home_temp_rx_integer = RX_BUF[3];
-					home_temp_rx_fraction = RX_BUF[4];
-					temp_setpoint_integer = RX_BUF[1];
-					temp_setpoint_fraction = RX_BUF[2];
-					PORTB |= (1<<MOSFET);
-					PORTD &= ~(1<<LED_BOILER_STATUS);
+			case 110:
+					if((RX_BUF[3] <= 50) && (RX_BUF[4] <= 9) && (RX_BUF[1] <= 50) && (RX_BUF[2] <= 9))
+					{
+						gas_boiler_enable_flag = 0;
+						work_mode = 1;
+						home_temp_rx_integer = RX_BUF[3];
+						home_temp_rx_fraction = RX_BUF[4];
+						temp_setpoint_integer = RX_BUF[1];
+						temp_setpoint_fraction = RX_BUF[2];
+						PORTB |= (1<<MOSFET);
+						PORTD &= ~(1<<LED_BOILER_STATUS);
+					}
 					break;
-			case 111:gas_boiler_enable_flag = 1;
-					work_mode = 1;
-					home_temp_rx_integer = RX_BUF[3];
-					home_temp_rx_fraction = RX_BUF[4];
-					temp_setpoint_integer = RX_BUF[1];
-					temp_setpoint_fraction = RX_BUF[2];
-					PORTB &= ~(1<<MOSFET);
-					PORTD |= (1<<LED_BOILER_STATUS);
+			case 111:
+					if((RX_BUF[3] <= 50) && (RX_BUF[4] <= 9) && (RX_BUF[1] <= 50) && (RX_BUF[2] <= 9))
+					{
+						gas_boiler_enable_flag = 1;
+						work_mode = 1;
+						home_temp_rx_integer = RX_BUF[3];
+						home_temp_rx_fraction = RX_BUF[4];
+						temp_setpoint_integer = RX_BUF[1];
+						temp_setpoint_fraction = RX_BUF[2];
+						PORTB &= ~(1<<MOSFET);
+						PORTD |= (1<<LED_BOILER_STATUS);
+					}
 					break;
 		}
 		/*

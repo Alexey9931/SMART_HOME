@@ -61,18 +61,9 @@ void setup()
   }
   delay(30000);
   Serial.write("WiFi-OK/");
-  //delay(2000);
   Serial.print((String)"SSID-"+ssid+"/");
-  //Serial.write("SSID-ASUS/");
-  //delay(2000);
   Serial.print((String)"PSWD-"+password+"/");
-  //Serial.write("PSWD-head2020/");
-  //delay(2000);
   Serial.print("IP-"+local_IP.toString()+"/");
-  //Serial.write("IP-192.168.0.1/");
-  /*Serial.println("");
-  Serial.print("Connected to WiFi network with IP Address: ");
-  Serial.println(WiFi.localIP());*/
 }
 void loop()
 {
@@ -82,79 +73,88 @@ void loop()
     if( Serial.available() > 0 ) 
     {   
       sprintf(data,"%s",Serial.readString().c_str());
-      //Serial.println(data);
-      FLAG = read_measurements();
-      counter++;
-      delay(0);
-      if (WiFi.status() != WL_CONNECTED)
+      //если пришел запрос на получение инфо о wifi
+      if (strstr(data,"GETWIFI")!=0)
       {
-        Serial.write("WiFi-ERROR/");
-        WiFi.disconnect();
-        delay(1000);
-        WiFi.begin(ssid, password);
-        WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);
-        while(WiFi.status() != WL_CONNECTED) 
-        {
-          delay(500);
-          //Serial.print(".");  
-        }
-        Serial.write("WiFi-OK/");
+          Serial.write("WiFi-OK/");
+          Serial.print((String)"SSID-"+ssid+"/");
+          Serial.print((String)"PSWD-"+password+"/");
+          Serial.print("IP-"+local_IP.toString()+"/");
       }
-      //Check WiFi connection status
-      if(WiFi.status()== WL_CONNECTED)
+      else
       {
-        WiFiClient client;
-        HTTPClient http_Raspberry;
-        if (FLAG == 1)
+        FLAG = read_measurements();
+        counter++;
+        delay(0);
+        if (WiFi.status() != WL_CONNECTED)
         {
-          // Your Domain name with URL path or IP address with path
-          http_Raspberry.begin(client, serverName_localRaspberry);
-        
-          // Specify content-type header
-          //http_public.addHeader("Content-Type", "application/x-www-form-urlencoded");
-          http_Raspberry.addHeader("Content-Type", "application/x-www-form-urlencoded");
-          // Prepare your HTTP POST request data
-          String httpRequestData_Raspberry = "api_key=" + apiKeyValue + "&HomeTemp=" + temp_home
-                              + "&StreetTemp=" + temp_street + "&HomeHum=" + hum_home +"&StreetHum=" + hum_street
-                              + "&Pressure=" + pressure + "&WindSpeed=" + wind_speed 
-                              + "&WindDirect=" + wind_direct + "&Rain=" + rain + "&BatteryCharge=" + VBAT + "&Measure_time=" + receive_time + "";                    
-          //String httpRequestData_Raspberry = "api_key=tPmAT5Ab3j7F9&HomeTemp=12.0&StreetTemp=9.0&HomeHum=35.0&StreetHum=40.0&Pressuare=750&WindSpeed=12&WindDirect=N&Rain=10&BatteryCharge=3.7&MeasureTime=12:18:22,12/РќРћРЇ/22";
-      
-          // Send HTTP POST request
-          int httpResponseCode_Raspberry = http_Raspberry.POST(httpRequestData_Raspberry);   
-          /*if (httpResponseCode_Raspberry>0) 
+          Serial.write("WiFi-ERROR/");
+          WiFi.disconnect();
+          delay(1000);
+          WiFi.begin(ssid, password);
+          WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS);
+          while(WiFi.status() != WL_CONNECTED) 
           {
-            Serial.print("HTTP Response code Raspberry: ");
-            Serial.println(httpResponseCode_Raspberry);
+            delay(500);
+            //Serial.print(".");  
           }
-          else 
-          {
-            Serial.print("Error code Raspberry: ");
-            Serial.println(httpResponseCode_Raspberry);
-          }*/
-          // Free resources
-          http_Raspberry.end();
+          Serial.write("WiFi-OK/");
         }
+        //Check WiFi connection status
+        if(WiFi.status()== WL_CONNECTED)
+        {
+          WiFiClient client;
+          HTTPClient http_Raspberry;
+          if (FLAG == 1)
+          {
+            // Your Domain name with URL path or IP address with path
+            http_Raspberry.begin(client, serverName_localRaspberry);
+          
+            // Specify content-type header
+            //http_public.addHeader("Content-Type", "application/x-www-form-urlencoded");
+            http_Raspberry.addHeader("Content-Type", "application/x-www-form-urlencoded");
+            // Prepare your HTTP POST request data
+            String httpRequestData_Raspberry = "api_key=" + apiKeyValue + "&HomeTemp=" + temp_home
+                                + "&StreetTemp=" + temp_street + "&HomeHum=" + hum_home +"&StreetHum=" + hum_street
+                                + "&Pressure=" + pressure + "&WindSpeed=" + wind_speed 
+                                + "&WindDirect=" + wind_direct + "&Rain=" + rain + "&BatteryCharge=" + VBAT + "&Measure_time=" + receive_time + "";                    
+            //String httpRequestData_Raspberry = "api_key=tPmAT5Ab3j7F9&HomeTemp=12.0&StreetTemp=9.0&HomeHum=35.0&StreetHum=40.0&Pressuare=750&WindSpeed=12&WindDirect=N&Rain=10&BatteryCharge=3.7&MeasureTime=12:18:22,12/РќРћРЇ/22";
+        
+            // Send HTTP POST request
+            int httpResponseCode_Raspberry = http_Raspberry.POST(httpRequestData_Raspberry);   
+            /*if (httpResponseCode_Raspberry>0) 
+            {
+              Serial.print("HTTP Response code Raspberry: ");
+              Serial.println(httpResponseCode_Raspberry);
+            }
+            else 
+            {
+              Serial.print("Error code Raspberry: ");
+              Serial.println(httpResponseCode_Raspberry);
+            }*/
+            // Free resources
+            http_Raspberry.end();
+          }
+        }
+        else 
+        {
+          //Serial.println("WiFi Disconnected");
+        }
+        delay(0);
+        clean_all_array(receive_time);
+        clean_all_array(temp_street);
+        clean_all_array(temp_home);
+        clean_all_array(hum_street);
+        clean_all_array(hum_home);
+        clean_all_array(wind_speed);
+        clean_all_array(rain);
+        clean_all_array(pressure);
+        clean_all_array(VBAT);
+        clean_all_array(wind_direct);
+        clean_all_array(data);
+        clean_all_array(count);
+        delay(0);
       }
-      else 
-      {
-        //Serial.println("WiFi Disconnected");
-      }
-      delay(0);
-      clean_all_array(receive_time);
-      clean_all_array(temp_street);
-      clean_all_array(temp_home);
-      clean_all_array(hum_street);
-      clean_all_array(hum_home);
-      clean_all_array(wind_speed);
-      clean_all_array(rain);
-      clean_all_array(pressure);
-      clean_all_array(VBAT);
-      clean_all_array(wind_direct);
-      clean_all_array(data);
-      clean_all_array(count);
-      delay(0);
-      //delay(1000);
     }
     else
     {
