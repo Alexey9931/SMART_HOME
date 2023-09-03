@@ -22,7 +22,7 @@ DHT22.d DHT22.o: .././DHT22.c .././DHT22.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h \
  .././NRF24.h .././TWI.h .././usart.h .././WeatherStation.h \
  .././RTC_DS3231.h .././BMP180.h .././ILI9486.h .././DS18B20.h .././SD.h \
- .././pff.h .././integer.h .././diskio.h .././HTU21D.h
+ .././pff.h .././integer.h .././diskio.h .././HTU21D.h .././eeprom.h
 
 .././DHT22.h:
 
@@ -95,3 +95,5 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h:
 .././diskio.h:
 
 .././HTU21D.h:
+
+.././eeprom.h:

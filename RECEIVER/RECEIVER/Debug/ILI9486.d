@@ -22,7 +22,8 @@ ILI9486.d ILI9486.o: .././ILI9486.c .././ILI9486.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h \
  .././NRF24.h .././TWI.h .././usart.h .././WeatherStation.h \
  .././RTC_DS3231.h .././DHT22.h .././BMP180.h .././DS18B20.h .././SD.h \
- .././pff.h .././integer.h .././diskio.h .././HTU21D.h .././Fonts.h
+ .././pff.h .././integer.h .././diskio.h .././HTU21D.h .././eeprom.h \
+ .././Fonts.h
 
 .././ILI9486.h:
 
@@ -95,5 +96,7 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h:
 .././diskio.h:
 
 .././HTU21D.h:
+
+.././eeprom.h:
 
 .././Fonts.h:

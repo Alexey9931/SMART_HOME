@@ -156,6 +156,12 @@
     <Compile Include="DS18B20.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="eeprom.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="eeprom.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="HTU21D.c">
       <SubType>compile</SubType>
     </Compile>

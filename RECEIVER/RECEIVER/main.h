@@ -44,6 +44,7 @@
 #include "diskio.h"
 #include "integer.h"
 #include "HTU21D.h"
+#include "eeprom.h"
 
 uint8_t spi_send_recv(uint8_t data);
 

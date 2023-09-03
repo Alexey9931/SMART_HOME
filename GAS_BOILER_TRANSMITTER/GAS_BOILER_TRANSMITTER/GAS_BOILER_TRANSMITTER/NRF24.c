@@ -14,10 +14,10 @@ uint8_t TX_ADDRESS1[TX_ADR_WIDTH] = {0xb5,0xb5,0xa1};//адрес в режиме приемника
 uint8_t RX_BUF[TX_PLOAD_WIDTH] = {0};//буффер для пакетов
 uint8_t pipe; //номер канала
 uint8_t rx_flag = 0, tx_flag = 0;
-uint8_t temp_setpoint_integer = 20;
-uint8_t temp_setpoint_fraction = 0;
-uint8_t home_temp_rx_integer = 20;
-uint8_t home_temp_rx_fraction = 0;
+uint8_t temp_setpoint_integer;
+uint8_t temp_setpoint_fraction;
+uint8_t home_temp_rx_integer;
+uint8_t home_temp_rx_fraction;
 
 extern int32_t millis;
 extern int32_t millis_hometemp_update;
@@ -122,6 +122,9 @@ ISR(INT0_vect)
 						work_mode = 0;
 						home_temp_rx_integer = RX_BUF[3];
 						home_temp_rx_fraction = RX_BUF[4];
+						EEPROM_write(3, home_temp_rx_integer);
+						EEPROM_write(4, home_temp_rx_fraction);
+						EEPROM_write(6, work_mode);
 					}
 					break;
 			case 1:	
@@ -130,6 +133,9 @@ ISR(INT0_vect)
 						work_mode = 0;
 						home_temp_rx_integer = RX_BUF[3];
 						home_temp_rx_fraction = RX_BUF[4];
+						EEPROM_write(3, home_temp_rx_integer);
+						EEPROM_write(4, home_temp_rx_fraction);
+						EEPROM_write(6, work_mode);
 					}
 					break;
 			case 10:
@@ -141,6 +147,10 @@ ISR(INT0_vect)
 						home_temp_rx_fraction = RX_BUF[4];
 						PORTB |= (1<<MOSFET);
 						PORTD &= ~(1<<LED_BOILER_STATUS);
+						EEPROM_write(3, home_temp_rx_integer);
+						EEPROM_write(4, home_temp_rx_fraction);
+						EEPROM_write(5, gas_boiler_enable_flag);
+						EEPROM_write(6, work_mode);
 					}
 					break;
 			case 11:
@@ -152,6 +162,10 @@ ISR(INT0_vect)
 						home_temp_rx_fraction = RX_BUF[4];
 						PORTB &= ~(1<<MOSFET);
 						PORTD |= (1<<LED_BOILER_STATUS);
+						EEPROM_write(3, home_temp_rx_integer);
+						EEPROM_write(4, home_temp_rx_fraction);
+						EEPROM_write(5, gas_boiler_enable_flag);
+						EEPROM_write(6, work_mode);
 					}
 					break;
 			case 100:
@@ -165,6 +179,10 @@ ISR(INT0_vect)
 						temp_setpoint_fraction = RX_BUF[2];
 						EEPROM_write(1, temp_setpoint_integer);
 						EEPROM_write(2, temp_setpoint_fraction);
+						EEPROM_write(3, home_temp_rx_integer);
+						EEPROM_write(4, home_temp_rx_fraction);
+						EEPROM_write(5, gas_boiler_enable_flag);
+						EEPROM_write(6, work_mode);
 					}
 					break;
 			case 101:
@@ -178,6 +196,10 @@ ISR(INT0_vect)
 						temp_setpoint_fraction = RX_BUF[2];
 						EEPROM_write(1, temp_setpoint_integer);
 						EEPROM_write(2, temp_setpoint_fraction);
+						EEPROM_write(3, home_temp_rx_integer);
+						EEPROM_write(4, home_temp_rx_fraction);
+						EEPROM_write(5, gas_boiler_enable_flag);
+						EEPROM_write(6, work_mode);
 					}
 					break;
 			case 110:
@@ -193,6 +215,10 @@ ISR(INT0_vect)
 						PORTD &= ~(1<<LED_BOILER_STATUS);
 						EEPROM_write(1, temp_setpoint_integer);
 						EEPROM_write(2, temp_setpoint_fraction);
+						EEPROM_write(3, home_temp_rx_integer);
+						EEPROM_write(4, home_temp_rx_fraction);
+						EEPROM_write(5, gas_boiler_enable_flag);
+						EEPROM_write(6, work_mode);
 					}
 					break;
 			case 111:
@@ -208,6 +234,10 @@ ISR(INT0_vect)
 						PORTD |= (1<<LED_BOILER_STATUS);
 						EEPROM_write(1, temp_setpoint_integer);
 						EEPROM_write(2, temp_setpoint_fraction);
+						EEPROM_write(3, home_temp_rx_integer);
+						EEPROM_write(4, home_temp_rx_fraction);
+						EEPROM_write(5, gas_boiler_enable_flag);
+						EEPROM_write(6, work_mode);
 					}
 					break;
 		}

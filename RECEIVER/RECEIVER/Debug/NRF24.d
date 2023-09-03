@@ -22,7 +22,7 @@ NRF24.d NRF24.o: .././NRF24.c .././NRF24.h .././main.h \
  d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h \
  .././TWI.h .././usart.h .././WeatherStation.h .././RTC_DS3231.h \
  .././DHT22.h .././BMP180.h .././ILI9486.h .././DS18B20.h .././SD.h \
- .././pff.h .././integer.h .././diskio.h .././HTU21D.h
+ .././pff.h .././integer.h .././diskio.h .././HTU21D.h .././eeprom.h
 
 .././NRF24.h:
 
@@ -95,3 +95,5 @@ d:\atmelstudio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\wdt.h:
 .././diskio.h:
 
 .././HTU21D.h:
+
+.././eeprom.h:

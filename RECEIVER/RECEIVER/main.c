@@ -91,9 +91,9 @@ gas_boiler_enable_flag = 1 вкл авто
 gas_boiler_enable_flag = 10 выкл ручн
 gas_boiler_enable_flag = 11 вкл ручн
 */
-uint8_t gas_boiler_enable_flag = 0;
-uint8_t gas_boiler_setpoint_temp_integer = 20;
-uint8_t gas_boiler_setpoint_temp_fraction = 0;
+uint8_t gas_boiler_enable_flag;
+uint8_t gas_boiler_setpoint_temp_integer;
+uint8_t gas_boiler_setpoint_temp_fraction;
 int gas_boiler_setpoint_temp_counter = 0;
 uint8_t gas_boiler_setpoint_change_flag = 0;
 int gas_boiler_rx_counter = 0;
@@ -425,6 +425,7 @@ ISR (INT4_vect)
 				{
 					gas_boiler_enable_flag -= 10;
 				}
+				EEPROM_write(3, gas_boiler_enable_flag);
 				break;
 			case 1:
 				//вход сюда только в ручном режиме
@@ -438,6 +439,7 @@ ISR (INT4_vect)
 					{
 						gas_boiler_enable_flag -= 1;
 					}
+					EEPROM_write(3, gas_boiler_enable_flag);
 				}
 				break;
 			case 2:
@@ -451,6 +453,8 @@ ISR (INT4_vect)
 					gas_boiler_setpoint_temp_integer = gas_boiler_setpoint_temp_counter / 10;
 					gas_boiler_setpoint_temp_fraction = gas_boiler_setpoint_temp_counter % 10;
 					gas_boiler_setpoint_change_flag = 0;
+					EEPROM_write(1, gas_boiler_setpoint_temp_integer);
+					EEPROM_write(2, gas_boiler_setpoint_temp_fraction);
 				}
 				break;
 			case 3:
@@ -758,7 +762,7 @@ int main(void)
 	wdt_reset();
 	sprintf_HOME_Weath_Param();
 	_delay_ms(1500);
-	// Установка времени для DS3231(делается 1 разv)
+	// Установка времени для DS3231(делается 1 раз)
 	//RTC_write_time(22, 17, 0);
 	//RTC_write_date(1, 13, 3, 23);
 	//Вывод окна загрузки
@@ -766,6 +770,18 @@ int main(void)
 	Print_Download();
 	wdt_reset();
 	PORTL &= ~(1<<LED);
+	//считываем из eeprom значения для котла
+	/*адресация eeprom:
+	1-уставка целая
+	2-уставка дробь
+	3-статус котла с режимом работы
+	*/
+	if(EEPROM_read(1) > 100) EEPROM_write(1,20);
+	if(EEPROM_read(2) > 100) EEPROM_write(2,0);
+	if(EEPROM_read(3) > 100) EEPROM_write(3,0);
+	gas_boiler_setpoint_temp_integer = EEPROM_read(1);
+	gas_boiler_setpoint_temp_fraction = EEPROM_read(2);
+	gas_boiler_enable_flag = EEPROM_read(3);
 	//Инициализация таймеров и прерываний
 	//timer2_ini();
 	timer1_ini();
@@ -833,7 +849,7 @@ int main(void)
 			}
 			//_delay_ms(1000);
 		}
-		//прием данных от газового котла
+		//прием данных от газового котла и отправка ответа
 		else if ((rx_flag == 1)&&(pipe == 1))
 		{
 			Clock ();

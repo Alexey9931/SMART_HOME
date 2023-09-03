@@ -29,6 +29,7 @@ extern uint8_t temp_setpoint_integer;
 extern uint8_t temp_setpoint_fraction;
 extern uint8_t home_temp_rx_integer;
 extern uint8_t home_temp_rx_fraction;
+extern uint8_t work_mode;
 
 uint8_t home_temp_own_integer = 0;
 uint8_t home_temp_own_fraction = 0;
@@ -234,11 +235,27 @@ int main(void)
 	wdt_reset();
 	_delay_ms(1500);
 	wdt_reset();
-	//считываем из eeprom значение уставки
+	//считываем из eeprom значения для котла
+	/*адресация eeprom:
+	1-уставка целая
+	2-уставка дробь
+	3-температура целая
+	4-температура дробь
+	5-статус котла
+	6-режим работы
+	*/
 	if(EEPROM_read(1) > 100) EEPROM_write(1,20);
 	if(EEPROM_read(2) > 100) EEPROM_write(2,0);
+	if(EEPROM_read(3) > 100) EEPROM_write(3,20);
+	if(EEPROM_read(4) > 100) EEPROM_write(4,0);
+	if(EEPROM_read(5) > 100) EEPROM_write(5,0);
+	if(EEPROM_read(6) > 100) EEPROM_write(6,0);
 	temp_setpoint_integer = EEPROM_read(1);
 	temp_setpoint_fraction = EEPROM_read(2);
+	home_temp_rx_integer = EEPROM_read(3);
+	home_temp_rx_fraction = EEPROM_read(4);
+	gas_boiler_enable_flag = EEPROM_read(5);
+	work_mode = EEPROM_read(6);
 	//отправляем в БД первичные данные после включения
 	sprintf(DATA_TO_UART,"%d %d.%d %d.%d %d ", gas_boiler_enable_flag, home_temp_rx_integer, home_temp_rx_fraction, temp_setpoint_integer, temp_setpoint_fraction, work_mode);
 	USART_Transmit(DATA_TO_UART);
@@ -253,6 +270,9 @@ int main(void)
 			home_temp_rx_integer = home_temp_own_integer;
 			home_temp_rx_fraction = home_temp_own_fraction;
 			millis_hometemp_update = millis;
+			EEPROM_write(3, home_temp_rx_integer);
+			EEPROM_write(4, home_temp_rx_fraction);
+			EEPROM_write(6, work_mode);
 		}
 		//каждые 3сек отправляем данные и измеряем температуру
 		if ((millis%3000) == 0)

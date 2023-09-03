@@ -25,6 +25,7 @@ void gas_boiler_controller(void)
 			gas_boiler_enable_flag = 1;
 			PORTB &= ~(1<<MOSFET);
 			PORTD |= (1<<LED_BOILER_STATUS);
+			EEPROM_write(5, gas_boiler_enable_flag);
 		}
 		//если больше то выключаем
 		else if((home_temp_rx_integer*10+home_temp_rx_fraction) >= (temp_setpoint_integer*10+temp_setpoint_fraction))
@@ -32,6 +33,7 @@ void gas_boiler_controller(void)
 			gas_boiler_enable_flag = 0;
 			PORTB |= (1<<MOSFET);
 			PORTD &= ~(1<<LED_BOILER_STATUS);
+			EEPROM_write(5, gas_boiler_enable_flag);
 		}
 	}
 }

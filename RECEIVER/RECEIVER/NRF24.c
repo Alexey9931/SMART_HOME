@@ -191,6 +191,8 @@ void NRF24L01_Receive(void)
 		{
 			gas_boiler_setpoint_temp_integer = RX_BUF[1];
 			gas_boiler_setpoint_temp_fraction = RX_BUF[2];
+			EEPROM_write(1, gas_boiler_setpoint_temp_integer);
+			EEPROM_write(2, gas_boiler_setpoint_temp_fraction);
 			//gas_boiler_enable_flag -= 100;
 		}
 		//если сами хотим ее поменять то меняем
@@ -209,6 +211,7 @@ void NRF24L01_Receive(void)
 			if ((RX_BUF[0] / 10) == 0)
 			{
 				gas_boiler_enable_flag = RX_BUF[0];
+				EEPROM_write(3, gas_boiler_enable_flag);
 			}
 		}
 		//в ручном не читаем флаг

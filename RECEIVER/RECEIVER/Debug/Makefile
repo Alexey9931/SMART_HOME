@@ -40,6 +40,7 @@ C_SRCS +=  \
 ../BMP180.c \
 ../DHT22.c \
 ../DS18B20.c \
+../eeprom.c \
 ../HTU21D.c \
 ../ILI9486.c \
 ../main.c \
@@ -63,6 +64,7 @@ OBJS +=  \
 BMP180.o \
 DHT22.o \
 DS18B20.o \
+eeprom.o \
 HTU21D.o \
 ILI9486.o \
 main.o \
@@ -79,6 +81,7 @@ OBJS_AS_ARGS +=  \
 BMP180.o \
 DHT22.o \
 DS18B20.o \
+eeprom.o \
 HTU21D.o \
 ILI9486.o \
 main.o \
@@ -95,6 +98,7 @@ C_DEPS +=  \
 BMP180.d \
 DHT22.d \
 DS18B20.d \
+eeprom.d \
 HTU21D.d \
 ILI9486.d \
 main.d \
@@ -111,6 +115,7 @@ C_DEPS_AS_ARGS +=  \
 BMP180.d \
 DHT22.d \
 DS18B20.d \
+eeprom.d \
 HTU21D.d \
 ILI9486.d \
 main.d \
@@ -152,6 +157,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./DS18B20.o: .././DS18B20.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./eeprom.o: .././eeprom.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)D:\AtmelStudio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -B "D:\AtmelStudio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega2560" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
