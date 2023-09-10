@@ -13,15 +13,7 @@ uint8_t buf1[10] = {0};//буффер для отправки
 uint8_t  reg = 0x00;
 uint8_t retr_cnt, dt;
 uint16_t retr_cnt_full;
-//uint8_t data[5];
-unsigned int hall_counter = 0;
-unsigned int speed = 0;
-char speed_str[10] = {0};
-char temperature_humidity_str[10] = {0};
-char wind_direction_str[10] = {0};
-char Vbat[10] = {0};
-char RainAmount[10] = {0};		
-int adc_value1 = 0, adc_value2 = 0;	
+
 int INTER_COUNT;
 uint8_t gas_boiler_enable_flag = 0;
 uint16_t temp_setpoint;
@@ -29,10 +21,14 @@ extern uint8_t temp_setpoint_integer;
 extern uint8_t temp_setpoint_fraction;
 extern uint8_t home_temp_rx_integer;
 extern uint8_t home_temp_rx_fraction;
-extern uint8_t work_mode;
 
 uint8_t home_temp_own_integer = 0;
 uint8_t home_temp_own_fraction = 0;
+
+uint8_t temp_setpoint_integer_from_BD = 0;
+uint8_t temp_setpoint_fraction_from_BD = 0;
+uint8_t gas_boiler_enable_flag_from_BD = 0;
+uint8_t work_mode_from_BD = 0;
 
 /*
 режим работы: 0-авто 1-ручной
@@ -46,7 +42,7 @@ uint8_t OK_BUTTON_FLAG = 0;
 uint8_t UP_BUTTON_FLAG = 0;
 uint8_t DOWN_BUTTON_FLAG = 0;
 
-char DATA_TO_UART[80] = {0};
+char DATA_TO_UART[30] = {0};
 
 unsigned int TIM2_COUNT = 0;
 void timer2_ini(void)//период 100мкс
@@ -62,23 +58,15 @@ ISR (TIMER2_COMP_vect)
 	{
 		if(((PINC&(1<<BUTTON_UP)) == 0) && (UP_BUTTON_FLAG == 0))
 		{
-			temp_setpoint = temp_setpoint_integer * 10 + temp_setpoint_fraction;
 			temp_setpoint += 5;
-			temp_setpoint_integer = temp_setpoint/10;
-			temp_setpoint_fraction = temp_setpoint%10;
+			PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, (temp_setpoint/10)*10+(temp_setpoint%10));
 			UP_BUTTON_FLAG = 1;
-			EEPROM_write(1, temp_setpoint_integer);
-			EEPROM_write(2, temp_setpoint_fraction);
 		}
 		else if(((PINC&(1<<BUTTON_DOWN)) == 0) && (DOWN_BUTTON_FLAG == 0))
 		{
-			temp_setpoint = temp_setpoint_integer * 10 + temp_setpoint_fraction;
 			temp_setpoint -= 5;
-			temp_setpoint_integer = temp_setpoint/10;
-			temp_setpoint_fraction = temp_setpoint%10;
+			PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, (temp_setpoint/10)*10+(temp_setpoint%10));
 			DOWN_BUTTON_FLAG = 1;
-		    EEPROM_write(1, temp_setpoint_integer);
-			EEPROM_write(2, temp_setpoint_fraction);
 		}
 		if ((PINC&(1<<BUTTON_UP)) != 0)
 		{
@@ -119,8 +107,25 @@ ISR (TIMER1_COMPA_vect)
 //прерывание по нажатию кнопки OK
 ISR (INT1_vect)
 {
-	if (OK_BUTTON_FLAG == 1) OK_BUTTON_FLAG = 0;
-	else OK_BUTTON_FLAG = 1;
+	if (OK_BUTTON_FLAG == 1) 
+	{
+		OK_BUTTON_FLAG = 0;
+		temp_setpoint_integer = temp_setpoint/10;
+		temp_setpoint_fraction = temp_setpoint%10;
+		EEPROM_write(1, temp_setpoint_integer);
+		EEPROM_write(2, temp_setpoint_fraction);
+		
+		gas_boiler_controller();
+		/*//отправляем в БД данные с новой инфо
+		sprintf(DATA_TO_UART,"%d %d.%d %d.%d %d ", gas_boiler_enable_flag, home_temp_rx_integer, home_temp_rx_fraction, temp_setpoint_integer, temp_setpoint_fraction, work_mode);
+		USART_Transmit(DATA_TO_UART);
+		memset(DATA_TO_UART, '\0', sizeof(char) * strlen(DATA_TO_UART));//очистка массива*/
+	}
+	else 
+	{
+		temp_setpoint = temp_setpoint_integer * 10 + temp_setpoint_fraction;
+		OK_BUTTON_FLAG = 1;
+	}
 }
 SPI_init(void) //инициализация SPI
 {
@@ -164,11 +169,11 @@ port_init(void)
 	PORTTEMP &= ~(1<<BITTEMP);
 }
 //обработчик прерывания по UART
-int uart_rx_count = 0;
-char uart_rx_buffer[100];
-char uart_message[100];
+uint16_t uart_rx_count = 0;
+char uart_rx_buffer[50];
 ISR(USART_RXC_vect)
 {
+	char uart_message[50];
 	uart_rx_buffer[uart_rx_count] = UDR;
 	if (uart_rx_buffer[uart_rx_count] == '/')
 	{
@@ -184,6 +189,57 @@ ISR(USART_RXC_vect)
 		{
 			PORTC &= ~(1<<LED_WIFI);
 		}
+		//Получение инфы от БД с котлом
+		if (strstr(uart_message,"BD")!=0)
+		{
+			//считывание статуса котла
+			if (strstr(uart_message,"OF")!=0)
+			{
+				gas_boiler_enable_flag_from_BD = 0;
+			}
+			else if (strstr(uart_message,"ON")!=0)
+			{
+				gas_boiler_enable_flag_from_BD = 1;
+			}
+			//считывание режима работы котла
+			if (strstr(uart_message,"AUTO")!=0)
+			{
+				work_mode_from_BD = 0;
+			}
+			else if (strstr(uart_message,"MANU")!=0)
+			{
+				work_mode_from_BD = 1;
+			}
+			//считывание уставки
+			char data[20] = {};
+			memcpy(data,uart_message+7,2);
+			temp_setpoint_integer_from_BD = strtol(data, NULL, 10);
+			memset(data,0,sizeof(data));
+			memcpy(data,uart_message+10,1);
+			temp_setpoint_fraction_from_BD = strtol(data, NULL, 10);
+			memset(data,0,sizeof(data));
+			//изменение параметров если они отличаются
+			if (temp_setpoint_integer != temp_setpoint_integer_from_BD)
+			{
+				temp_setpoint_integer = temp_setpoint_integer_from_BD;
+				EEPROM_write(1, temp_setpoint_integer);
+			}
+			if (temp_setpoint_fraction != temp_setpoint_fraction_from_BD)
+			{
+				temp_setpoint_fraction = temp_setpoint_fraction_from_BD;
+				EEPROM_write(2, temp_setpoint_fraction);
+			}
+			if (gas_boiler_enable_flag != gas_boiler_enable_flag_from_BD)
+			{
+				gas_boiler_enable_flag = gas_boiler_enable_flag_from_BD;
+				EEPROM_write(5, gas_boiler_enable_flag);
+			}
+			if (work_mode != work_mode_from_BD)
+			{
+				work_mode = work_mode_from_BD;
+				EEPROM_write(6, work_mode);
+			}
+		}
 	}
 	else
 	{
@@ -196,11 +252,9 @@ uint8_t spi_send_recv(uint8_t data) // Передаёт и принимает 1 байт по SPI, возвр
 	while (!(SPSR & (1 << SPIF)));
 	return SPDR;
 }
-int main(void)
+void main(void)
 {
 	_delay_ms(1000);
-	int k = 0;
-	uint8_t data[5] = {0};
 	port_init();
 	PORTD |= (1<<LED_TX);
 	PORTD |= (1<<LED_RX);
@@ -230,7 +284,6 @@ int main(void)
     //включаем Watchdog на 2 с
     wdt_enable(WDTO_2S);
     ACSR |= (1<<ACD);//откл компаратор
-	sei();
 	_delay_ms(1500);
 	wdt_reset();
 	_delay_ms(1500);
@@ -256,13 +309,15 @@ int main(void)
 	home_temp_rx_fraction = EEPROM_read(4);
 	gas_boiler_enable_flag = EEPROM_read(5);
 	work_mode = EEPROM_read(6);
+
+	gas_boiler_controller();
 	//отправляем в БД первичные данные после включения
 	sprintf(DATA_TO_UART,"%d %d.%d %d.%d %d ", gas_boiler_enable_flag, home_temp_rx_integer, home_temp_rx_fraction, temp_setpoint_integer, temp_setpoint_fraction, work_mode);
 	USART_Transmit(DATA_TO_UART);
 	memset(DATA_TO_UART, '\0', sizeof(char) * strlen(DATA_TO_UART));//очистка массива
+	sei();
 	while (1) 
     {
-		
 		//если нет связи более 15 сек, то берем температуру от собственного датчика и переходим в режим авто
 		if (abs(millis - millis_hometemp_update) > 15000)
 		{
@@ -292,7 +347,7 @@ int main(void)
 			DS18b0_find_temp();
 		}
 		//вывод инфы на индикатор
-		if ((millis%500) == 0)
+		if (((millis%500) == 0) && (OK_BUTTON_FLAG != 1))
 		{
 			PrintTemp_MAX7219(home_temp_rx_integer*10+home_temp_rx_fraction, temp_setpoint_integer*10+temp_setpoint_fraction);
 		}

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="412dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:textAlignment="center"
+        android:theme="?attr/actionBarTheme"
+        app:subtitleTextColor="@color/white"
+        app:title="О приложении"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="-1dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="175dp"
+        android:layout_height="183dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="360dp"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/atmel_avr" />
+
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="200dp"
+        android:layout_height="180dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="540dp"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/jpg_about_1" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="190dp"
+        android:layout_height="200dp"
+        android:layout_marginLeft="194dp"
+        android:layout_marginTop="534dp"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/lamp" />
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="190dp"
+        android:layout_height="182dp"
+        android:layout_marginLeft="190dp"
+        android:layout_marginTop="360dp"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/jpg_about_2" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="740dp"
+        android:fontFamily="serif-monospace"
+        android:text="Copyright © 2022 Alexey Gorlov"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="60dp"
+        android:fontFamily="serif"
+        android:text="Home Weather Station App v.1.0 2022"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="90dp"
+        android:fontFamily="serif"
+        android:text=" Android приложение для проекта домаш-\nней метеостанции «HomeWeatherStation»."
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="150dp"
+        android:fontFamily="serif"
+        android:text=" Приложение предназначено для сбора,\nобработки и визуализации метеорологичес-\nких показателей для удобного восприятия \nпользователем в режиме реального времени."
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="260dp"
+        android:fontFamily="serif"
+        android:text="Ссылка на проект на GitHub: "
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/github_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="280dp"
+        android:fontFamily="serif"
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        tools:text="" />
+
+
+</RelativeLayout>

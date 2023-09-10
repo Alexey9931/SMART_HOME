@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/text11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="35dp"
+        android:fontFamily="serif"
+        android:text="ТЕКУЩЕЕ СОСТОЯНИЕ"
+        android:textColor="@color/purple_700"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="80dp"
+        android:background="@color/purple_500"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="АКТИВЕН"
+        android:textColor="@color/white"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+    <Switch
+        android:id="@+id/switch_status_gasboiler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="330dp"
+        android:layout_marginTop="138dp"
+        android:scaleX="1.5"
+        android:scaleY="1.5" />
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="135dp"
+        android:fontFamily="serif"
+        android:text="РУЧНОЕ УПРАВЛЕНИЕ"
+        android:textColor="@color/purple_700"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="180dp"
+        android:background="@color/purple_500"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="ВЫКЛЮЧЕНО"
+        android:textColor="@color/white"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+
+    <Switch
+        android:id="@+id/switch_mode_gasboiler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="330dp"
+        android:layout_marginTop="238dp"
+        android:scaleX="1.5"
+        android:scaleY="1.5" />
+
+    <TextView
+        android:id="@+id/text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="235dp"
+        android:fontFamily="serif"
+        android:text="РЕЖИМ РАБОТЫ"
+        android:textColor="@color/purple_700"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="280dp"
+        android:background="@color/purple_500"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="АВТОМАТИЧЕСКИЙ"
+        android:textColor="@color/white"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="335dp"
+        android:fontFamily="serif"
+        android:text="ТЕКУЩАЯ ТЕМПЕРАТУРА"
+        android:textColor="@color/purple_700"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text333"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="365dp"
+        android:fontFamily="serif"
+        android:text="23,5 °C"
+        android:textColor="@color/purple_700"
+        android:textSize="44dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="435dp"
+        android:fontFamily="serif"
+        android:text="ЗАДАННАЯ ТЕМПЕРАТУРА"
+        android:textColor="@color/purple_700"
+        android:textSize="24dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text55"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="465dp"
+        android:fontFamily="serif"
+        android:text="25,5 °C"
+        android:textColor="@color/purple_700"
+        android:textSize="44dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/more_temp"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="470dp"
+        android:text="-" />
+
+    <Button
+        android:id="@+id/less_temp"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="285dp"
+        android:layout_marginTop="470dp"
+        android:text="+" />
+
+    <ProgressBar
+        android:id="@+id/progress_temp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="175dp"
+        android:layout_marginTop="600dp"
+        android:scaleX="7"
+        android:scaleY="7" />
+
+</RelativeLayout>

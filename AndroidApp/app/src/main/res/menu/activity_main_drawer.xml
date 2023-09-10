@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/home_icon"
+        android:title="Главная" />
+
+    <item android:title="Метеостанция">
+        <menu>
+            <item
+                android:id="@+id/nav_chart"
+                android:icon="@drawable/chart_icon"
+                android:title="Графики" />
+            <item
+                android:id="@+id/nav_chart_setting"
+                android:icon="@drawable/chart_setting_icon"
+                android:title="Настройки графиков" />
+
+            <item
+                android:id="@+id/nav_more_details"
+                android:icon="@drawable/details"
+                android:title="Статистика" />
+
+            <item
+                android:id="@+id/nav_db_table"
+                android:icon="@drawable/table"
+                android:title="База Данных" />
+
+        </menu>
+    </item>
+
+    <item android:title="Газовый котел">
+        <menu>
+            <item
+                android:id="@+id/nav_gasboiler"
+                android:icon="@drawable/gasboiler"
+                android:title="Панель управления" />
+            <item
+                android:id="@+id/nav_gasboiler_bd"
+                android:icon="@drawable/table"
+                android:title="База данных" />
+        </menu>
+    </item>
+
+    <item android:title="Подсветка беседки">
+        <menu>
+            <item
+                android:id="@+id/nav_gazebo_lithning"
+                android:icon="@drawable/gazebo_lithning"
+                android:title="Панель управления" />
+        </menu>
+    </item>
+
+</menu>

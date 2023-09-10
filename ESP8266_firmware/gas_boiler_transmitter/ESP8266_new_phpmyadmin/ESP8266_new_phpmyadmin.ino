@@ -56,13 +56,12 @@ void setup()
     //delay(500);
     //Serial.print(".");
   }
-  delay(6000);
   Serial.write("WiFi-OK/");
 }
 void loop()
 {
     FLAG = 1;
-    //отправка данных метеостанции в БД только при получении их от мк по UART(~каждые 5 мин) 
+    //отправка данных метеостанции в БД только при получении их от мк по UART(~каждые 10 сек) 
     if( Serial.available() > 0 ) 
     {   
       sprintf(data,"%s",Serial.readString().c_str());
@@ -90,22 +89,33 @@ void loop()
       clean_all_array(work_mode);
       clean_all_array(data);
       clean_all_array(count);
-      delay(0);
+      delay(10000);
     }
     //отправка данных в МК о состоянии котла
-    else if (abs(timer_millis - millis()) == 10000)
+    else if (abs(timer_millis - millis()) >= 5000)
     {
       if(WiFi.status()== WL_CONNECTED)
       {
+        Serial.write("WiFi-OK/");
         WiFiClient client;
         HTTPClient http_Raspberry;
         http_Raspberry.begin(client, serverName_gasboiler_get_data_localRaspberry);
         http_Raspberry.addHeader("Content-Type", "application/x-www-form-urlencoded");
         String httpRequestData_Raspberry = "api_key=" + apiKeyValue + "";                    
         int httpResponseCode_Raspberry = http_Raspberry.POST(httpRequestData_Raspberry);  
-        String answer =  http_Raspberry.getString();
         
-        Serial.print("BD"+answer+"/");
+        if (httpResponseCode_Raspberry>0) 
+        {
+          String answer =  http_Raspberry.getString();
+          answer.remove(0,1);
+          //String now_params = (String)boiler_status + " " + (String)temp_setpoint + " " + (String)current_temp + " " + (String)work_mode;
+          //если показания отличаются
+          if (Serial.available() <= 0)
+          {
+            Serial.print("BD "+answer+"/");
+          }
+        }
+
         http_Raspberry.end();
       }
       timer_millis = millis();
@@ -160,7 +170,7 @@ int read_gasboiler_measurements()
         }
         delay(0);
       }
-      if (strcmp(boiler_status,"0") == 0) strcpy(boiler_status,"OFF");
+      if (strcmp(boiler_status,"0") == 0) strcpy(boiler_status,"OF");
       else if (strcmp(boiler_status,"1") == 0) strcpy(boiler_status,"ON");
       //Serial.println(boiler_status);
       k = 0;
@@ -211,7 +221,7 @@ int read_gasboiler_measurements()
         delay(0);
       }
       if (strcmp(work_mode,"0") == 0) strcpy(work_mode,"AUTO");
-      else if (strcmp(work_mode,"1") == 0) strcpy(work_mode,"MANUAL");
+      else if (strcmp(work_mode,"1") == 0) strcpy(work_mode,"MANU");
       //Serial.println(work_mode);
       k = 0;
       i = 0;

@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp">
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/purple_500"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="ВРЕМЕННОЙ ДИАПАЗОН"
+            android:textColor="@color/white"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="55dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="Начало измерений"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="77dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="Конец измерений"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="99dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="Кол-во измерений"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="55dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_end_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="77dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_number_mesuamer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="99dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="125dp"
+            android:background="@color/purple_500"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="УЛИЧНАЯ ТЕМПЕРАТУРА"
+            android:textColor="@color/white"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="155dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="Средняя величина"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_avg_str_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="250dp"
+            android:layout_marginTop="155dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_max_str_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="177dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_min_str_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="200dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView111"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="177dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="Максим. величина"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView1111"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="200dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Миним. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="225dp"
+        android:background="@color/purple_500"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="ДОМАШНЯЯ ТЕМПЕРАТУРА"
+        android:textColor="@color/white"
+        android:textSize="22dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="255dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Средняя величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_avg_home_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="255dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_max_home_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="277dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_min_home_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="300dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView222"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="277dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Максим. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView2222"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="300dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Миним. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="325dp"
+        android:background="@color/purple_500"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="УЛИЧНАЯ ВЛАЖНОСТЬ"
+        android:textColor="@color/white"
+        android:textSize="22dp"
+        android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView33"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="355dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="Средняя величина"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_avg_str_hum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="355dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_max_str_hum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="377dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_min_str_hum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="400dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView333"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="377dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Максим. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView3333"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="400dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Миним. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="425dp"
+        android:background="@color/purple_500"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="ДОМАШНЯЯ ВЛАЖНОСТЬ"
+        android:textColor="@color/white"
+        android:textSize="22dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView44"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="455dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Средняя величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_avg_home_hum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="455dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_max_home_hum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="477dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_min_home_hum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="500dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView444"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="477dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Максим. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView4444"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="500dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Миним. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="525dp"
+        android:background="@color/purple_500"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="ОСАДКИ"
+        android:textColor="@color/white"
+        android:textSize="22dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView55"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="555dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Средняя величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_avg_rainfall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="555dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_max_rainfall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="577dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_min_rainfall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="600dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView555"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="577dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Максим. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView5555"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="600dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Миним. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="625dp"
+        android:background="@color/purple_500"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="СКОРОСТЬ ВЕТРА"
+        android:textColor="@color/white"
+        android:textSize="22dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView66"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="655dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Средняя величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_avg_wind_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="655dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_max_wind_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="677dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_min_wind_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="700dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView666"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="677dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Максим. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView6666"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="700dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:text="Миним. величина"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="725dp"
+            android:background="@color/purple_500"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="НАПРЯЖЕНИЕ ПИТАНИЯ"
+            android:textColor="@color/white"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView77"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="755dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="Максим. величина"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_max_bat_charge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="755dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_min_bat_charge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="777dp"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-smallcaps"
+        android:singleLine="true"
+        android:textColor="@color/purple_500"
+        android:textSize="18dp"
+        android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView777"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="777dp"
+            android:background="@color/white"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="Миним. величина"
+            android:textColor="@color/purple_500"
+            android:textSize="18dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="807dp"
+            android:background="@color/purple_500"
+            android:fontFamily="sans-serif-smallcaps"
+            android:singleLine="true"
+            android:text="НАПРАВЛЕНИЕ ВЕТРА"
+            android:textColor="@color/white"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/WindDirectDiagram"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="850dp"
+            android:visibility="gone"
+            tools:ignore="MissingConstraints" />
+
+    </RelativeLayout>
+</ScrollView>

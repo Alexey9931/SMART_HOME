@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.smarthomeapp.ui.home.HomeFragment"
+        android:label="Главная"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/nav_chart"
+        android:name="com.example.smarthomeapp.ui.charts.ChartsFragment"
+        android:label="Графики"
+        tools:layout="@layout/fragment_charts" />
+
+    <fragment
+        android:id="@+id/nav_chart_setting"
+        android:name="com.example.smarthomeapp.ui.chart_settings.ChartSettingFragment"
+        android:label="Настройки графиков"
+        tools:layout="@layout/fragment_chart_setting" />
+
+    <fragment
+        android:id="@+id/nav_more_details"
+        android:name="com.example.smarthomeapp.MoreDetailsFragment"
+        android:label="Статистика"
+        tools:layout="@layout/fragment_more_details" />
+
+    <fragment
+        android:id="@+id/nav_db_table"
+        android:name="com.example.smarthomeapp.DBTableFragment"
+        android:label="База Данных"
+        tools:layout="@layout/db_table_fragment" />
+
+    <fragment
+        android:id="@+id/nav_gasboiler"
+        android:name="com.example.smarthomeapp.GasboilerFragment"
+        android:label="Газовый котел"
+        tools:layout="@layout/fragment_gasboiler" />
+
+</navigation>

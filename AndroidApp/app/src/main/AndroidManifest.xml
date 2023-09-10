@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.smarthomeapp">
+    <!-- this is the internet permission -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/main"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/main"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.HomeWeatherStationApp"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name="com.example.smarthomeapp.AboutActivity"
+            android:exported="false"
+            android:theme="@style/Theme.HomeWeatherStationApp.NoActionBar"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name="com.example.smarthomeapp.EmailPasswordActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.HomeWeatherStationApp.NoActionBar" />
+        <activity
+            android:name="com.example.smarthomeapp.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.HomeWeatherStationApp.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>
