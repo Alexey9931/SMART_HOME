@@ -36,8 +36,9 @@ char count[10] = {0};
 int k = 0;
 int i = 0;
 uint32_t timer_millis = 0;
+uint32_t timer_millis1 = 0;
 int FLAG = 1;
-
+int is_data_from_mc = 0;
 
 IPAddress local_IP(192, 168, 1, 12);
 IPAddress gateway(192, 168, 1, 1);
@@ -80,23 +81,22 @@ void loop()
                               + "&Status=" + boiler_status + "&Temp_Current=" + current_temp +"&Temp_Setpoint=" + temp_setpoint + "";                    
           int httpResponseCode_Raspberry = http_Raspberry.POST(httpRequestData_Raspberry);   
           http_Raspberry.end();
+          is_data_from_mc = 1;
         }
       }
-      delay(0);
+     
       clean_all_array(boiler_status);
       clean_all_array(current_temp);
       clean_all_array(temp_setpoint);
       clean_all_array(work_mode);
-      clean_all_array(data);
-      clean_all_array(count);
-      delay(10000);
     }
-    //отправка данных в МК о состоянии котла
-    else if (abs(timer_millis - millis()) >= 5000)
+    //отправка данных в МК о состоянии котла только если ранее туда уже были отправлены актуальные данные
+    if ((abs(timer_millis - millis()) >= 5000) && (is_data_from_mc == 1))
     {
       if(WiFi.status()== WL_CONNECTED)
       {
-        Serial.write("WiFi-OK/");
+        //Serial.write("WiFi-OK/");
+        //delay(1000);
         WiFiClient client;
         HTTPClient http_Raspberry;
         http_Raspberry.begin(client, serverName_gasboiler_get_data_localRaspberry);
@@ -108,21 +108,15 @@ void loop()
         {
           String answer =  http_Raspberry.getString();
           answer.remove(0,1);
-          //String now_params = (String)boiler_status + " " + (String)temp_setpoint + " " + (String)current_temp + " " + (String)work_mode;
-          //если показания отличаются
-          if (Serial.available() <= 0)
-          {
-            Serial.print("BD "+answer+"/");
-          }
+          Serial.print("BD "+answer+"/");
         }
 
         http_Raspberry.end();
       }
       timer_millis = millis();
-      delay(0);
     }
     //проверка состояния wi-fi соединения
-    else
+    if (abs(timer_millis1 - millis()) >= 5000)
     {
       if (WiFi.status() != WL_CONNECTED)
       {
@@ -137,6 +131,11 @@ void loop()
         }
         Serial.write("WiFi-OK/");
       }
+      else
+      {
+        Serial.write("WiFi-OK/");
+      }
+      timer_millis1 = millis();
     }
 
 }

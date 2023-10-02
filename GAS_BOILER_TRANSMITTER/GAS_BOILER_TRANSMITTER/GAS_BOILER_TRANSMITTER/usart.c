@@ -6,7 +6,6 @@
  */ 
 #include "usart.h"
 
-extern uint8_t rx_flag;
 
 void USART_Init( unsigned int speed)//Инициализация модуля USART
 {	

@@ -30,7 +30,7 @@ void MAX7219_init()
 	_delay_ms(10);
 	Send_MAX7219(0x09, 0xFF); //включим режим декодировани€ дл€ всех разр€дов 
 	_delay_ms(10);
-	Send_MAX7219(0x0A, 0x02); //€ркость
+	Send_MAX7219(0x0A, 0x04); //€ркость
 	_delay_ms(10);
 	MAX7219_clear();
 	
