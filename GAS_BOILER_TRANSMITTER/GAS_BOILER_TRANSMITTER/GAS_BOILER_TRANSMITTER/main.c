@@ -34,6 +34,8 @@ uint8_t temp_setpoint_fraction_from_BD = 0;
 uint8_t gas_boiler_enable_flag_from_BD = 0;
 uint8_t work_mode_from_BD = 0;
 
+uint8_t gas_boiler_heating_flag = 0;//
+
 /*
 режим работы: 0-авто 1-ручной
 */
@@ -50,6 +52,8 @@ uint8_t UP_BUTTON_FLAG = 0;
 uint8_t DOWN_BUTTON_FLAG = 0;
 
 char DATA_TO_UART[30] = {0};
+	
+char esp_setpoint[10];
 
 unsigned int TIM2_COUNT = 0;
 void timer2_ini(void)//период 100мкс
@@ -174,6 +178,7 @@ port_init(void)
 //обработчик прерывания по UART
 uint16_t uart_rx_count = 0;
 char uart_rx_buffer[50];
+char rx_esp_data[50];
 ISR(USART_RXC_vect)
 {
 	uart_rx_buffer[uart_rx_count] = UDR;
@@ -430,7 +435,7 @@ void main(void)
 			EEPROM_write(6, work_mode);
 		}
 		wdt_reset();
-		//каждые 3сек отправляем данные и измеряем температуру
+		//каждые 3сек отправляем данные и измеряем температуру и работает контроллер
 		if (abs(millis - millis_send_nrf) > 3000)
 		{
 			buf1[0] = gas_boiler_enable_flag;
@@ -446,6 +451,7 @@ void main(void)
 			dt = NRF24L01_Send(buf1);
 			memset(buf1, 0, sizeof(int) * strlen(buf1));//очистка массива
 			DS18b0_find_temp();
+			gas_boiler_controller();
 			millis_send_nrf = millis;
 		}
 		wdt_reset();
@@ -456,10 +462,9 @@ void main(void)
 			millis_print = millis;
 		}
 		wdt_reset();
-		//каждые 10 сек работает контроллер и отправка актуальных данных в БД
+		//каждые 10 сек отправка актуальных данных в БД
 		if (abs(millis - millis_send_db) > 10000)
 		{
-			gas_boiler_controller();
 			//отправляем в БД данные с новой инфо
 			sprintf(DATA_TO_UART,"%d %d.%d %d.%d %d ", gas_boiler_enable_flag, home_temp_rx_integer, home_temp_rx_fraction, temp_setpoint_integer, temp_setpoint_fraction, work_mode);
 			USART_Transmit(DATA_TO_UART);
@@ -469,48 +474,46 @@ void main(void)
 		//если пришли данные по uart
 		if (uart_ready_flag == 1)
 		{
-			char uart_message[50];
-			memcpy(uart_message,uart_rx_buffer,strlen(uart_rx_buffer)-1);
+			memcpy(rx_esp_data,uart_rx_buffer,strlen(uart_rx_buffer)-1);
 			memset(uart_rx_buffer,0,strlen(uart_rx_buffer));
 			uart_rx_count = 0;
 			//Получение данные о wifi по uart
-			if (strstr(uart_message,"WiFi-OK")!=0)
+			if (strstr(rx_esp_data,"WiFi-OK")!=0)
 			{
 				PORTC |= (1<<LED_WIFI);
 			}
-			if (strstr(uart_message,"WiFi-ERROR")!=0)
+			if (strstr(rx_esp_data,"WiFi-ERROR")!=0)
 			{
 				PORTC &= ~(1<<LED_WIFI);
 			}
 			//Получение инфы от БД с котлом
-			if (strstr(uart_message,"BD")!=0)
+			if (strstr(rx_esp_data,"BD")!=0)
 			{
-				//считывание статуса котла
-				if (strstr(uart_message,"OF")!=0)
+/*				//считывание статуса котла
+				if (strstr(rx_esp_data,"OF")!=0)
 				{
 					gas_boiler_enable_flag_from_BD = 0;
 				}
-				else if (strstr(uart_message,"ON")!=0)
+				else if (strstr(rx_esp_data,"ON")!=0)
 				{
 					gas_boiler_enable_flag_from_BD = 1;
 				}
 				//считывание режима работы котла
-				if (strstr(uart_message,"AUTO")!=0)
+				if (strstr(rx_esp_data,"AUTO")!=0)
 				{
 					work_mode_from_BD = 0;
 				}
-				else if (strstr(uart_message,"MANU")!=0)
+				else if (strstr(rx_esp_data,"MANU")!=0)
 				{
 					work_mode_from_BD = 1;
 				}
 				//считывание уставки
-				char data[20] = {};
-				memcpy(data,(int)strchr(uart_message, 'B') + 6, 2);
-				temp_setpoint_integer_from_BD = strtol(data, NULL, 10);
-				memset(data,0,sizeof(data));
-				memcpy(data,(int)strchr(uart_message, 'B') + 9, 1);
-				temp_setpoint_fraction_from_BD = strtol(data, NULL, 10);
-				memset(data,0,sizeof(data));
+				memcpy(esp_setpoint,(int)strchr(rx_esp_data, 'B') + 6, 2);
+				temp_setpoint_integer_from_BD = strtol(esp_setpoint, NULL, 10);
+				memset(esp_setpoint,0,sizeof(esp_setpoint));
+				memcpy(esp_setpoint,(int)strchr(rx_esp_data, 'B') + 9, 1);
+				temp_setpoint_fraction_from_BD = strtol(esp_setpoint, NULL, 10);
+				memset(esp_setpoint,0,sizeof(esp_setpoint));
 				//изменение параметров если они отличаются
 				if (temp_setpoint_integer != temp_setpoint_integer_from_BD)
 				{
@@ -531,8 +534,9 @@ void main(void)
 				{
 					work_mode = work_mode_from_BD;
 					EEPROM_write(6, work_mode);
-				}
+				}*/
 			}
+			memset(rx_esp_data, 0, sizeof(rx_esp_data));
 			uart_ready_flag = 0;
 		}
 		wdt_reset();
